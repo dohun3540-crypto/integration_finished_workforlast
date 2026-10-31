@@ -84,8 +84,8 @@ def audit_case(payload: dict[str, Any], output: dict[str, Any] | None = None) ->
     known_skus = {
         item["product_id"]
         for section in ("inventory", "orders")
-        for item in payload.get(section, []) if isinstance(payload.get(section), list)
-        and isinstance(item, dict) and isinstance(item.get("product_id"), str)
+        for item in (payload.get(section) if isinstance(payload.get(section), list) else [])
+        if isinstance(item, dict) and isinstance(item.get("product_id"), str)
     }
     for section in ("inventory", "inbound", "orders", "quotes"):
         rows = payload.get(section, [])
