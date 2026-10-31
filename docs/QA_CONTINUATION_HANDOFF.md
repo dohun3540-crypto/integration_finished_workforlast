@@ -7,9 +7,9 @@
 - **Draft PR #2:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
 - **Original read-only PR #11:** https://github.com/dohun3540-crypto/leadtime-guardian-agent/pull/11
 - **Source snapshot:** `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`
-- **Last code SHA with independently observed CI success before doc updates:** `5a84efc32632674d6a2ed0c02db424530e927d12`
-- **Full CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013987
-- **Independent QA CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013981
+- **Last code SHA with independently observed CI success before doc updates:** `2b926733ac4dba90454ae2f7a6254eef11cfed1b`
+- **Full CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181856300
+- **Independent QA CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181856310
 
 **Important:** The branch HEAD moves when docs are updated. Always retrieve latest PR head and confirm success of CI at that **exact** SHA. Prior CI is not proof of a new commit.
 
@@ -17,8 +17,8 @@
 
 | Run | Verified |
 | --- | --- |
-| Python CI (full repository) | **263 passed in 9.40s**, whole-repo Ruff PASS |
-| Independent QA CI | **183 passed in 0.90s**, QA Ruff PASS |
+| Python CI (full repository) | **306 passed in 9.64s**, whole-repo Ruff PASS |
+| Independent QA CI | **226 passed in 1.35s**, QA Ruff PASS |
 | C001 archive | 3/3 original PDF hashes, metadata consistency PASS |
 | C001 replay | PASS, no new Studio calls |
 | Native C001 contract | PASS against archived expected run IDs |
@@ -57,3 +57,11 @@ Commit messages are split across feature, test and CI updates in PR #2. The orig
 ## Safety and provenance
 
 A GitHub CLI/Actions success is software contract verification. A recorded `REAL_STUDIO_RUN` from October 30 is historical evidence; an `ARCHIVED_REPLAY` is a local re-execution of stored predictions; neither creates new PDF-extraction accuracy results. Never promote DRAFT Gold automatically or mistake source-file hashes for correctness of extracted text.
+
+## Further cross-agent continuation — 2026-10-31
+
+New code: `qa/cross_agent.py`, `scripts/qa_cross_agent_check.py`, optional `qa_gate_check.py` handoff inputs, `qa/gate.py` guarded integration, tests `test_qa_cross_agent*.py`, QA workflow linting of all `qa_*.py` scripts. New docs: `QA_STUDIO_INTEGRATION_CONTRACT.md` and `QA_CROSS_AGENT_HANDOFF.md`.
+
+The QA Sandbox Agent ID `agt_GhP9GywhbcDWquFqWTsmtq` came from the task handoff. Its latest real Config ID, Node output schema, Native Config Export and C001/C013 QA job files have **not** been read in this GitHub-only session. Do not substitute operational v4 `cfg_SZi6qfyZ6XFoNszpXQK5xQ`. Real cross-agent validation needs actual Studio exports plus matching raw byte hashes and real external approval before production readiness.
+
+Cross-agent code CI checkpoint: 306 whole-repo tests and 226 independent QA tests, Ruff PASS at `2b926733ac4dba90454ae2f7a6254eef11cfed1b`. Re-fetch latest HEAD and rerun CI before claiming a newer commit is verified.
