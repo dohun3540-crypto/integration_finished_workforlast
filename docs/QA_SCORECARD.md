@@ -1,35 +1,52 @@
-# Independent QA scorecard — verified 2026-10-31 KST
+# LeadTime Guardian — Independent QA verified scorecard
 
-## Successful integrated CI
-- Repository: `dohun3540-crypto/leadtime-guardian-agent.copy`.
-- Branch: `feat/qa-source-restore-20261031`.
-- Restored upstream snapshot: original PR #11 at `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`.
-- Upstream blob integrity: **156/156 exact SHA matches** (including binary/PDF/archive), verified in GitHub Git trees. Existing QA files were retained separately.
-- Integrated commit: `482251a4adfc3417d13bc677b0101e5d4933f3df`.
-- Full Python CI: **143 passed in 8.82s**, `ruff check .`: **All checks passed**.
-- Full CI: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178234306
-- Independent QA CI: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178234309
-- Integrated review: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2 (Draft).
+**Verification date:** 2026-10-31 KST  
+**Repository:** `dohun3540-crypto/leadtime-guardian-agent.copy`  
+**QA integration branch:** `feat/qa-source-restore-20261031`  
+**Draft review:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
 
-## Scope of those 143 checks
-- Source repository's existing 80 local unit/integration contract tests.
-- New 63 independent QA unit, adversarial and archived-evidence tests.
-- Coverage includes strict missing-field rejection, malformed/duplicate JSON, fake-vs-real evidence labels, quantity/deadline/currency validation, order conservation, stock double allocation, capacity sharing, duplicate shipping and review-state safeguards.
-- C001 archived execution metadata and 3 original PDF SHA-256 hashes were independently cross-checked from the immutable Git snapshots (read-only). This verifies archive consistency, not another Studio run. 
-- No new Studio network job was run by the QA branch; SDK mock tests **are not** live API or Studio runs.
+## Verified GitHub Actions checkpoint
 
-## Still not verified — blocking live evidence/claims
-- New real Studio execution for SYN-C013, SYN-C017 and broader C002–C020.
-- Source PDF text human-reviewed against any claimed Gold labels: still DRAFT.
-- Extraction accuracy / end-to-end latency / actual API cost: **N/A**.
-- Business-calendar optimization, real ERP, actual purchase/email functionality: out of MVP scope.
-- The source contains the 57 C002–C020 PDF bytes in an archive; extraction/verification into a local worktree may be needed before real Studio runs.
-- Full application demo in a live Studio session remains pending team handoff.
-- No original repository edits, no merge into main, no force push, no external actions.
+The following checks passed on **`62cc55377bc1094d1b59c8251d873d38632d4011`**, before this documentation update.
 
-## Safe integration next
-1. Team 2 supplies updated Adapter/engine outputs without modifying this QA's contract-owner files.
-2. Team 3 supplies manually source-reviewed Gold, separate from the actual predictions.
-3. Validate latest Git snapshot, re-run all 134+ tests, Ruff and error cases. Then use QA gate with real normalized integrated inputs.
-4. Verify real Studio run metadata and PDF evidence; distinguish live, replay, SDK mock and local fixture.
-5. Update this scorecard only using test logs, job IDs and evidence.
+| Measurement | Outcome | Execution evidence |
+| --- | --- | --- |
+| Full Python regression | **203 passed in 8.57 s**, Ruff passed | [Python CI #41178897177](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178897177) |
+| Independent QA regression | **123 passed in 0.52 s**, Ruff passed | [Independent QA #41178897173](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178897173) |
+| Source archive content | **156 / 156 upstream Git blob SHA matches** | Original PR #11: `f196c694917f2d9e5f4ec228c752bd3f2a4eb882` |
+| Archived C001 file integrity | **3 / 3 PDF SHA-256 checks** | Independent QA CI archive-check step |
+| Original C001 offline replay | **PASS** in automated test | `tests/test_qa_replay.py` |
+| Native, current Studio live execution | **NOT_RUN** in this QA session | Requires separate Studio access |
+| Human-reviewed ground truth | **NOT_VERIFIED** | Draft Gold is not human-approved |
+
+**Interpretation:** The 203 tests comprise the restored project's original 80 tests plus 123 independent QA contract, replay, archival, adversarial, and CLI tests. This is not 203 Studio executions and not an extraction-accuracy score.
+
+## Latest code hardening
+
+- Corrected a **false FAIL**: the deterministic engine supports nonnegative integer KRW monetary fields; independent input QA now supports integer or decimal-string money while rejecting boolean, float, negative and non-finite values.
+- Prevented **false PASS**: missing supplier ID/risk, unknown product, empty customer-order collection, and revised inbound ETA at or before the snapshot date.
+- Prevented malformed lists/objects used as order, receipt and quote IDs from crashing the independent validator. They now produce structured QA failures.
+- Added detection of altered delivery product IDs and invented supplier-risk output fields.
+- Tested the real CLI with subprocesses: normal PASS yields exit code 0; malformed JSON, suspicious outputs, unhashable IDs and absent files yield exit code 1 with JSON error details.
+- Preserved the original engine, Studio Adapter, Native Studio config, original PDFs and Gold untouched.
+
+## Source semantics and evidence provenance
+
+| Evidence source | Label / what it proves | Limits |
+| --- | --- | --- |
+| C001 archived Studio Web job from 2026-10-30 | `REAL_STUDIO_RUN` **historical archived record** | This session did not run Studio again |
+| C001 offline deterministic pipeline replay | `ARCHIVED_REPLAY` | Same recorded predictions, not a new inference |
+| SDK / fake-client tests | `SDK_HTTP_MOCK` or `FAKE_CLIENT_TEST` | Cannot prove real cloud availability |
+| Local engine QA and synthetic tests | `LOCAL_ENGINE_ONLY` | Cannot prove PDF extraction |
+| Unreviewed case answer files | `DRAFT_GOLD` | Do not publish accuracy based on these |
+| Manually source-verified answer files | `HUMAN_VERIFIED_GOLD` | No new case has this evidenced here |
+
+## Blocking items before live-release claims
+
+1. Actual Studio runs for C013/C017 and the remaining extension cases: **NOT_RUN** in this QA session.
+2. Independent manual validation of PDFs against Gold labels: **BLOCKED** awaiting team 3.
+3. Final Studio → Adapter integration with team 2's latest ongoing work: **BLOCKED** until their branch is ready.
+4. True PDF extraction precision/recall, current latency, operational API costs: **N/A**.
+5. End-to-end live demonstration and external procurement/email: **NOT_RUN**. External purchase/send remains outside scope.
+
+**Do not merge this Draft PR into main until the shared integration gate has been reviewed.** Original repository and PR #11 remain read-only throughout this QA work.
