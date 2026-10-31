@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .archive import verify_c001_archive
+from .cross_agent import audit_cross_agent_handoff
 from .audit import load_json_strict
 from .replay import verify_c001_replay
 from .studio_contract import audit_native_envelope
@@ -25,7 +26,11 @@ REQUIRED_EXTERNAL_GATES = {
 }
 
 
-def build_integration_gate(repo_root: str | Path) -> dict[str, Any]:
+def build_integration_gate(
+    repo_root: str | Path, *, studio_handoff: str | Path | None = None,
+    studio_native: str | Path | None = None, studio_qa_report: str | Path | None = None,
+    expected_config_id: str | None = None, expected_github_sha: str | None = None,
+) -> dict[str, Any]:
     """Execute strictly local archive/replay checks without opening network access.
 
     A local PASS is never interpreted as permission to merge or submit.
@@ -75,6 +80,28 @@ def build_integration_gate(repo_root: str | Path) -> dict[str, Any]:
 
     local = ("c001_archive_integrity", "c001_offline_replay", "c001_native_envelope")
     local_ok = all(checks[name]["status"] == "PASS" for name in local)
+    if studio_handoff is not None:
+        try:
+            manifest = load_json_strict(Path(studio_handoff).read_bytes())
+            native = Path(studio_native).read_bytes() if studio_native is not None else None
+            report = Path(studio_qa_report).read_bytes() if studio_qa_report is not None else None
+            cross = audit_cross_agent_handoff(
+                manifest, native_bytes=native, report_bytes=report,
+                expected_config_id=expected_config_id,
+                expected_github_sha=expected_github_sha,
+            )
+        except (OSError, ValueError, TypeError, UnicodeDecodeError):
+            cross = {"qa_status": "FAIL", "issues": [
+                {"issue_code": "UNREADABLE_CROSS_AGENT_HANDOFF", "severity": "ERROR"}]}
+        checks["studio_qa_sandbox_handoff"] = {
+            "status": cross["qa_status"],
+            "evidence_type": "CROSS_AGENT_MANIFEST_CONTRACT_ONLY",
+            "issues": cross.get("issues", []),
+        }
+        # An explicitly supplied but invalid handoff is a local integration
+        # failure. A good handoff never self-authorizes actual release.
+        if cross["qa_status"] == "FAIL":
+            local_ok = False
     readiness = "FAIL" if not local_ok else "BLOCKED"
     return {
         "overall_status": readiness,
