@@ -1,6 +1,6 @@
 # LeadTime Guardian — Independent QA Integration Gate
 
-**Last measured code snapshot:** `3be9706f648fffc20cc0c9c125d7e178de8cb82d` (2026-10-31 KST)  
+**Last measured code snapshot:** `5a84efc32632674d6a2ed0c02db424530e927d12` (2026-10-31 KST)  
 **Work branch:** `feat/qa-source-restore-20261031` (Draft PR #2)  
 **Source checkpoint:** original PR #11 `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`.
 
@@ -15,8 +15,8 @@ No original source changes, force pushes, main merges, Studio configuration writ
 | Gate | Status | Evidence or dependency |
 | --- | --- | --- |
 | Original Git source file restoration | **PASS** | 156/156 original Git SHA matches |
-| Full Python regression | **PASS** | 262 passed, Ruff PASS, [Actions #41180816600](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816600) |
-| Independent QA regression | **PASS** | 182 passed, QA Ruff PASS, [Actions #41180816694](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816694) |
+| Full Python regression | **PASS** | 263 passed, Ruff PASS, [Actions #41181013987](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013987) |
+| Independent QA regression | **PASS** | 183 passed, QA Ruff PASS, [Actions #41181013981](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013981) |
 | Archived C001 PDF hash / internal metadata | **PASS** | 3/3 source-PDF file hash checks |
 | Archived C001 replay / Adapter output contract | **PASS** | `tests/test_qa_replay.py`; replay does not mean new Studio inference |
 | Archived C001 Native envelope consistency | **PASS** | Job, Step, document/source metadata expected IDs checked |
@@ -55,7 +55,7 @@ The C001 `trusted_base_case.json` is **pre-Studio**; do not pair it directly wit
 
 ## 4. Merge gate decision
 
-Do not merge based only on the 262 test passes.
+Do not merge based only on the 263 test passes.
 
 1. Verify PR HEAD and every Actions conclusion refer to the same SHA.
 2. Compare team 2's final Adapter interface and team 3's PDF/Gold evidence without overwriting their branches.
