@@ -66,12 +66,24 @@ def audit_case(payload: dict[str, Any], output: dict[str, Any] | None = None) ->
     if output is not None and not isinstance(output, dict):
         return {"qa_status": "FAIL", "issues": [issue("INVALID_OUTPUT", "output", "output must be an object")]}
 
+    for key in ("case_id", "snapshot_date", "inventory", "inbound", "orders", "quotes", "documents"):
+        if key not in payload:
+            problems.append(issue("MISSING_REQUIRED_FIELD", key, "required field absent"))
+    if not isinstance(payload.get("case_id"), str) or not payload.get("case_id", "").strip():
+        problems.append(issue("INVALID_CASE_ID", "case_id", "nonempty ID required"))
+    if not _date(payload.get("snapshot_date")):
+        problems.append(issue("INVALID_SNAPSHOT_DATE", "snapshot_date", "strict ISO date required"))
+    if "documents" in payload and (
+        not isinstance(payload["documents"], list)
+        or any(not isinstance(x, dict) for x in payload["documents"])
+    ):
+        problems.append(issue("INVALID_DOCUMENTS", "documents", "expected list of objects"))
     for section in ("inventory", "inbound", "orders", "quotes"):
         rows = payload.get(section, [])
         if not isinstance(rows, list):
             problems.append(issue("INVALID_SECTION", section, "expected list"))
             continue
-        id_key = {"inventory": None, "inbound": "receipt_id", "orders": "order_id", "quotes": "quote_id"}[section]
+        id_key = {"inventory": "product_id", "inbound": "receipt_id", "orders": "order_id", "quotes": "quote_id"}[section]
         seen: set[str] = set()
         for i, row in enumerate(rows):
             path = f"{section}[{i}]"
@@ -86,6 +98,12 @@ def audit_case(payload: dict[str, Any], output: dict[str, Any] | None = None) ->
                     problems.append(issue("DUPLICATE_IDENTIFIER", path + "." + id_key, "repeated ID"))
                 else:
                     seen.add(identifier)
+            if not isinstance(row.get("product_id"), str) or not row.get("product_id", "").strip():
+                problems.append(issue("MISSING_PRODUCT_ID", path + ".product_id", "nonempty SKU required"))
+            if section == "inbound" and (
+                not isinstance(row.get("po_id"), str) or not row.get("po_id", "").strip()
+            ):
+                problems.append(issue("MISSING_PO_ID", path + ".po_id", "nonempty PO required"))
             for key in {
                 "inventory": ("available_stock",),
                 "inbound": ("quantity",),
