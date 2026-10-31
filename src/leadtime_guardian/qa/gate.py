@@ -50,15 +50,17 @@ def build_integration_gate(repo_root: str | Path) -> dict[str, Any]:
         raw = load_json_strict((archive / "analysis/studio_original.json").read_bytes())
         record = load_json_strict((archive / "execution_record.json").read_bytes())
         if not isinstance(record, dict):
-            raise ValueError("execution record must be object")
+            raise TypeError("execution record must be object")
         native = audit_native_envelope(
             raw,
             expected_job_id=record.get("job_id"),
             expected_step_run_id=record.get("native_step_run_id"),
         )
-        if not isinstance(record.get("job_id"), str) or not record["job_id"]:
+        if (not isinstance(record.get("job_id"), str) or not record["job_id"]
+                or not isinstance(record.get("native_step_run_id"), str)
+                or not record["native_step_run_id"]):
             native = {"qa_status": "FAIL", "issues": [
-                {"issue_code": "MISSING_EXPECTED_JOB_ID", "severity": "ERROR"}]}
+                {"issue_code": "MISSING_EXPECTED_RUN_ID", "severity": "ERROR"}]}
     except (OSError, ValueError, TypeError, KeyError) as exc:
         native = {"qa_status": "FAIL", "issues": [
             {"issue_code": "NATIVE_ARCHIVE_UNREADABLE", "reason": type(exc).__name__, "severity": "ERROR"}]}
