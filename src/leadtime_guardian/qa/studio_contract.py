@@ -83,7 +83,7 @@ def audit_native_envelope(
             fail("MISSING_OR_DUPLICATE_DOCUMENT_ID", f"content.documents[{index}].document_id")
         else:
             identifiers.add(doc_id)
-        if kind not in KINDS if isinstance(kind, str) else True:
+        if not isinstance(kind, str) or kind not in KINDS:
             fail("INVALID_NATIVE_DOCUMENT_TYPE", f"content.documents[{index}].document_type")
         else:
             kinds.append(kind)
@@ -126,12 +126,11 @@ def audit_native_envelope(
                     fail("MERGE_SOURCE_MISSING", f"metadata.merge.items[{index}].source_files")
                     continue
                 for ref in refs:
-                    if not isinstance(ref, dict) or (
-                        ref.get("file_id") not in source_ids
-                        if isinstance(ref.get("file_id"), str) else True
-                    ) or source_ids.get(ref.get("file_id")) != ref.get("file_name") if isinstance(
-                        ref.get("file_id"), str
-                    ) else True:
+                    if not isinstance(ref, dict):
+                        fail("MERGE_SOURCE_MISMATCH", f"metadata.merge.items[{index}].source_files")
+                        continue
+                    ref_id = ref.get("file_id")
+                    if not isinstance(ref_id, str) or source_ids.get(ref_id) != ref.get("file_name"):
                         fail("MERGE_SOURCE_MISMATCH", f"metadata.merge.items[{index}].source_files")
             if Counter(merge_kinds) != Counter(kinds):
                 fail("MERGE_TYPE_COUNTS_MISMATCH", "metadata.merge.items")
