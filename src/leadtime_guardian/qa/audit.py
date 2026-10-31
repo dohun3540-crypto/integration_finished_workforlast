@@ -132,9 +132,8 @@ def audit_provenance(record: dict[str, Any]) -> dict[str, Any]:
                 issues.append(issue("LIVE_EVIDENCE_MISSING", field, "real run requires execution identifier"))
     if kind == "HUMAN_VERIFIED_GOLD" and record.get("evidence_verified_against_pdf") is not True:
         issues.append(issue("REVIEW_NOT_EVIDENCED", "evidence_verified_against_pdf", "explicit human source verification required"))
-    if kind in ("DRAFT_GOLD", "SDK_HTTP_MOCK", "FAKE_CLIENT_TEST", "LOCAL_ENGINE_ONLY"):
-        if record.get("measured_extraction_accuracy") is not None:
-            issues.append(issue("UNSUPPORTED_ACCURACY", "measured_extraction_accuracy", "cannot claim real extraction accuracy"))
+    if kind in ("DRAFT_GOLD", "SDK_HTTP_MOCK", "FAKE_CLIENT_TEST", "LOCAL_ENGINE_ONLY") and record.get("measured_extraction_accuracy") is not None:
+        issues.append(issue("UNSUPPORTED_ACCURACY", "measured_extraction_accuracy", "cannot claim real extraction accuracy"))
     return {"qa_status": "FAIL" if issues else "PASS", "issues": issues}
 
 
