@@ -26,11 +26,11 @@ HEX40 = re.compile(r"^[a-fA-F0-9]{40}$")
 
 def audit_cross_agent_handoff(
     manifest: Any, *,
-    native_bytes: bytes | None = None,
+    native_bytes: bytes | None = None, report_bytes: bytes | None = None,
     expected_agent_id: str = SANDBOX_AGENT_ID,
     expected_config_id: str | None = None,
     expected_github_sha: str | None = None,
-    archived_job_ids: tuple[str, ...] = (),
+    archived_job_ids: tuple[str, ...] = ("job_gPmEYKzuJdBA6BmKhVnujs",),
 ) -> dict[str, Any]:
     """Evaluate provided evidence without inferring authenticity or live QA accuracy.
 
@@ -100,7 +100,7 @@ def audit_cross_agent_handoff(
     file_ids = studio.get("input_file_ids")
     if (not isinstance(file_ids, list) or not file_ids
             or any(not isinstance(x, str) or not x.startswith("file_") for x in file_ids)
-            or len(set(x for x in file_ids if isinstance(x, str))) != len(file_ids)):
+            or len({x for x in file_ids if isinstance(x, str)}) != len(file_ids)):
         fail("INVALID_INPUT_FILE_IDS", "studio.input_file_ids")
     digest = studio.get("native_sha256")
     if not isinstance(digest, str) or HEX64.fullmatch(digest) is None:
@@ -126,8 +126,9 @@ def audit_cross_agent_handoff(
             field = f"verdict.issues[{index}]"
             if not isinstance(issue, dict) or (
                 not isinstance(issue.get("code"), str) or not issue["code"].strip()
-                or issue.get("scope") not in ISSUE_SCOPES
-                or issue.get("severity") not in SEVERITIES
+                or not isinstance(issue.get("scope"), str) or issue["scope"] not in ISSUE_SCOPES
+                or not isinstance(issue.get("severity"), str)
+                or issue["severity"] not in SEVERITIES
             ):
                 fail("INVALID_QA_ISSUE", field)
                 continue
@@ -137,6 +138,29 @@ def audit_cross_agent_handoff(
                 fail("PYTHON_FALSE_PASS", field)
             if issue["code"] == "EXTERNAL_SAFETY_NOT_VERIFIED" and python == "PASS":
                 fail("UNVERIFIED_PYTHON_MARKED_PASS", field)
+
+    report_verified = False
+    if report_bytes is not None:
+        if not isinstance(report_bytes, bytes):
+            fail("INVALID_QA_REPORT_BYTES", "qa_report_bytes")
+        elif (not isinstance(report_hash, str)
+              or hashlib.sha256(report_bytes).hexdigest() != report_hash.lower()):
+            fail("QA_REPORT_HASH_MISMATCH", "studio.qa_report_sha256")
+        else:
+            try:
+                report = load_json_strict(report_bytes)
+            except (ValueError, TypeError, UnicodeDecodeError):
+                fail("INVALID_QA_REPORT_JSON", "qa_report_bytes")
+            else:
+                if not isinstance(report, dict):
+                    fail("INVALID_QA_REPORT_OBJECT", "qa_report_bytes")
+                else:
+                    report_verified = True
+                    # Compare only fields observed in the received report. The
+                    # Sandbox QA schema has not yet been independently obtained.
+                    for field in ("document_qa_status", "python_qa_status"):
+                        if field in report and report[field] != verdict.get(field):
+                            fail("QA_REPORT_VERDICT_MISMATCH", "qa_report_bytes." + field)
 
     native_verified = False
     if native_bytes is not None:
@@ -174,7 +198,7 @@ def audit_cross_agent_handoff(
     if python in {"NOT_RUN", "NOT_VERIFIED", "BLOCKED"}:
         return out("BLOCKED", doc, python)
     # No native bytes: a producer's own digest is not external verification.
-    if not native_verified or kind != "NEW_LIVE_STUDIO" or doc != "PASS":
+    if not native_verified or not report_verified or kind != "NEW_LIVE_STUDIO" or doc != "PASS":
         return out("NOT_VERIFIED", doc, python)
     # Local contract PASS only. This is never a cloud-authenticity/release claim.
     return out("PASS", doc, python)
