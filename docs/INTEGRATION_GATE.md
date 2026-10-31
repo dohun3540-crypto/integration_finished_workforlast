@@ -6,11 +6,11 @@ This module is deliberately read-only. It does not patch the engine, Studio adap
 Run locally:
 ```sh
 python scripts/qa_audit.py --case data/cases/SYN-C001/trusted_base_case.json
-python -m pytest -q tests/test_qa_independent.py
-python -m ruff check src/leadtime_guardian/qa scripts/qa_audit.py tests/test_qa_independent.py
+PYTHONPATH=src python -m pytest -q tests/test_qa_independent.py tests/test_qa_portfolio.py
+python -m ruff check src/leadtime_guardian/qa scripts/qa_audit.py tests/test_qa_independent.py tests/test_qa_portfolio.py
 ```
 
-Caution: the trusted base case uses additional project-specific fields; this independent QA checks only selected universal field invariants. Validation against actual repository fixtures remains necessary before gate approval.
+Caution: the C001 trusted base is deliberately **pre-Studio** and has no predicted quotation or revised ETA. Do not pair it directly with the live C001 analysis.json to claim a real end-to-end PASS. Use the actual integrated case produced by the original adapter, when available. All test cases in this copy are synthetic contract examples.
 
 ## Merge gate
 | Gate | Status until verified |
@@ -18,7 +18,7 @@ Caution: the trusted base case uses additional project-specific fields; this ind
 | Source branch and binary assets fully restored | BLOCKED |
 | Existing pytest regressions | NOT_RUN |
 | Existing Ruff checks | NOT_RUN |
-| Independent QA regression | NOT_RUN until executed |
+| Independent QA regression | PASS: 54 tests in QA-only GitHub Actions run #41177193626 |
 | Schema compatibility | NOT_RUN |
 | Actual Studio C001 live provenance | NOT_RUN, archived evidence available in source PR |
 | Human gold review | BLOCKED |
@@ -28,3 +28,6 @@ No claim of measured Studio extraction accuracy without human-reviewed ground tr
 
 ## Provenance
 Source intended snapshot: source PR #11, `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`. This copy's base was initially README-only, and a complete source tree migration is separately required.
+
+## Safe restoration
+Run `bash scripts/qa_restore_source.sh` in an authenticated clone of the copy repo after checking out `feat/independent-qa-integration`. This creates a new integration branch and merges fetched original PR files while protecting them. The script has **not** been executed; no full source copy has been verified.
