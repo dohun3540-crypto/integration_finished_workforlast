@@ -5,12 +5,12 @@
 **Branch:** `feat/qa-source-restore-20261031`  
 **Draft PR:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
 
-## Observed checks — code checkpoint `3be9706f648fffc20cc0c9c125d7e178de8cb82d`
+## Observed checks — code checkpoint `5a84efc32632674d6a2ed0c02db424530e927d12`
 
 | Validation | Result | Verified action |
 | --- | --- | --- |
-| Full repo Python tests | **262 passed in 9.56s** | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816600 |
-| Independent QA tests | **182 passed in 0.82s** | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816694 |
+| Full repo Python tests | **263 passed in 9.40s** | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013987 |
+| Independent QA tests | **183 passed in 0.90s** | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013981 |
 | Whole-repo Ruff / QA Ruff | **PASS / PASS** | Same completed CI runs |
 | Original PR #11 file integrity | **156/156 source Git blob SHA identical** | Compared original checkpoint `f196c694917f2d9e5f4ec228c752bd3f2a4eb882` to QA copy HEAD |
 | Archived C001 PDF hash check | **PASS: 3/3 source PDFs** | Independent QA archive check |
@@ -21,7 +21,7 @@
 | Manually verified Gold | **NOT_VERIFIED** | Requires team 3 source-PDF review |
 | Real extraction accuracy / latency / API cost | **N/A** | No new live measured sample set |
 
-**Interpretation:** The 262 tests are 80 restored project tests plus 182 independent QA tests, **not** 262 separate Studio jobs and **not** an extraction accuracy figure. These measurements are for the specified code SHA; the final documentation commits may have newer SHAs and must be checked separately.
+**Interpretation:** The 263 tests are 80 restored project tests plus 183 independent QA tests, **not** 263 separate Studio jobs and **not** an extraction accuracy figure. These measurements are for the specified code SHA; the final documentation commits may have newer SHAs and must be checked separately.
 
 ## This QA continuation's improvements
 
