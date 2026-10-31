@@ -1,53 +1,59 @@
-# QA continuation handoff — 2026-10-31 KST
+# LeadTime Guardian — QA continuation handoff (2026-10-31 KST)
 
-## Canonical remote
+## Canonical locations
 
-- Work **only** in `dohun3540-crypto/leadtime-guardian-agent.copy`.
-- Branch `feat/qa-source-restore-20261031`.
-- Draft PR #2: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
-- Independent early Draft PR #1 contains older QA-only work; do **not** mistake it for current integration PR.
-- Read-only upstream PR #11: https://github.com/dohun3540-crypto/leadtime-guardian-agent/pull/11
-- Upstream source checkpoint: `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`.
-- Last fully observed code-test SHA before documentation-only changes: `62cc55377bc1094d1b59c8251d873d38632d4011`.
-- **Resolve the current head on the remote every session**. The text above is a provenance checkpoint, not a static claim that the live branch HEAD will never change.
-- 156 original source blob hashes matched byte-for-byte when checked. No upstream engine, Studio Adapter, native config, source PDF or Gold was changed in this QA work.
+- **Writable copy:** `dohun3540-crypto/leadtime-guardian-agent.copy`
+- **Continue branch:** `feat/qa-source-restore-20261031`
+- **Draft PR #2:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
+- **Original read-only PR #11:** https://github.com/dohun3540-crypto/leadtime-guardian-agent/pull/11
+- **Source snapshot:** `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`
+- **Last code SHA with independently observed CI success before doc updates:** `3be9706f648fffc20cc0c9c125d7e178de8cb82d`
+- **Full CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816600
+- **Independent QA CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816694
 
-## Latest measured tests and evidence
+**Important:** The branch HEAD moves when docs are updated. Always retrieve latest PR head and confirm success of CI at that **exact** SHA. Prior CI is not proof of a new commit.
 
-| Environment | Verified observation |
+## Latest measured test results
+
+| Run | Verified |
 | --- | --- |
-| Full Python pytest at code checkpoint | 203 passed, Ruff PASS |
-| Independent QA pytest at code checkpoint | 123 passed, Ruff PASS |
-| Full CI URL | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178897177 |
-| QA CI URL | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178897173 |
-| Archived C001 | 3 PDF SHA-256 verified, metadata consistency PASS, adapter replay PASS |
-| New live Studio job initiated in this QA session | **No** |
-| Human validated Gold and extraction accuracy | **No / N/A** |
+| Python CI (full repository) | **262 passed in 9.56s**, whole-repo Ruff PASS |
+| Independent QA CI | **182 passed in 0.82s**, QA Ruff PASS |
+| C001 archive | 3/3 original PDF hashes, metadata consistency PASS |
+| C001 replay | PASS, no new Studio calls |
+| Native C001 contract | PASS against archived expected run IDs |
+| Local integration gate | Local PASS, **overall BLOCKED** for external dependencies |
+| Original Git tree | 156/156 original file SHA matches QA copy |
 
-## What this continuation implemented
+## New/modified work in this continuation
 
-- `src/leadtime_guardian/qa/audit.py`: input-contract alignment with engine: integer/decimal-string KRW, required supplier fields, unknown SKU rejection, nonempty orders, ETA strictly after snapshot date, safe malformed sections.
-- `src/leadtime_guardian/qa/portfolio.py`: fail-closed list/dict IDs in order/receipt/quote references; correct source SKU type validation, delivery product matching and supplier risk provenance.
-- `tests/test_qa_independent.py`: normal/invalid money formats and supplier/PO/SKU/ETA edge cases.
-- `tests/test_qa_hardening.py`: adversarial engine-output mutations and formerly crashing unhashable IDs.
-- `tests/test_qa_cli.py`: actual CLI subprocess exit-code tests for valid, invalid, malformed and missing files.
-- `docs/QA_SCORECARD.md`, `docs/INTEGRATION_GATE.md`: updated test evidence and merge limitations.
-- Original upstream code, existing test fixtures and original Studio archive deliberately untouched.
+- `src/leadtime_guardian/qa/portfolio.py`: independent source preflight of quantity/date/money fields; C001/other native successful document IDs must match actual source document list; wrong success review flags rejected. Previously optional synthetic compact fixtures remain supported without falsely claiming provenance.
+- `tests/test_qa_source_integrity.py`: invalid/unused quote amounts, malformed source row arithmetic, document ID tampering, positive boundary/date cases.
+- `src/leadtime_guardian/qa/studio_contract.py`: strict native `content + metadata` contract, job/step cross-run check, duplicate nested JSON keys, Gold-wrapper rejection, source file IDs/names and merge document type alignment.
+- `tests/test_qa_studio_contract.py`: adversarial Native envelope and run-mixing tests based on the unchanged historical C001 archive.
+- `src/leadtime_guardian/qa/gate.py`: read-only local gate that differentiates actual C001 checks from unavailable external/live/human evidence.
+- `scripts/qa_gate_check.py`: machine-readable gate and CLI return codes: 0 local pass, 1 local failure, 2 unmet release prerequisites under `--require-release`.
+- `tests/test_qa_gate.py`: ensures local QA success can never silently grant merge/release permission.
+- `.github/workflows/qa.yml`: executes local integration gate in CI after the regular independent QA tests.
 
-## Next safe work units
+Commit messages are split across feature, test and CI updates in PR #2. The original 156 file paths are unchanged, as are team 2's and team 3's owned materials.
 
-1. Fetch PR #2 head and *its own* most recent successful CI conclusions; confirm they reference the same SHA. Do not call old CI runs proof for a newer code change.
-2. Confirm both original and QA tests still pass if new team 2 adapter updates arrive. Preserve their changes in a new PR or independent integration branch.
-3. Import only team-3 independently reviewed labels and confirm source PDF hashes; do not replace predictions with Gold or infer correctness from file names.
-4. Run C013/C017 and extension cases against real Studio **only** through permitted Studio access; record Agent ID, Config ID, Job ID and whether it is actually new inference.
-5. Perform regression, scorecard refresh and a reviewed merge gate. Keep Draft until verified; do not push to upstream or merge main without separate approval.
+## Not done (do not claim otherwise)
 
-## Fail-closed labels
+1. Fresh real Studio runs for C013/C017 or C002–C020: **NOT_RUN**.
+2. Human source review of draft Gold: **BLOCKED** until team 3 provides it.
+3. QA check against team 2's final unpublished Adapter/engine changes: **BLOCKED** until artifacts are available.
+4. Actual PDF extraction accuracy/precision, end-to-end latency and live API costs: **NOT_VERIFIED**.
+5. Final LMS submission, production release, main merge, email/procurement action: **NOT_RUN**.
 
-- `PASS`: specific test actually executed and passed.
-- `FAIL`: reproduced condition violated contract.
-- `BLOCKED`: dependency, source or permission absent.
-- `NOT_RUN`: no test executed.
-- `NOT_VERIFIED`: claim cannot be supported (not a measured success).
+## Immediate next steps for the next developer
 
-Never claim 100% extraction accuracy from local QA passes, and never treat archived C001 replay as a new Studio run.
+1. Read the latest remote HEAD/PR #2 and CI conclusions for that same SHA.
+2. Re-run full `pytest`, Ruff, `tests/test_qa_*.py`, C001 archive and `qa_gate_check.py` after any integration.
+3. On actual new Studio runs, compare returned Job/Step IDs against externally observed execution metadata before accepting a prediction.
+4. Receive team 2's revised Adapter interface and team 3's separately verified Gold; test on a *separate integration branch* if original component changes are needed.
+5. Update `docs/QA_SCORECARD.md` and `docs/INTEGRATION_GATE.md` with only actually witnessed results, keep Draft PR #2 unmerged until external requirements are met.
+
+## Safety and provenance
+
+A GitHub CLI/Actions success is software contract verification. A recorded `REAL_STUDIO_RUN` from October 30 is historical evidence; an `ARCHIVED_REPLAY` is a local re-execution of stored predictions; neither creates new PDF-extraction accuracy results. Never promote DRAFT Gold automatically or mistake source-file hashes for correctness of extracted text.
