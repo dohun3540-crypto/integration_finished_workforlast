@@ -129,7 +129,7 @@ def audit_portfolio(case, result):
         else:
             identifiers = [doc.get("document_id") for doc in docs]
             if (any(not isinstance(ident, str) or not ident.strip() for ident in identifiers)
-                    or len(set(ident for ident in identifiers if isinstance(ident, str))) != len(identifiers)):
+                    or len({ident for ident in identifiers if isinstance(ident, str)}) != len(identifiers)):
                 flag("INVALID_DOCUMENT_IDS", "documents")
             if result.get("evidence_document_ids") != identifiers:
                 flag("EVIDENCE_DOCUMENT_IDS_MISMATCH", "evidence_document_ids")
