@@ -22,7 +22,8 @@ def case():
         "inventory": [{"product_id": "A", "available_stock": 40}],
         "inbound": [{"receipt_id": "R1", "po_id": "PO1", "product_id": "A", "quantity": 100, "original_eta": "2026-11-03", "eta": "2026-11-08"}],
         "orders": [{"order_id": "O1", "product_id": "A", "quantity": 100, "due_date": "2026-11-05"}],
-        "quotes": [{"quote_id": "Q1", "product_id": "A", "capacity": 60, "arrival_date": "2026-11-04",
+        "quotes": [{"quote_id": "Q1", "product_id": "A", "supplier_id": "S1",
+                    "supplier_risk": "LOW", "capacity": 60, "arrival_date": "2026-11-04",
                     "unit_price": "1000.00", "shipping_cost": "500.00"}],
     }
 
@@ -114,3 +115,50 @@ def test_missing_inbound_po():
     payload = case()
     del payload["inbound"][0]["po_id"]
     assert "MISSING_PO_ID" in codes(audit_case(payload))
+
+
+@pytest.mark.parametrize("field", ["unit_price", "shipping_cost"])
+def test_integer_money_allowed_as_in_engine(field):
+    payload = case()
+    payload["quotes"][0][field] = 500
+    assert audit_case(payload)["qa_status"] == "PASS"
+
+
+@pytest.mark.parametrize("invalid_money", [True, 10.5, "Infinity", "-5", None])
+def test_money_rejects_unsafe_types_and_values(invalid_money):
+    payload = case()
+    payload["quotes"][0]["unit_price"] = invalid_money
+    assert "INVALID_MONEY" in codes(audit_case(payload))
+
+
+@pytest.mark.parametrize("field", ["supplier_id", "supplier_risk"])
+def test_missing_supplier_fields_are_blocked(field):
+    payload = case()
+    del payload["quotes"][0][field]
+    assert "MISSING_SUPPLIER_FIELD" in codes(audit_case(payload))
+
+
+@pytest.mark.parametrize("section", ["inbound", "quotes"])
+def test_unknown_product_cannot_pass(section):
+    payload = case()
+    payload[section][0]["product_id"] = "UNKNOWN"
+    assert "UNKNOWN_PRODUCT" in codes(audit_case(payload))
+
+
+def test_empty_orders_cannot_pass():
+    payload = case()
+    payload["orders"].clear()
+    assert "EMPTY_ORDERS" in codes(audit_case(payload))
+
+
+def test_inbound_eta_on_snapshot_cannot_pass():
+    payload = case()
+    payload["inbound"][0]["eta"] = payload["snapshot_date"]
+    assert "INBOUND_ETA_NOT_FUTURE" in codes(audit_case(payload))
+
+
+@pytest.mark.parametrize("broken", [None, True, 17, "invalid"])
+def test_bad_sections_fail_without_throwing(broken):
+    payload = case()
+    payload["orders"] = broken
+    assert "INVALID_SECTION" in codes(audit_case(payload))
