@@ -78,6 +78,14 @@ def test_native_rejects_mixed_source_file_ids():
     assert "MERGE_SOURCE_MISMATCH" in codes(checked(raw))
 
 
+def test_unknown_source_id_without_filename_must_not_pass():
+    raw = original()
+    raw["metadata"]["merge"]["items"][0]["source_files"][0] = {
+        "file_id": "file_unknown"
+    }
+    assert "MERGE_SOURCE_MISMATCH" in codes(checked(raw))
+
+
 def test_native_rejects_mixed_source_filenames():
     raw = original()
     raw["metadata"]["merge"]["items"][1]["source_files"][0]["file_name"] = "other.pdf"
