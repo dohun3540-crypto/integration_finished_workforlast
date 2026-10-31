@@ -1,52 +1,45 @@
-# LeadTime Guardian — Independent QA verified scorecard
+# LeadTime Guardian — Independent QA Scorecard
 
-**Verification date:** 2026-10-31 KST  
-**Repository:** `dohun3540-crypto/leadtime-guardian-agent.copy`  
-**QA integration branch:** `feat/qa-source-restore-20261031`  
-**Draft review:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
+**Verified:** 2026-10-31 KST  
+**Working copy:** `dohun3540-crypto/leadtime-guardian-agent.copy`  
+**Branch:** `feat/qa-source-restore-20261031`  
+**Draft PR:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
 
-## Verified GitHub Actions checkpoint
+## Observed checks — code checkpoint `3be9706f648fffc20cc0c9c125d7e178de8cb82d`
 
-The following checks passed on **`62cc55377bc1094d1b59c8251d873d38632d4011`**, before this documentation update.
-
-| Measurement | Outcome | Execution evidence |
+| Validation | Result | Verified action |
 | --- | --- | --- |
-| Full Python regression | **203 passed in 8.57 s**, Ruff passed | [Python CI #41178897177](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178897177) |
-| Independent QA regression | **123 passed in 0.52 s**, Ruff passed | [Independent QA #41178897173](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178897173) |
-| Source archive content | **156 / 156 upstream Git blob SHA matches** | Original PR #11: `f196c694917f2d9e5f4ec228c752bd3f2a4eb882` |
-| Archived C001 file integrity | **3 / 3 PDF SHA-256 checks** | Independent QA CI archive-check step |
-| Original C001 offline replay | **PASS** in automated test | `tests/test_qa_replay.py` |
-| Native, current Studio live execution | **NOT_RUN** in this QA session | Requires separate Studio access |
-| Human-reviewed ground truth | **NOT_VERIFIED** | Draft Gold is not human-approved |
+| Full repo Python tests | **262 passed in 9.56s** | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816600 |
+| Independent QA tests | **182 passed in 0.82s** | https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816694 |
+| Whole-repo Ruff / QA Ruff | **PASS / PASS** | Same completed CI runs |
+| Original PR #11 file integrity | **156/156 source Git blob SHA identical** | Compared original checkpoint `f196c694917f2d9e5f4ec228c752bd3f2a4eb882` to QA copy HEAD |
+| Archived C001 PDF hash check | **PASS: 3/3 source PDFs** | Independent QA archive check |
+| C001 archived Adapter replay | **PASS** | QA replay tests |
+| C001 Native envelope contract | **PASS for archived JSON and expected IDs** | New independent Native contract tests |
+| Conservative local integration gate | **LOCAL PASS / OVERALL BLOCKED** | QA Actions `qa_gate_check.py` step |
+| New real Upstage Studio runs (C013 / C017) | **NOT_RUN** | No new cloud execution in this QA session |
+| Manually verified Gold | **NOT_VERIFIED** | Requires team 3 source-PDF review |
+| Real extraction accuracy / latency / API cost | **N/A** | No new live measured sample set |
 
-**Interpretation:** The 203 tests comprise the restored project's original 80 tests plus 123 independent QA contract, replay, archival, adversarial, and CLI tests. This is not 203 Studio executions and not an extraction-accuracy score.
+**Interpretation:** The 262 tests are 80 restored project tests plus 182 independent QA tests, **not** 262 separate Studio jobs and **not** an extraction accuracy figure. These measurements are for the specified code SHA; the final documentation commits may have newer SHAs and must be checked separately.
 
-## Latest code hardening
+## This QA continuation's improvements
 
-- Corrected a **false FAIL**: the deterministic engine supports nonnegative integer KRW monetary fields; independent input QA now supports integer or decimal-string money while rejecting boolean, float, negative and non-finite values.
-- Prevented **false PASS**: missing supplier ID/risk, unknown product, empty customer-order collection, and revised inbound ETA at or before the snapshot date.
-- Prevented malformed lists/objects used as order, receipt and quote IDs from crashing the independent validator. They now produce structured QA failures.
-- Added detection of altered delivery product IDs and invented supplier-risk output fields.
-- Tested the real CLI with subprocesses: normal PASS yields exit code 0; malformed JSON, suspicious outputs, unhashable IDs and absent files yield exit code 1 with JSON error details.
-- Preserved the original engine, Studio Adapter, Native Studio config, original PDFs and Gold untouched.
+- Source preflight now rejects invalid/negative/unhashable quantities, malformed dates, non-finite or malformed prices even for supplier quotes that are not selected in the final solution. This prevents a false PASS and avoids arithmetic type exceptions.
+- Successful analyses with actual `documents` must preserve the exact `evidence_document_ids` list. Duplicated/missing document IDs, missing documents and review flags in a success result are flagged. Compact standalone synthetic QA examples without a `documents` field remain supported for backward compatibility; this does not establish Studio provenance.
+- New `studio_contract.py` independently checks archived **native** `content + metadata` envelopes: strict nested JSON, execution Job/Step IDs, occurrence ID, document types/IDs, source manifests, merge document types, file references, ambiguous content and Gold-wrapper contamination.
+- Malformed or unbound native data is FAIL/NOT_VERIFIED. A structural PASS verifies internal consistency against expected IDs, **not** authenticity, PDF grounding or a new live run.
+- New `gate.py` and `qa_gate_check.py` aggregate actual C001 local checks while explicitly keeping external CI, C013/C017 Studio, human Gold and team 2/3 integration dependent gates unresolved. No automatic main merge or release approval.
+- New adversarial QA tests include integer/Decimal and invalid sources, document-ID tampering, cross-job and cross-step mixing, duplicate JSON keys, stale source mappings and fail-closed gate behavior.
+- CI now executes the local conservative gate in addition to archive checks.
 
-## Source semantics and evidence provenance
+## Provenance and pending integration
 
-| Evidence source | Label / what it proves | Limits |
-| --- | --- | --- |
-| C001 archived Studio Web job from 2026-10-30 | `REAL_STUDIO_RUN` **historical archived record** | This session did not run Studio again |
-| C001 offline deterministic pipeline replay | `ARCHIVED_REPLAY` | Same recorded predictions, not a new inference |
-| SDK / fake-client tests | `SDK_HTTP_MOCK` or `FAKE_CLIENT_TEST` | Cannot prove real cloud availability |
-| Local engine QA and synthetic tests | `LOCAL_ENGINE_ONLY` | Cannot prove PDF extraction |
-| Unreviewed case answer files | `DRAFT_GOLD` | Do not publish accuracy based on these |
-| Manually source-verified answer files | `HUMAN_VERIFIED_GOLD` | No new case has this evidenced here |
+- Existing 2026-10-30 C001 Web Studio record: historical **REAL_STUDIO_RUN** evidence only. QA replays and envelope audits **did not initiate** a fresh Studio run.
+- Team 2 calculation engine / Studio Adapter and team 3 source PDFs / draft Gold remained unmodified in this QA work.
+- Additional actual C013/C017 cloud executions: **NOT_RUN**.
+- Latest team 2 Adapter result vs current QA contract: **BLOCKED** until handoff.
+- Team 3 PDF-grounded human Gold: **BLOCKED** until reviewed.
+- Deployment, actual procurement, email sending and main merge are **not authorized or performed**.
 
-## Blocking items before live-release claims
-
-1. Actual Studio runs for C013/C017 and the remaining extension cases: **NOT_RUN** in this QA session.
-2. Independent manual validation of PDFs against Gold labels: **BLOCKED** awaiting team 3.
-3. Final Studio → Adapter integration with team 2's latest ongoing work: **BLOCKED** until their branch is ready.
-4. True PDF extraction precision/recall, current latency, operational API costs: **N/A**.
-5. End-to-end live demonstration and external procurement/email: **NOT_RUN**. External purchase/send remains outside scope.
-
-**Do not merge this Draft PR into main until the shared integration gate has been reviewed.** Original repository and PR #11 remain read-only throughout this QA work.
+Follow `docs/INTEGRATION_GATE.md` and `docs/QA_CONTINUATION_HANDOFF.md`. Keep Draft PR #2 open for review.
