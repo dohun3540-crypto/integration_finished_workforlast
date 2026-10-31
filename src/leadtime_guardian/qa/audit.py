@@ -49,10 +49,10 @@ def _nonnegative(value: Any) -> bool:
 
 
 def _money(value: Any) -> bool:
-    if not isinstance(value, str):
+    if isinstance(value, bool) or not isinstance(value, (str, int)):
         return False
     try:
-        amount = Decimal(value)
+        amount = Decimal(str(value))
     except (InvalidOperation, ValueError):
         return False
     return amount.is_finite() and amount >= 0
@@ -78,6 +78,15 @@ def audit_case(payload: dict[str, Any], output: dict[str, Any] | None = None) ->
         or any(not isinstance(x, dict) for x in payload["documents"])
     ):
         problems.append(issue("INVALID_DOCUMENTS", "documents", "expected list of objects"))
+    orders = payload.get("orders")
+    if isinstance(orders, list) and not orders:
+        problems.append(issue("EMPTY_ORDERS", "orders", "at least one order required"))
+    known_skus = {
+        item["product_id"]
+        for section in ("inventory", "orders")
+        for item in payload.get(section, []) if isinstance(payload.get(section), list)
+        and isinstance(item, dict) and isinstance(item.get("product_id"), str)
+    }
     for section in ("inventory", "inbound", "orders", "quotes"):
         rows = payload.get(section, [])
         if not isinstance(rows, list):
@@ -104,6 +113,16 @@ def audit_case(payload: dict[str, Any], output: dict[str, Any] | None = None) ->
                 not isinstance(row.get("po_id"), str) or not row.get("po_id", "").strip()
             ):
                 problems.append(issue("MISSING_PO_ID", path + ".po_id", "nonempty PO required"))
+            if section in ("inbound", "quotes") and isinstance(row.get("product_id"), str):
+                if row["product_id"] not in known_skus:
+                    problems.append(issue("UNKNOWN_PRODUCT", path + ".product_id", "SKU not in orders/stock"))
+            if section == "inbound" and _date(row.get("eta")) and _date(payload.get("snapshot_date")):
+                if row["eta"] <= payload["snapshot_date"]:
+                    problems.append(issue("INBOUND_ETA_NOT_FUTURE", path + ".eta", "ETA must follow snapshot"))
+            if section == "quotes":
+                for field in ("supplier_id", "supplier_risk"):
+                    if not isinstance(row.get(field), str) or not row[field].strip():
+                        problems.append(issue("MISSING_SUPPLIER_FIELD", path + "." + field, "nonempty supplier field required"))
             for key in {
                 "inventory": ("available_stock",),
                 "inbound": ("quantity",),
@@ -123,7 +142,7 @@ def audit_case(payload: dict[str, Any], output: dict[str, Any] | None = None) ->
             if section == "quotes":
                 for key in ("unit_price", "shipping_cost"):
                     if not _money(row.get(key)):
-                        problems.append(issue("INVALID_MONEY", path + "." + key, "expected nonnegative finite decimal string"))
+                        problems.append(issue("INVALID_MONEY", path + "." + key, "expected nonnegative finite decimal string or integer"))
                 if row.get("currency", "KRW") != "KRW":
                     problems.append(issue("CURRENCY_UNSUPPORTED", path + ".currency", "expected KRW"))
     if output is not None:
