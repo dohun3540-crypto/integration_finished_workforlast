@@ -11,12 +11,22 @@ from leadtime_guardian.qa.gate import build_integration_gate
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=".")
+    parser.add_argument("--studio-handoff", type=Path)
+    parser.add_argument("--studio-native", type=Path)
+    parser.add_argument("--studio-qa-report", type=Path)
+    parser.add_argument("--expected-config-id")
+    parser.add_argument("--expected-github-sha")
     parser.add_argument(
         "--require-release", action="store_true",
         help="Return exit code 2 when external release evidence remains blocked",
     )
     args = parser.parse_args()
-    result = build_integration_gate(args.root)
+    result = build_integration_gate(
+        args.root, studio_handoff=args.studio_handoff,
+        studio_native=args.studio_native, studio_qa_report=args.studio_qa_report,
+        expected_config_id=args.expected_config_id,
+        expected_github_sha=args.expected_github_sha,
+    )
     print(json.dumps(result, indent=2, ensure_ascii=False, sort_keys=True))
     if not result["local_checks_passed"]:
         return 1
