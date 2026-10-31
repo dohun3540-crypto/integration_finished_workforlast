@@ -193,7 +193,9 @@ def audit_cross_agent_handoff(
                     source_ids = native["metadata"].get("source_files")
                     if isinstance(source_ids, list):
                         actual = [x.get("file_id") for x in source_ids if isinstance(x, dict)]
-                        if set(actual) != set(file_ids):
+                        if (any(not isinstance(x, str) for x in actual)
+                                or any(not isinstance(x, str) for x in file_ids)
+                                or set(actual) != set(file_ids)):
                             fail("NATIVE_INPUT_FILE_MISMATCH", "studio.input_file_ids")
 
     if issues:
