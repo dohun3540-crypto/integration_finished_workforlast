@@ -1,23 +1,34 @@
-# Independent QA scorecard — 2026-10-31 KST
+# Independent QA scorecard — verified 2026-10-31 KST
 
-## Verified in GitHub Actions
-- QA-only CI: **54 passed**, Ruff **PASS** at commit `859c5d8fcb68efb97a9c95d5ce712b7bdc5dde20`.
-- Run: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41177193626
-- Scope: local deterministic unit/adversarial tests only. Newer branch commits require their own CI.
-- Tested: incomplete input rejection, non-ISO dates, negative/NaN fields, duplicate keys and IDs, provenance label abuse, per-order and aggregate conservation, double-use of stock, excessive/late quote, repeated shipping, blocked-state no-purchase.
-- Output examples in these tests are synthetic contracts shaped like C001, not re-execution of original Studio job.
+## Successful integrated CI
+- Repository: `dohun3540-crypto/leadtime-guardian-agent.copy`.
+- Branch: `feat/qa-source-restore-20261031`.
+- Restored upstream snapshot: original PR #11 at `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`.
+- Upstream blob integrity: **156/156 exact SHA matches** (including binary/PDF/archive), verified in GitHub Git trees. Existing QA files were retained separately.
+- Integrated commit: `482251a4adfc3417d13bc677b0101e5d4933f3df`.
+- Full Python CI: **134 passed in 8.77s**, `ruff check .`: **All checks passed**.
+- Full CI: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178077099
+- Independent QA CI: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178077095
+- Integrated review: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2 (Draft).
 
-## Not verified (do not imply otherwise)
-- The COPY repository does not yet contain the complete original PR #11 code, PDFs, Native Studio exports or full evidence archive. This is a **blocking prerequisite** for full integration.
-- Existing source PR has a recorded local checkpoint of 80 pytest passing; those 80 have **not** been rerun in the copy.
-- No new live Studio job, API call or human-verified Gold was run.
-- Real PDF-grounded extraction accuracy: **N/A**. Real end-to-end latency and cost: **N/A**.
-- No source repository changes. No merge to main. No procurement or email.
+## Scope of those 134 checks
+- Source repository's existing 80 local unit/integration contract tests.
+- New 54 independent QA unit and adversarial tests.
+- Coverage includes strict missing-field rejection, malformed/duplicate JSON, fake-vs-real evidence labels, quantity/deadline/currency validation, order conservation, stock double allocation, capacity sharing, duplicate shipping and review-state safeguards.
+- No new Studio network job was run by the QA branch; SDK mock tests **are not** live API or Studio runs.
 
-## Next mandatory actions
-1. On an authenticated Git clone of the COPY repository, check out the QA branch.
-2. Run `bash scripts/qa_restore_source.sh` to fetch source PR HEAD into a **new** branch and merge without changing the source. The script checks for unexpected protected-file differences before Push.
-3. Install dependencies, run all pytest/Ruff checks and resolve actual failures. Verify GitHub CI for the integrated branch.
-4. Re-run archived C001 prediction through the real adapter using immutable original bytes. Report replay distinctly from live Studio inference.
-5. Verify C013/C017 real Studio outputs with teammates. No human-Gold accuracy until verified PDF labels exist.
-6. Update scorecard and PR with commit and factual evidence; merge only after review.
+## Still not verified — blocking live evidence/claims
+- New real Studio execution for SYN-C013, SYN-C017 and broader C002–C020.
+- Source PDF text human-reviewed against any claimed Gold labels: still DRAFT.
+- Extraction accuracy / end-to-end latency / actual API cost: **N/A**.
+- Business-calendar optimization, real ERP, actual purchase/email functionality: out of MVP scope.
+- The source contains the 57 C002–C020 PDF bytes in an archive; extraction/verification into a local worktree may be needed before real Studio runs.
+- Full application demo in a live Studio session remains pending team handoff.
+- No original repository edits, no merge into main, no force push, no external actions.
+
+## Safe integration next
+1. Team 2 supplies updated Adapter/engine outputs without modifying this QA's contract-owner files.
+2. Team 3 supplies manually source-reviewed Gold, separate from the actual predictions.
+3. Validate latest Git snapshot, re-run all 134+ tests, Ruff and error cases. Then use QA gate with real normalized integrated inputs.
+4. Verify real Studio run metadata and PDF evidence; distinguish live, replay, SDK mock and local fixture.
+5. Update this scorecard only using test logs, job IDs and evidence.
