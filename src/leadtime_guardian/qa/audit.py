@@ -113,12 +113,12 @@ def audit_case(payload: dict[str, Any], output: dict[str, Any] | None = None) ->
                 not isinstance(row.get("po_id"), str) or not row.get("po_id", "").strip()
             ):
                 problems.append(issue("MISSING_PO_ID", path + ".po_id", "nonempty PO required"))
-            if section in ("inbound", "quotes") and isinstance(row.get("product_id"), str):
-                if row["product_id"] not in known_skus:
-                    problems.append(issue("UNKNOWN_PRODUCT", path + ".product_id", "SKU not in orders/stock"))
-            if section == "inbound" and _date(row.get("eta")) and _date(payload.get("snapshot_date")):
-                if row["eta"] <= payload["snapshot_date"]:
-                    problems.append(issue("INBOUND_ETA_NOT_FUTURE", path + ".eta", "ETA must follow snapshot"))
+            if (section in ("inbound", "quotes") and isinstance(row.get("product_id"), str)
+                    and row["product_id"] not in known_skus):
+                problems.append(issue("UNKNOWN_PRODUCT", path + ".product_id", "SKU not in orders/stock"))
+            if (section == "inbound" and _date(row.get("eta")) and _date(payload.get("snapshot_date"))
+                    and row["eta"] <= payload["snapshot_date"]):
+                problems.append(issue("INBOUND_ETA_NOT_FUTURE", path + ".eta", "ETA must follow snapshot"))
             if section == "quotes":
                 for field in ("supplier_id", "supplier_risk"):
                     if not isinstance(row.get(field), str) or not row[field].strip():
