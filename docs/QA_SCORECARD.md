@@ -11,11 +11,12 @@
 - Independent QA CI: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178234309
 - Integrated review: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2 (Draft).
 
-## Scope of those 134 checks
+## Scope of those 143 checks
 - Source repository's existing 80 local unit/integration contract tests.
 - New 63 independent QA unit, adversarial and archived-evidence tests.
 - Coverage includes strict missing-field rejection, malformed/duplicate JSON, fake-vs-real evidence labels, quantity/deadline/currency validation, order conservation, stock double allocation, capacity sharing, duplicate shipping and review-state safeguards.
-- C001 archived execution metadata and 3 original PDF SHA-256 hashes were independently cross-checked from the immutable Git snapshots (read-only). This verifies archive consistency, not another Studio run.\n- No new Studio network job was run by the QA branch; SDK mock tests **are not** live API or Studio runs.
+- C001 archived execution metadata and 3 original PDF SHA-256 hashes were independently cross-checked from the immutable Git snapshots (read-only). This verifies archive consistency, not another Studio run. 
+- No new Studio network job was run by the QA branch; SDK mock tests **are not** live API or Studio runs.
 
 ## Still not verified — blocking live evidence/claims
 - New real Studio execution for SYN-C013, SYN-C017 and broader C002–C020.
