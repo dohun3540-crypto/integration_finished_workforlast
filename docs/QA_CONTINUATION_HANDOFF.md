@@ -7,9 +7,9 @@
 - **Draft PR #2:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2
 - **Original read-only PR #11:** https://github.com/dohun3540-crypto/leadtime-guardian-agent/pull/11
 - **Source snapshot:** `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`
-- **Last code SHA with independently observed CI success before doc updates:** `3be9706f648fffc20cc0c9c125d7e178de8cb82d`
-- **Full CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816600
-- **Independent QA CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41180816694
+- **Last code SHA with independently observed CI success before doc updates:** `5a84efc32632674d6a2ed0c02db424530e927d12`
+- **Full CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013987
+- **Independent QA CI:** https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013981
 
 **Important:** The branch HEAD moves when docs are updated. Always retrieve latest PR head and confirm success of CI at that **exact** SHA. Prior CI is not proof of a new commit.
 
@@ -17,8 +17,8 @@
 
 | Run | Verified |
 | --- | --- |
-| Python CI (full repository) | **262 passed in 9.56s**, whole-repo Ruff PASS |
-| Independent QA CI | **182 passed in 0.82s**, QA Ruff PASS |
+| Python CI (full repository) | **263 passed in 9.40s**, whole-repo Ruff PASS |
+| Independent QA CI | **183 passed in 0.90s**, QA Ruff PASS |
 | C001 archive | 3/3 original PDF hashes, metadata consistency PASS |
 | C001 replay | PASS, no new Studio calls |
 | Native C001 contract | PASS against archived expected run IDs |
@@ -30,7 +30,7 @@
 - `src/leadtime_guardian/qa/portfolio.py`: independent source preflight of quantity/date/money fields; C001/other native successful document IDs must match actual source document list; wrong success review flags rejected. Previously optional synthetic compact fixtures remain supported without falsely claiming provenance.
 - `tests/test_qa_source_integrity.py`: invalid/unused quote amounts, malformed source row arithmetic, document ID tampering, positive boundary/date cases.
 - `src/leadtime_guardian/qa/studio_contract.py`: strict native `content + metadata` contract, job/step cross-run check, duplicate nested JSON keys, Gold-wrapper rejection, source file IDs/names and merge document type alignment.
-- `tests/test_qa_studio_contract.py`: adversarial Native envelope and run-mixing tests based on the unchanged historical C001 archive.
+- `tests/test_qa_studio_contract.py`: adversarial Native envelope and run-mixing tests, including the unknown file ID + absent file-name regression, based on the unchanged historical C001 archive.
 - `src/leadtime_guardian/qa/gate.py`: read-only local gate that differentiates actual C001 checks from unavailable external/live/human evidence.
 - `scripts/qa_gate_check.py`: machine-readable gate and CLI return codes: 0 local pass, 1 local failure, 2 unmet release prerequisites under `--require-release`.
 - `tests/test_qa_gate.py`: ensures local QA success can never silently grant merge/release permission.
