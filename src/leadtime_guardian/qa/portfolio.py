@@ -71,9 +71,7 @@ def audit_portfolio(case, result):
     for section, field in (("inventory", "product_id"), ("inbound", "receipt_id"),
                            ("orders", "order_id"), ("quotes", "quote_id")):
         identifiers = [r.get(field) for r in case[section]]
-        if any(not isinstance(x, str) or not x for x in identifiers) or len(set(
-            x for x in identifiers if isinstance(x, str)
-        )) != len(identifiers):
+        if any(not isinstance(x, str) or not x for x in identifiers) or len({x for x in identifiers if isinstance(x, str)} != len(identifiers):
             flag("INVALID_SOURCE_IDS", section)
     if problems:
         return {"qa_status": "FAIL", "issues": problems}
