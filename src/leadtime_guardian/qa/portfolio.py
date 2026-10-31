@@ -50,8 +50,21 @@ def audit_portfolio(case, result):
     if result.get("status") == "NEEDS_REVIEW":
         if result.get("needs_review") is not True or result.get("execution_status") != "BLOCKED":
             flag("UNSAFE_REVIEW_STATE", "status")
-        if result.get("supplier_options") not in ([], None):
+        if result.get("supplier_options") != []:
             flag("BLOCKED_WITH_OPTIONS", "supplier_options")
+        for field in ("impacted_orders", "delays"):
+            if result.get(field) != []:
+                flag("BLOCKED_WITH_CALCULATION", field)
+        for field in ("uncovered_quantity", "baseline_shortage_quantity",
+                      "changed_shortage_quantity", "additional_shortage_quantity",
+                      "estimated_quote_cost_krw"):
+            if result.get(field) is not None:
+                flag("BLOCKED_WITH_TOTAL", field)
+        flags = result.get("review_flags")
+        if not isinstance(flags, list) or not flags or any(
+            not isinstance(item, str) or not item.strip() for item in flags
+        ):
+            flag("MISSING_REVIEW_REASON", "review_flags")
         return {"qa_status": "FAIL" if problems else "PASS", "issues": problems}
     if (result.get("status"), result.get("execution_status"), result.get("needs_review")) != ("OK", "COMPLETED", False):
         flag("INVALID_SUCCESS_STATE", "status")
