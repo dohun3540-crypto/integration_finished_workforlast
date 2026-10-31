@@ -94,12 +94,47 @@ def audit_portfolio(case, result):
         identifiers = [r.get(field) for r in case[section]]
         if any(not isinstance(x, str) or not x for x in identifiers) or len({x for x in identifiers if isinstance(x, str)}) != len(identifiers):
             flag("INVALID_SOURCE_IDS", section)
+    # Validate every source row before using it in arithmetic or dictionary lookup.
+    # This gate is intentionally independent of the existing engine.
+    for section, qty_field in (("inventory", "available_stock"), ("inbound", "quantity"),
+                               ("orders", "quantity"), ("quotes", "capacity")):
+        for index, row in enumerate(case[section]):
+            if not _valid_int(row.get(qty_field)):
+                flag("INVALID_SOURCE_QUANTITY", f"{section}[{index}].{qty_field}")
+            required_dates = {
+                "inventory": (), "inbound": ("original_eta", "eta"),
+                "orders": ("due_date",), "quotes": ("arrival_date",),
+            }[section]
+            for name in required_dates:
+                if _date(row.get(name)) is None:
+                    flag("INVALID_SOURCE_DATE", f"{section}[{index}].{name}")
+            if section == "quotes":
+                for name in ("unit_price", "shipping_cost"):
+                    if _decimal(row.get(name)) is None:
+                        flag("INVALID_SOURCE_MONEY", f"{section}[{index}].{name}")
     if problems:
         return {"qa_status": "FAIL", "issues": problems}
     orders = {r["order_id"]: r for r in case["orders"]}
     quotes = {r["quote_id"]: r for r in case["quotes"]}
     receipts = {r["receipt_id"]: r for r in case["inbound"]}
 
+    # Actual engine outputs must preserve document provenance; synthetic compact
+    # QA fixtures without a documents section are evaluated separately.
+    if "documents" in case:
+        docs = case["documents"]
+        if not isinstance(docs, list) or any(not isinstance(doc, dict) for doc in docs):
+            flag("INVALID_SOURCE_DOCUMENTS", "documents")
+        elif not docs:
+            flag("SUCCESS_WITHOUT_DOCUMENTS", "documents")
+        else:
+            identifiers = [doc.get("document_id") for doc in docs]
+            if (any(not isinstance(ident, str) or not ident.strip() for ident in identifiers)
+                    or len(set(ident for ident in identifiers if isinstance(ident, str))) != len(identifiers)):
+                flag("INVALID_DOCUMENT_IDS", "documents")
+            if result.get("evidence_document_ids") != identifiers:
+                flag("EVIDENCE_DOCUMENT_IDS_MISMATCH", "evidence_document_ids")
+        if result.get("review_flags") != []:
+            flag("SUCCESS_WITH_REVIEW_FLAGS", "review_flags")
     effects = result["impacted_orders"]
     if len(effects) != len(orders):
         flag("ORDER_COUNT_MISMATCH", "impacted_orders")
