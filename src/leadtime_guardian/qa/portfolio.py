@@ -5,6 +5,8 @@ from collections import defaultdict
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
+from .reference import reference_allocations
+
 
 def _valid_int(value):
     return type(value) is int and value >= 0
@@ -126,6 +128,21 @@ def audit_portfolio(case, result):
     for key, expected in totals.items():
         if not _valid_int(result.get(key)) or result[key] != expected:
             flag("AGGREGATE_SHORTAGE_MISMATCH", key)
+
+    reference = reference_allocations(case)
+    if reference is None:
+        flag("REFERENCE_INPUT_INVALID", "case")
+    else:
+        for index, row in enumerate(effects):
+            expected = reference.get(row.get("order_id"))
+            if expected is None:
+                continue
+            if row.get("allocated_quantity") != expected["revised"]["allocated"] or row.get(
+                "shortage_quantity"
+            ) != expected["revised"]["shortage"] or row.get(
+                "baseline_shortage_quantity"
+            ) != expected["baseline"]["shortage"]:
+                flag("ALLOCATION_REFERENCE_MISMATCH", f"impacted_orders[{index}]")
 
     # Prefix constraint: no inventory or inbound can serve two customers.
     for sku in {o.get("product_id") for o in case["orders"]}:
