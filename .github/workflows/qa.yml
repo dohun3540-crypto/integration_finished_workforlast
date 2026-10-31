@@ -24,3 +24,8 @@ jobs:
           if test -f data/results/studio_runs/C001_20261030_v4/execution_record.json; then
             python scripts/qa_archive_check.py --root .
           fi
+      - name: Execute conservative local integration gate
+        run: |
+          if test -f scripts/qa_gate_check.py && test -f data/results/studio_runs/C001_20261030_v4/execution_record.json; then
+            python scripts/qa_gate_check.py --root .
+          fi
