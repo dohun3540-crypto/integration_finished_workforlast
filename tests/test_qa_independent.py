@@ -16,10 +16,13 @@ from leadtime_guardian.qa import (
 
 def case():
     return {
+        "case_id": "SYN-TEST",
+        "snapshot_date": "2026-11-01",
+        "documents": [],
         "inventory": [{"product_id": "A", "available_stock": 40}],
-        "inbound": [{"receipt_id": "R1", "quantity": 100, "original_eta": "2026-11-03", "eta": "2026-11-08"}],
-        "orders": [{"order_id": "O1", "quantity": 100, "due_date": "2026-11-05"}],
-        "quotes": [{"quote_id": "Q1", "capacity": 60, "arrival_date": "2026-11-04",
+        "inbound": [{"receipt_id": "R1", "po_id": "PO1", "product_id": "A", "quantity": 100, "original_eta": "2026-11-03", "eta": "2026-11-08"}],
+        "orders": [{"order_id": "O1", "product_id": "A", "quantity": 100, "due_date": "2026-11-05"}],
+        "quotes": [{"quote_id": "Q1", "product_id": "A", "capacity": 60, "arrival_date": "2026-11-04",
                     "unit_price": "1000.00", "shipping_cost": "500.00"}],
     }
 
@@ -86,3 +89,28 @@ def test_scorecard_does_not_invent_accuracy():
 
 def test_json_round_trip():
     assert load_json_strict(json.dumps(case())) == case()
+
+
+@pytest.mark.parametrize("missing", [
+    "case_id", "snapshot_date", "inventory", "inbound", "orders", "quotes", "documents"
+])
+def test_no_falsely_pass_when_required_field_missing(missing):
+    payload = case()
+    del payload[missing]
+    assert "MISSING_REQUIRED_FIELD" in codes(audit_case(payload))
+
+
+def test_empty_case_cannot_pass():
+    assert audit_case({})["qa_status"] == "FAIL"
+
+
+def test_duplicate_inventory_product():
+    payload = case()
+    payload["inventory"].append(payload["inventory"][0].copy())
+    assert "DUPLICATE_IDENTIFIER" in codes(audit_case(payload))
+
+
+def test_missing_inbound_po():
+    payload = case()
+    del payload["inbound"][0]["po_id"]
+    assert "MISSING_PO_ID" in codes(audit_case(payload))
