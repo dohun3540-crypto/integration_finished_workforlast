@@ -16,9 +16,9 @@ Caution: the C001 trusted base is deliberately **pre-Studio** and has no predict
 | Gate | Status until verified |
 | --- | --- |
 | Source branch and binary assets fully restored | PASS: 156/156 source blobs match original PR #11 SHA on restored branch |
-| Existing pytest regressions | PASS: full integrated CI 134/134 including source's 80 tests |
+| Existing pytest regressions | PASS: full integrated CI 143/143 including source's 80 tests |
 | Existing Ruff checks | PASS: `ruff check .` in integrated CI |
-| Independent QA regression | PASS: 54 tests in QA-only GitHub Actions run #41177193626 |
+| Independent QA regression | PASS: 63 tests in independent QA GitHub Actions run #41178234309 |
 | Schema compatibility | PASS for automated contract tests; real C013/C017 Studio cases still NOT_RUN |
 | Actual Studio C001 live provenance | NOT_RUN, archived evidence available in source PR |
 | Human gold review | BLOCKED |
@@ -33,5 +33,7 @@ Restored, SHA-verified source snapshot: source PR #11, `f196c694917f2d9e5f4ec228
 Run `bash scripts/qa_restore_source.sh` in an authenticated clone of the copy repo after checking out `feat/independent-qa-integration`. This creates a new integration branch and merges fetched original PR files while protecting them. The script has **not** been executed; no full source copy has been verified.
 
 ## Full integrated CI checkpoint (2026-10-31 KST)
-Integrated GitHub Actions Python CI: [134 passed / Ruff passed](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178077099). Native Studio live evaluations, human-reviewed Gold, and new real-case extraction accuracy remain unverified.
+Integrated GitHub Actions Python CI: [143 passed / Ruff passed](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41178234306). Native Studio live evaluations, human-reviewed Gold, and new real-case extraction accuracy remain unverified.
 Use [Draft PR #2](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/2) for integration; standalone QA Draft PR #1 remains separate. The restore helper script applies to the initial QA-only branch and should **not** be rerun on the restored branch.
+
+Archive QA (2026-10-31): C001 job/config metadata, calculation totals and **3/3 original PDF SHA-256** checked using `python scripts/qa_archive_check.py --root .` in GitHub Actions. Archived-run consistency is not live Studio re-execution or human Gold verification.
