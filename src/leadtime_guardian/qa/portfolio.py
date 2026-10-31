@@ -83,6 +83,12 @@ def audit_portfolio(case, result):
     if any(not isinstance(row, dict) for rows in arrays for row in rows):
         flag("INVALID_ROW", "$")
         return {"qa_status": "FAIL", "issues": problems}
+    if not case["orders"]:
+        flag("EMPTY_ORDERS", "orders")
+    for section in input_keys:
+        for index, row in enumerate(case[section]):
+            if not isinstance(row.get("product_id"), str) or not row["product_id"].strip():
+                flag("INVALID_SOURCE_PRODUCT", f"{section}[{index}].product_id")
     for section, field in (("inventory", "product_id"), ("inbound", "receipt_id"),
                            ("orders", "order_id"), ("quotes", "quote_id")):
         identifiers = [r.get(field) for r in case[section]]
@@ -105,7 +111,7 @@ def audit_portfolio(case, result):
               "additional_shortage_quantity": 0}
     for i, row in enumerate(effects):
         oid = row.get("order_id")
-        if oid not in orders or oid in seen:
+        if not isinstance(oid, str) or oid not in orders or oid in seen:
             flag("INVALID_ORDER_REFERENCE", f"impacted_orders[{i}]")
             continue
         seen.add(oid)
@@ -165,13 +171,13 @@ def audit_portfolio(case, result):
     delays_seen = set()
     for i, row in enumerate(result["delays"]):
         rid = row.get("receipt_id")
-        if rid not in receipts or rid in delays_seen:
+        if not isinstance(rid, str) or rid not in receipts or rid in delays_seen:
             flag("INVALID_DELAY_REFERENCE", f"delays[{i}]")
             continue
         delays_seen.add(rid)
         src = receipts[rid]
         first, last = _date(src.get("original_eta")), _date(src.get("eta"))
-        if first is None or last is None or row.get("delay_days") != max(0, (last - first).days) or row.get("po_id") != src.get("po_id"):
+        if first is None or last is None or row.get("delay_days") != max(0, (last - first).days) or row.get("po_id") != src.get("po_id") or row.get("product_id") != src.get("product_id"):
             flag("DELAY_MISMATCH", f"delays[{i}]")
 
     capacities = defaultdict(int)
@@ -179,7 +185,11 @@ def audit_portfolio(case, result):
     cost = Decimal(0)
     for i, line in enumerate(result["supplier_options"]):
         path = f"supplier_options[{i}]"
-        quote, order = quotes.get(line.get("quote_id")), orders.get(line.get("order_id"))
+        quote_id, order_id = line.get("quote_id"), line.get("order_id")
+        if not isinstance(quote_id, str) or not isinstance(order_id, str):
+            flag("INVALID_OPTION_REFERENCE", path)
+            continue
+        quote, order = quotes.get(quote_id), orders.get(order_id)
         if quote is None or order is None:
             flag("UNKNOWN_QUOTE_OR_ORDER", path)
             continue
@@ -190,7 +200,7 @@ def audit_portfolio(case, result):
         eta, deadline = _date(quote.get("arrival_date")), _date(order.get("due_date"))
         if eta is None or deadline is None or eta > deadline:
             flag("LATE_SUPPLIER_OPTION", path)
-        for key in ("product_id", "supplier_id", "arrival_date"):
+        for key in ("product_id", "supplier_id", "arrival_date", "supplier_risk"):
             if line.get(key) != quote.get(key):
                 flag("QUOTE_FIELD_MISMATCH", path + "." + key)
         if line.get("product_id") != order.get("product_id"):
