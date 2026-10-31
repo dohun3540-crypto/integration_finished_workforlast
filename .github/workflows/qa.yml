@@ -12,5 +12,5 @@ jobs:
         with:
           python-version: "3.11"
       - run: python -m pip install pytest ruff
-      - run: python -m pytest -q tests/test_qa_independent.py
-      - run: python -m ruff check src/leadtime_guardian/qa scripts/qa_audit.py tests/test_qa_independent.py
+      - run: PYTHONPATH=src python -m pytest -q tests/test_qa_independent.py tests/test_qa_portfolio.py
+      - run: python -m ruff check src/leadtime_guardian/qa scripts/qa_audit.py tests/test_qa_independent.py tests/test_qa_portfolio.py
