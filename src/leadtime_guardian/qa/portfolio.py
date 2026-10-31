@@ -140,7 +140,8 @@ def audit_portfolio(case, result):
         flag("REFERENCE_INPUT_INVALID", "case")
     else:
         for index, row in enumerate(effects):
-            expected = reference.get(row.get("order_id"))
+            oid = row.get("order_id")
+            expected = reference.get(oid) if isinstance(oid, str) else None
             if expected is None:
                 continue
             if row.get("allocated_quantity") != expected["revised"]["allocated"] or row.get(
