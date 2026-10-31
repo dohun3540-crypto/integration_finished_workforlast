@@ -43,6 +43,8 @@ if git diff --name-only "$actual_sha" HEAD | grep -Ev   '^(src/leadtime_guardian
   exit 3
 fi
 
+echo "Installing declared project test dependencies"
+python -m pip install -r requirements-agents.txt
 echo "Running full repository checks before pushing"
 python -m pytest -q
 python -m ruff check .
