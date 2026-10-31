@@ -155,12 +155,17 @@ def audit_cross_agent_handoff(
                 if not isinstance(report, dict):
                     fail("INVALID_QA_REPORT_OBJECT", "qa_report_bytes")
                 else:
-                    report_verified = True
-                    # Compare only fields observed in the received report. The
-                    # Sandbox QA schema has not yet been independently obtained.
-                    for field in ("document_qa_status", "python_qa_status"):
-                        if field in report and report[field] != verdict.get(field):
-                            fail("QA_REPORT_VERDICT_MISMATCH", "qa_report_bytes." + field)
+                    # The external Studio QA schema is not yet observed. A
+                    # handoff adapter must explicitly expose these two statuses.
+                    required = ("document_qa_status", "python_qa_status")
+                    missing = [field for field in required if field not in report]
+                    if missing:
+                        fail("QA_REPORT_VERDICT_MISSING", "qa_report_bytes")
+                    else:
+                        report_verified = True
+                        for field in required:
+                            if report[field] != verdict.get(field):
+                                fail("QA_REPORT_VERDICT_MISMATCH", "qa_report_bytes." + field)
 
     native_verified = False
     if native_bytes is not None:
