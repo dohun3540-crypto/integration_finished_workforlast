@@ -116,8 +116,13 @@ def test_blocked_result_cannot_contain_options():
 
 def test_clean_blocked_result_allowed():
     case, result = sample()
-    result.update({"status": "NEEDS_REVIEW", "needs_review": True, "execution_status": "BLOCKED",
-                   "supplier_options": [], "uncovered_quantity": None})
+    result.update({
+        "status": "NEEDS_REVIEW", "needs_review": True, "execution_status": "BLOCKED",
+        "supplier_options": [], "impacted_orders": [], "delays": [],
+        "uncovered_quantity": None, "review_flags": ["MISMATCHED_PO"],
+        "baseline_shortage_quantity": None, "changed_shortage_quantity": None,
+        "additional_shortage_quantity": None, "estimated_quote_cost_krw": None,
+    })
     assert audit_portfolio(case, result)["qa_status"] == "PASS"
 
 
@@ -127,3 +132,24 @@ def test_non_iso_date_and_missing_data_fail_safely():
     result["impacted_orders"][0]["due_date"] = "2026년 11월 5일"
     assert audit_portfolio(case, result)["qa_status"] == "FAIL"
     assert audit_portfolio({}, result)["qa_status"] == "FAIL"
+
+
+@pytest.mark.parametrize(("field", "value", "code"), [
+    ("impacted_orders", [{"order_id": "O1"}], "BLOCKED_WITH_CALCULATION"),
+    ("delays", [{"receipt_id": "R1"}], "BLOCKED_WITH_CALCULATION"),
+    ("changed_shortage_quantity", 60, "BLOCKED_WITH_TOTAL"),
+    ("estimated_quote_cost_krw", "60500", "BLOCKED_WITH_TOTAL"),
+    ("review_flags", [], "MISSING_REVIEW_REASON"),
+    ("review_flags", [""], "MISSING_REVIEW_REASON"),
+])
+def test_blocked_state_does_not_leak_results(field, value, code):
+    case, result = sample()
+    result.update({
+        "status": "NEEDS_REVIEW", "needs_review": True, "execution_status": "BLOCKED",
+        "supplier_options": [], "impacted_orders": [], "delays": [],
+        "uncovered_quantity": None, "review_flags": ["DATA_CONFLICT"],
+        "baseline_shortage_quantity": None, "changed_shortage_quantity": None,
+        "additional_shortage_quantity": None, "estimated_quote_cost_krw": None,
+    })
+    result[field] = value
+    assert code in error_codes(case, result)
