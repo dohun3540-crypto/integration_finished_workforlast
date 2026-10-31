@@ -1,6 +1,6 @@
 # LeadTime Guardian — Independent QA Integration Gate
 
-**Last measured code snapshot:** `5a84efc32632674d6a2ed0c02db424530e927d12` (2026-10-31 KST)  
+**Last measured code snapshot:** `2b926733ac4dba90454ae2f7a6254eef11cfed1b` (2026-10-31 KST)  
 **Work branch:** `feat/qa-source-restore-20261031` (Draft PR #2)  
 **Source checkpoint:** original PR #11 `f196c694917f2d9e5f4ec228c752bd3f2a4eb882`.
 
@@ -15,8 +15,8 @@ No original source changes, force pushes, main merges, Studio configuration writ
 | Gate | Status | Evidence or dependency |
 | --- | --- | --- |
 | Original Git source file restoration | **PASS** | 156/156 original Git SHA matches |
-| Full Python regression | **PASS** | 263 passed, Ruff PASS, [Actions #41181013987](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013987) |
-| Independent QA regression | **PASS** | 183 passed, QA Ruff PASS, [Actions #41181013981](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181013981) |
+| Full Python regression | **PASS** | 306 passed, Ruff PASS, [Actions #41181856300](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181856300) |
+| Independent QA regression | **PASS** | 226 passed, QA Ruff PASS, [Actions #41181856310](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41181856310) |
 | Archived C001 PDF hash / internal metadata | **PASS** | 3/3 source-PDF file hash checks |
 | Archived C001 replay / Adapter output contract | **PASS** | `tests/test_qa_replay.py`; replay does not mean new Studio inference |
 | Archived C001 Native envelope consistency | **PASS** | Job, Step, document/source metadata expected IDs checked |
@@ -55,7 +55,7 @@ The C001 `trusted_base_case.json` is **pre-Studio**; do not pair it directly wit
 
 ## 4. Merge gate decision
 
-Do not merge based only on the 263 test passes.
+Do not merge based only on the 306 test passes.
 
 1. Verify PR HEAD and every Actions conclusion refer to the same SHA.
 2. Compare team 2's final Adapter interface and team 3's PDF/Gold evidence without overwriting their branches.
@@ -65,3 +65,7 @@ Do not merge based only on the 263 test passes.
 6. Require separate authorized review before changing Draft PR status or merging main.
 
 Historical `scripts/qa_restore_source.sh` is not to be rerun on this already restored branch. The original 156 files remain byte-for-byte unchanged.
+
+## Optional Studio QA Sandbox handoff gate
+
+The latest QA Sandbox remains unobserved, so no real Studio QA artifact is claimed. Provide reviewed `leadtime-cross-agent/v1` manifest and unmodified Native/QA report bytes to `qa_cross_agent_check.py`, then the optional `--studio-handoff`, `--studio-native`, `--studio-qa-report` inputs to `qa_gate_check.py`. An invalid supplied handoff produces local FAIL. A valid but unverified handoff preserves overall BLOCKED. A single Studio document PASS never implies Python PASS or main merge authorization. See `docs/QA_STUDIO_INTEGRATION_CONTRACT.md` and `docs/QA_CROSS_AGENT_HANDOFF.md`.
