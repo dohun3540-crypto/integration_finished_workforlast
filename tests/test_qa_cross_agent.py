@@ -200,3 +200,22 @@ def test_no_input_mutation():
     original = deepcopy(manifest)
     check(manifest, native, report)
     assert manifest == original
+
+
+def test_file_id_order_is_not_contract_significant():
+    manifest, native, report = fixture()
+    manifest["studio"]["input_file_ids"].reverse()
+    result = check(manifest, native, report)
+    assert result["qa_status"] == "BLOCKED"
+    assert "NATIVE_INPUT_FILE_MISMATCH" not in codes(result)
+
+
+def test_invalid_native_file_identifier_fails_closed():
+    manifest, native, report = fixture()
+    obj = json.loads(native)
+    obj["metadata"]["source_files"][0]["file_id"] = {"bad": "identifier"}
+    native = json.dumps(obj).encode()
+    manifest["studio"]["native_sha256"] = hashlib.sha256(native).hexdigest()
+    result = check(manifest, native, report)
+    assert result["qa_status"] == "FAIL"
+    assert "NATIVE_INPUT_FILE_MISMATCH" in codes(result)
