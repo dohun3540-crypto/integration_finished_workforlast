@@ -157,3 +157,37 @@ def test_without_stage_manifest_names_all_three_extract_sources(tmp_path):
     assert "stage.IndependentQA_Input" in report["missing_inputs"]
     assert "stage.IndependentQA_Report" in report["missing_inputs"]
     assert report["status"] == "BLOCKED"
+
+
+
+def test_json_report_cannot_overwrite_original_release_manifest(tmp_path):
+    original = manifest(tmp_path)
+    original_bytes = original.read_bytes()
+    proc = subprocess.run(
+        [sys.executable, str(CLI), "--manifest", str(original),
+         "--json-report", str(original)],
+        cwd=ROOT, capture_output=True, text=True, check=False, timeout=30,
+    )
+    out = json.loads(proc.stdout)
+    assert proc.returncode == 1, proc.stderr
+    assert out["status"] == "FAIL"
+    assert original.read_bytes() == original_bytes
+    assert "REPORT_OUTPUT_NOT_WRITABLE" in {
+        issue["issue_code"] for issue in out["blocking_issues"]
+    }
+
+
+def test_markdown_report_cannot_overwrite_existing_pdf_evidence(tmp_path):
+    original = manifest(tmp_path)
+    pdf = tmp_path / "SYN-C001_quotation.pdf"
+    original_pdf_bytes = b"%PDF-1.4 synthetic no real source"
+    pdf.write_bytes(original_pdf_bytes)
+    proc = subprocess.run(
+        [sys.executable, str(CLI), "--manifest", str(original),
+         "--markdown-report", str(pdf)],
+        cwd=ROOT, capture_output=True, text=True, check=False, timeout=30,
+    )
+    out = json.loads(proc.stdout)
+    assert proc.returncode == 1, proc.stderr
+    assert out["status"] == "FAIL"
+    assert pdf.read_bytes() == original_pdf_bytes
