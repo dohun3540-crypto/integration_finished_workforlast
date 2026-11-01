@@ -124,6 +124,14 @@ def audit_release_folder(manifest_path: Path) -> dict[str, Any]:
             inspect("source_pdfs." + kind, pdf_sources.get(kind))
 
         stage = report["checked_inputs"].get("stage_manifest")
+        if stage is None:
+            for kind in PDF_KINDS:
+                issue("EXTRACT_BRANCH_NOT_PROVIDED", "stage.Extract." + kind)
+            for name in (
+                "MergeDocuments", "NormalizeDocuments",
+                "IndependentQA_Input", "IndependentQA_Report",
+            ):
+                issue("STAGE_RAW_NOT_PROVIDED", "stage." + name)
         if stage is not None:
             from scripts.qa_stage_intake_check import inspect_manifest_path
 
@@ -138,11 +146,17 @@ def audit_release_folder(manifest_path: Path) -> dict[str, Any]:
             for name, value in stage_report.get("stages", {}).items():
                 if value.get("status") == "NOT_PROVIDED":
                     issue("STAGE_RAW_NOT_PROVIDED", "stage." + name)
-                if name == "Extract" and isinstance(value.get("branches"), dict):
-                    for kind in PDF_KINDS:
-                        if kind not in value["branches"]:
+                if name == "Extract":
+                    branches = value.get("branches")
+                    if not isinstance(branches, dict):
+                        for kind in PDF_KINDS:
                             issue("EXTRACT_BRANCH_NOT_PROVIDED",
                                   "stage.Extract." + kind)
+                    else:
+                        for kind in PDF_KINDS:
+                            if kind not in branches:
+                                issue("EXTRACT_BRANCH_NOT_PROVIDED",
+                                      "stage.Extract." + kind)
         report["status"] = "FAIL" if report["invalid_inputs"] else "BLOCKED"
         report["missing_inputs"].sort()
         report["invalid_inputs"].sort()
