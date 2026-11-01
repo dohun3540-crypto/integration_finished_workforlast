@@ -24,3 +24,10 @@ DOCUMENT_QA_STATUS, PYTHON_QA_STATUS=NOT_VERIFIED(unless independent evidence),
 NEXT_ACTION.
 
 ChatGPT GitHub 측에서는 raw QA report에 별도의 STUDIO_INDEPENDENT_QA_V1 변환 경로, 원본 SHA 검증과 현재 사본 identity 핀, 문서/Python 분리 Gate를 구현했습니다. manifest=leadtime-cross-agent/v1은 Studio Native 출력과 별개입니다. 실제 파일을 전달하면 원본 SHA와 변환 verdict를 비교합니다. 기존 완료 Job을 NEW_LIVE_STUDIO로 표시하지 마세요.
+
+[추가: 전체 파이프라인 정적 감사에서 확인한 최신 요청]
+- 운영 Studio v5의 'workflow-config-draft'는 실제 saved/live Config가 아닙니다. 운영 담당자의 확인 없이 v5를 수정하지 마세요. 이전 Extract schema에 'Null when/Null if'라는 명시적 결측 지시와 primitive-only type이 함께 있는 필드를 실제 saved Config 및 branch별 output과 대조하고, 필드명·schema 경로·원문 null 사례를 팀원2에게 인계하세요. 변경 제안은 별도 diff로만 제시하세요.
+- QA Sandbox E3(IndependentQA 입력 전달 개선)라 하더라도 동일 PDF 3개/실제 Config ID/version/Job/Step 및 IndependentQA 원본 input/output이 있어야 개선으로 판정합니다. B0/E1/E2/E3/E4는 Config ID가 아니라 실험 별칭입니다. 검증할 수 없는 실험은 NOT_VERIFIED로 유지하세요.
+- 동일 실행의 누락된 provenance null은 데이터 결측이지 자동으로 실행 식별자 충돌이 아닙니다. 실제 서로 다른 비-null 값이 같은 실행에 연결되어 충돌할 때만 EXECUTION_PROVENANCE_MISMATCH warning+requires_human_review=true.
+- Excel 셀 49는 숫자/문자열뿐 아니라 수식의 캐시값인지 구분하고, Extract·Merge·Normalize 단계별 원본에 나타나는지 추적하세요. 원본 Step이 없으면 원인 UNKNOWN.
+- 새 유료 Job, 원본 운영/QA 설정 변경, Gold 수정, 외부 제출, 반복 실행 금지. 읽기 전용 접근 불가 시 정확한 권한/Export 경로 오류만 기록하세요.
