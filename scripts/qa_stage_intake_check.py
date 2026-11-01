@@ -25,19 +25,28 @@ def main() -> int:
         metadata = manifest.get("stages", {})
         if not isinstance(metadata, dict):
             raise TypeError("stages must be object")
-        artifacts = {}
-        for name in STAGES:
-            item = metadata.get(name)
-            if not isinstance(item, dict) or item.get("path") is None:
-                continue
-            relative = item["path"]
+        def read_relative(relative: str) -> bytes:
             if (not isinstance(relative, str) or not relative
                     or Path(relative).is_absolute()):
                 raise ValueError("path must be nonempty manifest-relative")
             path = (manifest_path.parent / relative).resolve(strict=True)
             if not path.is_relative_to(manifest_path.parent):
                 raise ValueError("path escapes manifest directory")
-            artifacts[name] = path.read_bytes()
+            return path.read_bytes()
+
+        artifacts = {}
+        for name in STAGES:
+            item = metadata.get(name)
+            if not isinstance(item, dict):
+                continue
+            if name == "Extract" and isinstance(item.get("branches"), dict):
+                artifacts[name] = {}
+                for kind, entry in item["branches"].items():
+                    if isinstance(entry, dict) and entry.get("path") is not None:
+                        artifacts[name][kind] = read_relative(entry["path"])
+                continue
+            if item.get("path") is not None:
+                artifacts[name] = read_relative(item["path"])
         result = audit_stage_evidence(manifest, artifacts)
     except (OSError, TypeError, ValueError, UnicodeDecodeError):
         result = {
