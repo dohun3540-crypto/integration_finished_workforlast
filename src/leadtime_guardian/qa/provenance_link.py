@@ -125,9 +125,17 @@ def audit_team2_provenance_link(
             flag("PDF_BYTES_NOT_PROVIDED", "pdf_root", "WARNING")
         else:
             try:
-                if all((root / filename).is_file()
-                       and hashlib.sha256((root / filename).read_bytes()).hexdigest() == sha
-                       for filename, sha in qa.items()):
+                # Reject symlink escapes; a receipt cannot authorize arbitrary
+                # files outside the supplied PDF directory.
+                actual_root = root.resolve(strict=True)
+                pdf_paths = [actual_root / name for name in qa]
+                if any(p.is_symlink() or not p.resolve().is_relative_to(actual_root)
+                       for p in pdf_paths):
+                    flag("PDF_PATH_OUTSIDE_TRUSTED_ROOT", "pdf_root")
+                elif all(
+                    p.is_file() and hashlib.sha256(p.read_bytes()).hexdigest() == sha
+                    for p, sha in zip(pdf_paths, qa.values(), strict=True)
+                ):
                     local_match = True
                 else:
                     flag("PDF_BYTES_HASH_MISMATCH", "pdf_root")
