@@ -5,7 +5,7 @@
 - 개발 측 코드 경로: 원본 Stage Intake → Strict JSON 및 Native 문서 검증 → Python Safety V6 → Independent QA → Cross-Agent/Provenance → B0/E1 비교(실측 존재 시) → Release Gate.
 - 기존 Python V6 엔진, QA Input 타입 보존, B0/E1 원본 SHA 연결, PDF Source File ID/Receipt/Sidecar 체인은 재사용한다.
 - 9차 추가: NEW_LIVE_STUDIO 지정 시 필수 증거 없으면 Python V6 실행 전 BLOCKED/NOT_RUN; release-evidence/v1 로컬 원본 목록·SHA·불일치·다음 조치 JSON/Markdown.
-- CI 코드 검증: #41304112310, whole Python 595 PASS (QA 406 포함), Ruff PASS. 최종 Checkpoint HEAD 기준 CI는 별도 확인.
+- CI 코드 검증: #41304643210, whole Python 597 PASS (QA 408 포함), Ruff PASS. 최종 Checkpoint HEAD 기준 CI는 별도 확인.
 - 이 성공은 프로그램 자체의 로컬 통합·보관 데이터 안정성이다. 실측 업로드/문서 정확도 인증을 의미하지 않는다.
 
 ## Studio·Team 2·Team 3 실제 자료
