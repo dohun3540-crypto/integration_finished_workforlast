@@ -1,5 +1,6 @@
 """Only local synthetic receipts. Live Studio upload binding is NOT proven."""
 import hashlib
+import hashlib
 import json
 import subprocess
 import sys
@@ -133,3 +134,21 @@ def test_provenance_cli_reports_blocked_not_pass(tmp_path):
     )
     assert process.returncode == 2, process.stderr
     assert json.loads(process.stdout)["same_local_pdf_bytes_verified"] is True
+
+
+def test_symlinked_pdf_escape_from_trusted_root_is_rejected(tmp_path):
+    pdf_root = tmp_path / "pdf_root"
+    pdf_root.mkdir()
+    outside = tmp_path / "outside.pdf"
+    outside.write_bytes(b"%PDF-1.4 outside file")
+    (pdf_root / "C001.pdf").symlink_to(outside)
+    handoff, sidecar, qa_receipt, op_receipt = fixture(tmp_path)
+    digest = hashlib.sha256(outside.read_bytes()).hexdigest()
+    qa_receipt["files"][0]["sha256"] = digest
+    op_receipt["files"][0]["sha256"] = digest
+    outcome = audit_team2_provenance_link(
+        handoff, sidecar, qa_receipt, op_receipt, pdf_root=pdf_root,
+    )
+    assert outcome["qa_status"] == "FAIL"
+    assert outcome["same_local_pdf_bytes_verified"] is False
+    assert "PDF_PATH_OUTSIDE_TRUSTED_ROOT" in issue_codes(outcome)
