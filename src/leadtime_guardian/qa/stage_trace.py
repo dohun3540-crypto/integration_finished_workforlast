@@ -212,6 +212,18 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, bytes]) -> dict
         observation["document_count"] = 3
         observation["document_ids"] = ids
         observation["status"] = "LOCAL_RAW_PARSED"
+    result["normalize_qa_input_status"] = "NOT_VERIFIED"
+    if ("NormalizeDocuments" in docs_by_stage
+            and "IndependentQA_Input" in docs_by_stage):
+        if docs_by_stage["NormalizeDocuments"] == docs_by_stage["IndependentQA_Input"]:
+            result["normalize_qa_input_status"] = "LOCAL_CONTENT_MATCH"
+        else:
+            result["normalize_qa_input_status"] = "LOCAL_CONTENT_MISMATCH"
+            note("QA_NORMALIZED_CONTENT_MISMATCH", "IndependentQA_Input", "ERROR")
+    result["all_expected_raw_stages_present"] = (
+        len(docs_by_stage) == len(DOCUMENT_STAGES)
+        and stages_out["IndependentQA_Report"]["status"] == "LOCAL_RAW_PARSED"
+    )
     for kind in DOC_TYPES:
         for cell, field in FIELDS_BY_TYPE[kind]:
             trace = {}
