@@ -53,3 +53,24 @@ def test_invalid_xlsx_fails_closed(tmp_path):
     )
     assert proc.returncode == 1
     assert json.loads(proc.stdout)["qa_status"] == "FAIL"
+
+
+def test_formula_cached_49_is_not_a_literal_number(tmp_path):
+    workbook = tmp_path / "formula.xlsx"
+    with zipfile.ZipFile(workbook, "w") as bundle:
+        bundle.writestr("xl/worksheets/sheet1.xml",
+                        '<?xml version="1.0"?><worksheet '
+                        'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+                        '<sheetData><row r="1"><c r="A1" t="n">'
+                        '<f>7*7</f><v>49</v></c></row></sheetData></worksheet>')
+    result = subprocess.run([sys.executable, str(CLI), "--xlsx", str(workbook)],
+                            capture_output=True, text=True, check=False,
+                            cwd=ROOT, timeout=30)
+    assert result.returncode == 2
+    data = json.loads(result.stdout)
+    assert data["xlsx_49_count"] == 1
+    match = data["xlsx_matches"][0]
+    assert match["match_type"] == "FORMULA_CACHED_49"
+    assert match["formula_expression"] == "7*7"
+    assert match["has_formula"] is True
+    assert data["causal_origin"] == "UNKNOWN"
