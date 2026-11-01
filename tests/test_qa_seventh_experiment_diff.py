@@ -1,4 +1,5 @@
 """Actual B0/E1 E1 has NOT been provided. All scenarios are synthetic."""
+import hashlib
 import json
 import subprocess
 import sys
@@ -114,10 +115,15 @@ def test_cli_synthetic_pair_with_normalize_files_is_not_live_success(tmp_path):
     paths = {}
     for kind in ("B0", "E1"):
         path = tmp_path / (kind + ".json")
-        path.write_text(json.dumps(manifest(kind)))
         paths[kind] = path
         norm = tmp_path / (kind + "-normalize.json")
-        norm.write_text(json.dumps(normalized(altered=kind == "E1")))
+        value = json.dumps(normalized(altered=kind == "E1")).encode("utf-8")
+        norm.write_bytes(value)
+        meta = manifest(kind)
+        meta["step_artifacts"]["NormalizeDocuments"]["original_sha256"] = (
+            hashlib.sha256(value).hexdigest()
+        )
+        path.write_text(json.dumps(meta))
         paths[kind + "_NORMALIZE"] = norm
     proc = subprocess.run([
         sys.executable, str(CLI),
