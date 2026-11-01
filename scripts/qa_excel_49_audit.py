@@ -153,6 +153,12 @@ def shared_string_index_49_diagnostics(data):
                     if raw is None or not raw.isdigit() or int(raw) >= len(shared):
                         raise ValueError("invalid shared-string header index")
                     headers[match.group(1)] = shared[int(raw)]
+                elif cell.get("t") == "inlineStr":
+                    inline = cell.find(XML + "is")
+                    headers[match.group(1)] = (
+                        "".join(x.text or "" for x in inline.iter(XML + "t"))
+                        if inline is not None else None
+                    )
                 else:
                     headers[match.group(1)] = raw
             for cell in rows:
