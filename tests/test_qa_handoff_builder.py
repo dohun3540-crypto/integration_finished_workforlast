@@ -35,8 +35,8 @@ def inputs():
 
 def build(native=None, report=None, **changes):
     supplied_native, supplied_report = inputs()
-    options = dict(case_id="C001", agent_id=AGENT, config_id=CONFIG,
-                   config_version=1, github_sha=SHA)
+    options = {"case_id": "C001", "agent_id": AGENT, "config_id": CONFIG,
+               "config_version": 1, "github_sha": SHA}
     options.update(changes)
     return build_studio_raw_handoff(
         supplied_native if native is None else native,
