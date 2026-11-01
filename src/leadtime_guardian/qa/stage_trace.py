@@ -191,7 +191,7 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
                 bind_step(op_job, branch_meta["step_run_id"], kind)
                 try:
                     raw_doc = load_json_strict(payload)
-                except (ValueError, TypeError, UnicodeDecodeError):
+                except (ValueError, TypeError, UnicodeDecodeError, RecursionError):
                     note("STRICT_JSON_FAILED", kind, "ERROR")
                     continue
                 if not isinstance(raw_doc, dict):
@@ -316,6 +316,14 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
         observation["document_ids"] = ids
         observation["document_content_sha256"] = canonical_documents_sha256(docs)
         observation["status"] = "LOCAL_RAW_PARSED"
+    # Two independent QA steps may differ from the operational Job, but
+    # cannot silently represent two different QA Sandbox Jobs.
+    qa_input = stages_out["IndependentQA_Input"]
+    qa_report = stages_out["IndependentQA_Report"]
+    if (qa_input["status"] == "LOCAL_RAW_PARSED"
+            and qa_report["status"] == "LOCAL_RAW_PARSED"
+            and qa_input["job_id"] != qa_report["job_id"]):
+        note("QA_INPUT_REPORT_JOB_MISMATCH", "IndependentQA_Report", "ERROR")
     result["normalize_qa_input_status"] = "NOT_VERIFIED"
     if ("NormalizeDocuments" in docs_by_stage
             and "IndependentQA_Input" in docs_by_stage):
