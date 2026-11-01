@@ -50,7 +50,10 @@ def make_fixture(path, *, at49=""):
         f'<worksheet xmlns="{ns}"><sheetData>'
         + "".join(f'<row r="{row}">'
                   + "".join(x for x in (names + cells + numeric)
-                            if f'r="{row}"' in x)
+                            if any(f'r="{col}{row}"' in x for col in (
+                                "R", "S", "T", "V", "W", "Y", "Z",
+                                "AA", "AB", "AC", "AD", "AE", "AF",
+                            )))
                   + "</row>" for row in (1, 2, 3, 4))
         + "</sheetData></worksheet>"
     )
