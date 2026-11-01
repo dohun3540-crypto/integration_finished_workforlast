@@ -46,6 +46,7 @@ def inspect_workbook(data):
                       for si in xml.iter(XML + "si")]
         for sheet in names:
             matches = []
+            coordinate_values = {}
             root = ET.fromstring(archive.read(sheet))
             for cell in root.iter(XML + "c"):
                 kind = cell.get("t", "n")
@@ -60,6 +61,9 @@ def inspect_workbook(data):
                     value = "".join(t.text or "" for t in inline.iter(XML + "t")) if inline is not None else None
                 else:
                     value = raw
+                coordinate = cell.get("r")
+                if coordinate:
+                    coordinate_values[coordinate] = value
                 category = classify(value, kind)
                 formula = cell.find(XML + "f")
                 has_formula = formula is not None
@@ -74,6 +78,15 @@ def inspect_workbook(data):
                                     "match_type": (
                                         "FORMULA_CACHED_49" if has_formula else category
                                     )})
+            # The first row is only a candidate header; do not infer an
+            # authoritative Studio JSON mapping without a real export schema.
+            for match in matches:
+                coordinate = match["cell"] or ""
+                letters = "".join(ch for ch in coordinate if ch.isalpha())
+                match["column_header_row1_candidate"] = (
+                    coordinate_values.get(letters + "1") if letters else None
+                )
+                match["json_field_mapping_verified"] = False
             sheets.append({"worksheet_xml": sheet, "matches": matches})
     return sheets
 
