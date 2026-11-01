@@ -2,10 +2,10 @@
 
 ## 검증된 코드 SHA 및 실행 로그
 - 8차 기준 HEAD: b4c01ecddbd00bc33bca1ae8c1735ac768eea20f (full Python 583/independent QA 394).
-- 9차 코드 수정 SHA: 37fac1f3a3436d505afbd9778312e25998e85f06.
-- GitHub Actions: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41304112310 — **SUCCESS**.
-- 독립 QA 전체: **406 passed**.
-- 전체 Python: **595 passed** (QA 406 포함; 합산하지 않음).
+- 9차 코드 수정 SHA: 9e15fcfed44190e71863f7c5a8f1a73d26ed2d1a.
+- GitHub Actions: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41304643210 — **SUCCESS**.
+- 독립 QA 전체: **408 passed**.
+- 전체 Python: **597 passed** (QA 408 포함; 합산하지 않음).
 - QA Ruff, 전체 저장소 Ruff: **All checks passed**.
 - Archived C001 original replay: CI step success, offline-only.
 - Local Integration Gate: local_checks_passed=true; overall_status=BLOCKED.
