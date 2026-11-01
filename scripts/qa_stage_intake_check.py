@@ -13,12 +13,10 @@ from leadtime_guardian.qa.audit import load_json_strict
 from leadtime_guardian.qa.stage_trace import STAGES, audit_stage_evidence
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--manifest", required=True, type=Path)
-    args = parser.parse_args()
+def inspect_manifest_path(provided_path: Path) -> dict:
+    """Reuse exact same stage intake in standalone and combined E2E CLI."""
     try:
-        manifest_path = args.manifest.resolve(strict=True)
+        manifest_path = provided_path.resolve(strict=True)
         manifest = load_json_strict(manifest_path.read_bytes())
         if not isinstance(manifest, dict):
             raise TypeError("manifest must be a JSON object")
@@ -55,6 +53,14 @@ def main() -> int:
             "issues": [{"issue_code": "MANIFEST_OR_STAGE_FILE_UNREADABLE",
                         "stage": "cli", "severity": "ERROR"}],
         }
+    return result
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--manifest", required=True, type=Path)
+    args = parser.parse_args()
+    result = inspect_manifest_path(args.manifest)
     print(json.dumps(result, indent=2, ensure_ascii=False, sort_keys=True))
     return 1 if result["status"] == "FAIL" else 2
 
