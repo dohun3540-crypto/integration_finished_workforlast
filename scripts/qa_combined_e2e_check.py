@@ -354,6 +354,9 @@ def main() -> int:
                 ("QA_PDF_RECEIPT", args.qa_pdf_receipt),
                 ("OPERATIONAL_PDF_RECEIPT", args.operational_pdf_receipt),
                 ("PDF_ROOT", args.pdf_root),
+                ("QA_AGENT_ID", args.qa_agent_id),
+                ("QA_CONFIG_ID", args.qa_config_id),
+                ("QA_CONFIG_VERSION", args.qa_config_version),
             ):
                 if value is None:
                     missing.append(label)
