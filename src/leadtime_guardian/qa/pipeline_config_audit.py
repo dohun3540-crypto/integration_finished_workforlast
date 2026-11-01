@@ -37,9 +37,9 @@ def audit_studio_config_draft(config: Any) -> dict[str, Any]:
     if not isinstance(classify, dict):
         add("MISSING_CLASSIFY_CONFIG", "documentClassifyConfiguration")
     elif not (classify.get("split") is True and
+              isinstance(classify.get("splitCriteria"), list) and
               any(isinstance(x, dict) and x.get("criterion") == "file_boundary"
-                  for x in classify.get("splitCriteria", [])
-                  if isinstance(classify.get("splitCriteria"), list))):
+                  for x in classify["splitCriteria"])):
         add("CLASSIFY_FILE_BOUNDARY_NOT_ENFORCED", "documentClassifyConfiguration")
     extract = workflow.get("informationExtractConfiguration")
     schema_names: set[str] = set()
