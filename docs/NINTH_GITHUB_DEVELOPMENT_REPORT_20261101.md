@@ -7,7 +7,7 @@
 - 시작 기준: 8차 Draft PR #9, HEAD b4c01ecddbd00bc33bca1ae8c1735ac768eea20f, CI #41302756219 SUCCESS, full Python 583 PASS / QA 394 PASS.
 - 신규 9차 Draft PR #10: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/10
 - 격리 브랜치: feat/qa-ninth-release-readiness-20261101; Base = feat/qa-eighth-release-hardening-20261101.
-- 9차 코드 검증 run #41304112310: full Python 595 PASS, independent QA 406 PASS, QA Ruff PASS, 전체 Ruff PASS, Archived C001/local checks local_checks_passed=true, overall_status=BLOCKED.
+- 최신 9차 코드 검증 run #41304643210: full Python 597 PASS, independent QA 408 PASS, QA Ruff PASS, 전체 Ruff PASS, Archived C001/local checks local_checks_passed=true, overall_status=BLOCKED.
 - 전체 Python 테스트 수에는 QA 테스트가 포함됨. Final docs/checkpoint HEAD의 CI는 별도 재확인.
 - PR #4~#9 모두 Draft/미병합 상태이며 단계별 직전 QA 브랜치가 Base다. PR#10도 Draft이며 자동 Merge/Force Push 없음.
 - 운영 팀원 2 PR #12는 e9b9992b593a42d427ff1bbadeb9a9866ca593bd. 핵심 Python V6 6모듈 내용 불변이 보존 목표.
@@ -46,7 +46,7 @@
 - 로컬 파일명과 SHA가 일치하는 사실은 클라우드 제공자 인증이나 품질 향상 증거가 아니다.
 
 ## 기술 준비도 판단
-- GitHub QA 코드·CI: 높은 수준으로 검증됨 (595 전체 Python/406 QA, Ruff PASS).
+- GitHub QA 코드·CI: 높은 수준으로 검증됨 (597 전체 Python/408 QA, Ruff PASS).
 - '코드 98~99%' 또는 '담당 제출 준비 96~97%'는 과거의 주관적 추정치이며 테스트에서 측정된 객관적 성취율이 아니다.
 - 9차에서는 신규 Live 사전 차단과 누락 원본 패키지 탐지를 실제 테스트로 추가했으나, 분모가 정의된 기능 완성도 측정치가 없으므로 새로운 확정 백분율을 주장하지 않는다.
 - 실제 제출 가능: BLOCKED. 실제 Native→Python V6→QA→PDF provenance→Gold→Release 전체 확인 전까지 100% 준비 상태는 아님.
