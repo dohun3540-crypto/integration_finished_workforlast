@@ -129,9 +129,9 @@ def audit_studio_case_batch(
         file_ids = [s.get("file_id") for s in sources]
         types = [s.get("document_type") for s in sources]
         if (not all(isinstance(x, str) and x.endswith(".pdf") for x in file_names)
-                or len(set(x for x in file_names if isinstance(x, str))) != 3
+                or len({x for x in file_names if isinstance(x, str)}) != 3
                 or not all(isinstance(x, str) and x.startswith("file_") for x in file_ids)
-                or len(set(x for x in file_ids if isinstance(x, str))) != 3
+                or len({x for x in file_ids if isinstance(x, str)}) != 3
                 or not all(isinstance(x, str) for x in types)
                 or Counter(x for x in types if isinstance(x, str)) != Counter(REQUIRED_TYPES)):
             flag("SINGLE_JOB_SOURCE_SET_INCONSISTENT", "jobs[0].source_files")
