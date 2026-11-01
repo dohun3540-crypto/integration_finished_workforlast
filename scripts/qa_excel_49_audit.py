@@ -6,6 +6,7 @@ Uses OOXML ZIP/XML directly to preserve original cell types without Excel APIs.
 import argparse
 import hashlib
 import json
+import re
 import sys
 import zipfile
 from decimal import Decimal, InvalidOperation
@@ -87,6 +88,24 @@ def inspect_workbook(data):
                     coordinate_values.get(letters + "1") if letters else None
                 )
                 match["json_field_mapping_verified"] = False
+                # The actual table header can start lower than row 1. Expose
+                # candidate cells only; never assume they map to Studio JSON.
+                coordinate_parts = re.fullmatch(r"([A-Z]+)([1-9][0-9]*)", coordinate)
+                near = {}
+                above = []
+                if coordinate_parts:
+                    col, row = coordinate_parts.group(1), int(coordinate_parts.group(2))
+                    for other_coordinate, other_value in coordinate_values.items():
+                        other = re.fullmatch(r"([A-Z]+)([1-9][0-9]*)", other_coordinate)
+                        if other is None:
+                            continue
+                        other_col, other_row = other.group(1), int(other.group(2))
+                        if other_row == row and other_coordinate != coordinate:
+                            near[other_coordinate] = other_value
+                        if other_col == col and other_row < row and other_value is not None:
+                            above.append({"cell": other_coordinate, "value": other_value})
+                match["same_row_context_unverified"] = near
+                match["potential_header_cells_above"] = above
             sheets.append({"worksheet_xml": sheet, "matches": matches})
     return sheets
 
