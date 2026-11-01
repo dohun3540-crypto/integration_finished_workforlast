@@ -21,10 +21,10 @@ def main() -> int:
         manifest_path = args.manifest.resolve(strict=True)
         manifest = load_json_strict(manifest_path.read_bytes())
         if not isinstance(manifest, dict):
-            raise ValueError("manifest must be a JSON object")
+            raise TypeError("manifest must be a JSON object")
         metadata = manifest.get("stages", {})
         if not isinstance(metadata, dict):
-            raise ValueError("stages must be object")
+            raise TypeError("stages must be object")
         artifacts = {}
         for name in STAGES:
             item = metadata.get(name)
