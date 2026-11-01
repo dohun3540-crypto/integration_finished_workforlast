@@ -5,8 +5,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from leadtime_guardian.qa.gate import build_integration_gate
 from leadtime_guardian.qa.cross_agent import APPROVED_SANDBOX_AGENTS, SANDBOX_AGENT_ID
+from leadtime_guardian.qa.gate import build_integration_gate
 
 
 def main() -> int:
