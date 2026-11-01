@@ -301,3 +301,18 @@ def test_distinct_historical_prediction_is_not_automatically_provenance_error():
     result = check(manifest, native, report)
     assert "EXECUTION_PROVENANCE_MISMATCH" not in codes(result)
     assert result["requires_human_review"] is False
+
+
+@pytest.mark.parametrize("missing", ["absent", "empty"])
+def test_native_source_evidence_missing_fails_closed(missing):
+    manifest, native, report = fixture()
+    obj = json.loads(native)
+    if missing == "absent":
+        del obj["metadata"]["source_files"]
+    else:
+        obj["metadata"]["source_files"] = []
+    native = json.dumps(obj).encode()
+    manifest["studio"]["native_sha256"] = hashlib.sha256(native).hexdigest()
+    outcome = check(manifest, native, report)
+    assert outcome["qa_status"] == "FAIL"
+    assert "NATIVE_SOURCE_FILE_EVIDENCE_MISSING" in codes(outcome)
