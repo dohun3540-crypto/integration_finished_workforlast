@@ -52,7 +52,8 @@ def audit_b0_e1_readiness(b0: Any, e1: Any) -> dict[str, Any]:
         case = raw.get("case_id")
         if not isinstance(case, str) or not case.strip():
             add("CASE_ID_NOT_OBSERVED", side, severity="ERROR")
-        if raw.get("single_case_job_count") != 1:
+        if (type(raw.get("single_case_job_count")) is not int
+                or raw["single_case_job_count"] != 1):
             add("SINGLE_CASE_JOB_NOT_CONFIRMED", side)
         job = raw.get("job_id")
         if not isinstance(job, str) or not job.startswith("job_"):
@@ -81,7 +82,7 @@ def audit_b0_e1_readiness(b0: Any, e1: Any) -> dict[str, Any]:
                         or "/" in name or "\\" in name
                         or not isinstance(digest, str) or not HEX64.fullmatch(digest)
                         or not isinstance(fid, str) or not fid.startswith("file_")
-                        or kind not in REQUIRED_TYPES):
+                        or not isinstance(kind, str) or kind not in REQUIRED_TYPES):
                     add("PDF_ORIGINAL_SHA_AND_FILE_ID_REQUIRED", side)
                     continue
                 if name in mapping:
