@@ -23,11 +23,11 @@ def main() -> int:
     rendered = json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     try:
         if args.json_report is not None:
-            args.json_report.write_text(rendered, encoding="utf-8")
+            with args.json_report.open("x", encoding="utf-8") as output:
+                output.write(rendered)
         if args.markdown_report is not None:
-            args.markdown_report.write_text(
-                render_markdown(result), encoding="utf-8",
-            )
+            with args.markdown_report.open("x", encoding="utf-8") as output:
+                output.write(render_markdown(result))
     except OSError:
         result["status"] = "FAIL"
         result["release_authorized"] = False
