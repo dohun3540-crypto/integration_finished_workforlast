@@ -8,8 +8,8 @@ import hashlib
 import json
 import sys
 import zipfile
-from io import BytesIO
 from decimal import Decimal, InvalidOperation
+from io import BytesIO
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -37,8 +37,8 @@ def classify(value, kind):
 def inspect_workbook(data):
     sheets = []
     with zipfile.ZipFile(BytesIO(data)) as archive:
-        names = sorted((x for x in archive.namelist()
-                        if x.startswith("xl/worksheets/sheet") and x.endswith(".xml")))
+        names = sorted(x for x in archive.namelist()
+                       if x.startswith("xl/worksheets/sheet") and x.endswith(".xml"))
         shared = []
         if "xl/sharedStrings.xml" in archive.namelist():
             xml = ET.fromstring(archive.read("xl/sharedStrings.xml"))
