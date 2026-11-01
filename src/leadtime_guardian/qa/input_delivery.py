@@ -53,6 +53,7 @@ def _read_documents(value: Any, *, qa_side: bool) -> tuple[Any, str | None, str,
 
 def audit_normalize_qa_input(
     normalize_step: Any, qa_step_input: Any = None, qa_report: Any = None,
+    *, expected_case_id: str | None = None,
 ) -> dict[str, Any]:
     issues: list[dict[str, str]] = []
     status = "UNKNOWN"
@@ -61,6 +62,7 @@ def audit_normalize_qa_input(
     normalize_path = None
     qa_path = None
     qa_string_layers = 0
+    case_binding_conflict = False
 
     def note(code: str, severity: str = "WARNING") -> None:
         issues.append({"issue_code": code, "severity": severity})
@@ -87,12 +89,42 @@ def audit_normalize_qa_input(
             elif qa_string_layers > 1:
                 status = "QA_INPUT_WRAPPING_UNVERIFIED"
                 note("QA_INPUT_DOUBLE_JSON_WRAPPED")
+            elif not (isinstance(normalize_docs, list)
+                      and isinstance(qa_docs, list)
+                      and bool(normalize_docs) and bool(qa_docs)
+                      and all(isinstance(x, dict)
+                              and isinstance(x.get("document_id"), str)
+                              and x["document_id"].strip()
+                              for x in (*normalize_docs, *qa_docs))):
+                status = "QA_INPUT_MALFORMED"
+                note("QA_OR_NORMALIZE_DOCUMENTS_NOT_STRUCTURED", "ERROR")
+            elif len({x["document_id"] for x in normalize_docs}) != len(normalize_docs) or (
+                len({x["document_id"] for x in qa_docs}) != len(qa_docs)
+            ):
+                status = "QA_INPUT_MALFORMED"
+                note("DUPLICATE_DOCUMENT_IDS", "ERROR")
             elif qa_docs == normalize_docs:
                 status = "LOCAL_CONTENT_MATCH"
             else:
                 status = "LOCAL_CONTENT_MISMATCH"
                 note("QA_NORMALIZED_DOCUMENTS_MISMATCH", "ERROR")
 
+    # Apply only a supplied explicit same-case binding; do not infer a case
+    # from document file names, or promote local content match to cloud proof.
+    if expected_case_id is not None:
+        if not isinstance(expected_case_id, str) or not expected_case_id.strip():
+            status = "QA_INPUT_MALFORMED"
+            note("EXPECTED_CASE_ID_INVALID", "ERROR")
+        else:
+            for value, side in (
+                (normalize_step, "NORMALIZE"),
+                (qa_step_input, "QA_INPUT"),
+            ):
+                if isinstance(value, dict) and "case_id" in value:
+                    if value["case_id"] != expected_case_id:
+                        status = "LOCAL_CONTENT_MISMATCH"
+                        case_binding_conflict = True
+                        note(side + "_CASE_ID_MISMATCH", "ERROR")
     if isinstance(qa_report, dict):
         feedback = qa_report.get("issues")
         if isinstance(feedback, list):
@@ -110,8 +142,18 @@ def audit_normalize_qa_input(
         ):
             note("QA_EXECUTION_PROVENANCE_INCOMPLETE")
 
+    if isinstance(qa_report, dict) and expected_case_id is not None:
+        observed_report_case = qa_report.get("case_id")
+        if observed_report_case is not None and observed_report_case != expected_case_id:
+            status = "LOCAL_CONTENT_MISMATCH"
+            case_binding_conflict = True
+            note("QA_REPORT_CASE_ID_MISMATCH", "ERROR")
+
     return {
-        "qa_status": "FAIL" if status == "LOCAL_CONTENT_MISMATCH" else "BLOCKED",
+        "qa_status": ("FAIL" if status in ("LOCAL_CONTENT_MISMATCH",
+                                            "QA_INPUT_MALFORMED") else "BLOCKED"),
+        "case_binding_conflict": case_binding_conflict,
+        "expected_case_id": expected_case_id,
         "input_delivery_status": status,
         "normalize_document_count": len(normalize_docs) if isinstance(normalize_docs, list) else None,
         "qa_input_document_count": len(qa_docs) if isinstance(qa_docs, list) else None,
