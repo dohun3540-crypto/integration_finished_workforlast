@@ -21,6 +21,7 @@ from leadtime_guardian.qa.cross_agent import (
 )
 from leadtime_guardian.qa.handoff_builder import build_studio_raw_handoff
 from leadtime_guardian.qa.portfolio import audit_portfolio
+from leadtime_guardian.qa.provenance_link import audit_team2_provenance_link
 from leadtime_guardian.qa.studio_contract import audit_native_envelope
 from leadtime_guardian.qa.studio_batch import audit_studio_case_batch
 from leadtime_guardian.studio_adapter import apply_studio_extractions
@@ -39,11 +40,16 @@ def audit_combined_bytes(
     qa_config_version: int | None = None,
     execution_kind: str = "ARCHIVED_STUDIO",
     studio_batch_report_bytes: bytes | None = None,
+    team2_provenance_bytes: bytes | None = None,
+    qa_pdf_receipt_bytes: bytes | None = None,
+    operational_pdf_receipt_bytes: bytes | None = None,
+    pdf_root: Path | None = None,
 ) -> dict:
     """Independently check the joined code path; no authentication of cloud runs."""
     result = {
         "status": "BLOCKED",
         "single_case_grouping_status": "NOT_VERIFIED",
+        "provenance_link_status": "NOT_VERIFIED",
         "experiment_comparison_allowed": False,
         "python_business_status": "NOT_VERIFIED",
         "python_safety_status": "NOT_VERIFIED",
@@ -170,7 +176,66 @@ def audit_combined_bytes(
             result["cross_agent_issues"] = verdict["issues"]
             if verdict["qa_status"] == "FAIL":
                 record("CROSS_AGENT_CONTRACT_FAILED", "cross_agent")
-        if result["python_safety_status"] == "FAIL" or result["cross_agent_status"] == "FAIL":
+        supplied = (team2_provenance_bytes, qa_pdf_receipt_bytes,
+                    operational_pdf_receipt_bytes)
+        if any(x is not None for x in supplied) or pdf_root is not None:
+            if not all(type(x) is bytes for x in supplied) or pdf_root is None:
+                record("PDF_PROVENANCE_EVIDENCE_SET_INCOMPLETE", "pdf_provenance")
+            elif qa_native_bytes is None or qa_report_bytes is None:
+                record("PDF_PROVENANCE_NEEDS_QA_RAW_PAIR", "pdf_provenance")
+            else:
+                sidecar = load_json_strict(team2_provenance_bytes)
+                qa_receipt = load_json_strict(qa_pdf_receipt_bytes)
+                op_receipt = load_json_strict(operational_pdf_receipt_bytes)
+                if not isinstance(sidecar, dict) or not isinstance(op_receipt, dict):
+                    raise TypeError("operational sidecar and PDF receipt must be objects")
+                for key, raw in (
+                    ("team2_provenance", team2_provenance_bytes),
+                    ("qa_pdf_receipt", qa_pdf_receipt_bytes),
+                    ("operational_pdf_receipt", operational_pdf_receipt_bytes),
+                ):
+                    result["sha256"][key] = hashlib.sha256(raw).hexdigest()
+                if sidecar.get("export_sha256") != result["sha256"]["operational_native"]:
+                    result["provenance_link_status"] = "FAIL"
+                    record("OPERATION_NATIVE_SIDECAR_SHA_MISMATCH", "team2_provenance")
+                supplied_meta = sidecar.get("studio_metadata_supplied")
+                if (not isinstance(supplied_meta, dict)
+                        or supplied_meta.get("job_execution_id") != operational_job_id):
+                    result["provenance_link_status"] = "FAIL"
+                    record("OPERATION_SIDECAR_JOB_MISMATCH", "team2_provenance")
+                # Match operational receipt File IDs to original Native metadata.
+                native_sources = metadata.get("source_files")
+                expected_ids = (
+                    [x.get("file_id") for x in native_sources]
+                    if isinstance(native_sources, list)
+                    and all(isinstance(x, dict) for x in native_sources) else []
+                )
+                actual_rows = op_receipt.get("files")
+                receipt_ids = (
+                    [x.get("file_id") for x in actual_rows]
+                    if isinstance(actual_rows, list)
+                    and all(isinstance(x, dict) for x in actual_rows) else []
+                )
+                if (not expected_ids or not receipt_ids
+                        or len(expected_ids) != len(receipt_ids)
+                        or set(expected_ids) != set(receipt_ids)):
+                    result["provenance_link_status"] = "FAIL"
+                    record("OPERATION_NATIVE_UPLOAD_RECEIPT_MISMATCH", "pdf_provenance")
+                link = audit_team2_provenance_link(
+                    manifest, sidecar, qa_receipt, op_receipt, pdf_root=pdf_root,
+                )
+                result["provenance_issues"] = link["issues"]
+                result["same_original_pdf_bytes_verified"] = (
+                    link["same_local_pdf_bytes_verified"]
+                )
+                if link["qa_status"] == "FAIL":
+                    result["provenance_link_status"] = "FAIL"
+                    record("PDF_PROVENANCE_LINK_FAILED", "pdf_provenance")
+                elif result["provenance_link_status"] != "FAIL":
+                    result["provenance_link_status"] = "BLOCKED"
+        if (result["python_safety_status"] == "FAIL"
+                or result["cross_agent_status"] == "FAIL"
+                or result["provenance_link_status"] == "FAIL"):
             result["status"] = "FAIL"
     except (ValueError, TypeError, KeyError, IndexError, UnicodeDecodeError) as exc:
         result["status"] = "FAIL"
@@ -182,6 +247,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--operational-native", required=True, type=Path)
     parser.add_argument("--studio-batch-report", type=Path)
+    parser.add_argument("--team2-provenance", type=Path)
+    parser.add_argument("--qa-pdf-receipt", type=Path)
+    parser.add_argument("--operational-pdf-receipt", type=Path)
+    parser.add_argument("--pdf-root", type=Path)
     parser.add_argument("--trusted-base", required=True, type=Path)
     parser.add_argument("--schema", type=Path, default=ROOT /
                         "configs/schemas/document_extraction.schema.json")
@@ -210,6 +279,13 @@ def main() -> int:
             execution_kind=args.execution_kind,
             studio_batch_report_bytes=(args.studio_batch_report.read_bytes()
                                        if args.studio_batch_report else None),
+            team2_provenance_bytes=(args.team2_provenance.read_bytes()
+                                    if args.team2_provenance else None),
+            qa_pdf_receipt_bytes=(args.qa_pdf_receipt.read_bytes()
+                                  if args.qa_pdf_receipt else None),
+            operational_pdf_receipt_bytes=(args.operational_pdf_receipt.read_bytes()
+                                           if args.operational_pdf_receipt else None),
+            pdf_root=args.pdf_root,
         )
     except OSError:
         result = {
