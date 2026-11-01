@@ -221,3 +221,66 @@ def test_incomplete_receipt_pair_cannot_claim_pdf_match(tmp_path):
         x["issue_code"] for x in result["issues"]
     }
     assert result["status"] == "BLOCKED"
+
+
+
+def test_three_document_c001_cannot_run_with_single_document_native(tmp_path):
+    source = load_json_strict(OPERATING.read_bytes())
+    docs = load_json_strict(source["content"])["documents"]
+    source["content"] = json.dumps({"documents": docs[:1]})
+    source["metadata"]["merge"]["items"] = source["metadata"]["merge"]["items"][:1]
+    source["metadata"]["source_files"] = source["metadata"]["source_files"][:1]
+    fake = tmp_path / "incomplete_c001_native.json"
+    fake.write_text(json.dumps(source), encoding="utf-8")
+    proc, result = invoke("--operational-native", str(fake))
+    assert proc.returncode == 2, proc.stderr
+    assert result["status"] == "BLOCKED"
+    assert "python_summary" not in result
+    assert result["python_business_status"] == "NOT_VERIFIED"
+    assert result["single_case_grouping_status"] == "NOT_VERIFIED"
+    assert "C001_NOT_SINGLE_THREE_DOCUMENT_JOB" in {
+        x["issue_code"] for x in result["issues"]
+    }
+
+
+def test_source_pdf_filename_is_bound_to_native_file_id(tmp_path):
+    paths, payloads = make_synthetic_pdf_receipt_bundle(tmp_path)
+    payloads["op_receipt"]["files"][0]["filename"] = "UNRELATED.pdf"
+    paths["op_receipt"].write_text(json.dumps(payloads["op_receipt"]), encoding="utf-8")
+    proc, result = invoke_with_synthetic_provenance(tmp_path, paths)
+    assert proc.returncode == 1, proc.stderr
+    assert result["status"] == "FAIL"
+    assert "OPERATION_NATIVE_UPLOAD_RECEIPT_MISMATCH" in {
+        x["issue_code"] for x in result["issues"]
+    }
+    assert result["same_original_pdf_bytes_verified"] is False
+
+
+def test_qa_native_one_document_does_not_satisfy_c001_handoff(tmp_path):
+    source = load_json_strict(OPERATING.read_bytes())
+    docs = load_json_strict(source["content"])["documents"]
+    source["content"] = json.dumps({"documents": docs[:1]})
+    source["metadata"]["merge"]["items"] = source["metadata"]["merge"]["items"][:1]
+    source["metadata"]["source_files"] = source["metadata"]["source_files"][:1]
+    qa_native = tmp_path / "synthetic_qa_native.json"
+    qa_native.write_text(json.dumps(source), encoding="utf-8")
+    qa_report = tmp_path / "synthetic_qa_report.json"
+    qa_report.write_text(json.dumps({
+        "case_id": "C001", "qa_status": "NOT_VERIFIED",
+        "checked_document_ids": [docs[0]["document_id"]], "issues": [],
+        "evidence_status": "PARTIAL", "recommended_action": "review",
+        "workflow_version": "v1", "execution_provenance": None,
+        "field_checks": [{"field": "po_id", "status": "SOURCE_NOT_VERIFIED"}],
+    }), encoding="utf-8")
+    proc, result = invoke(
+        "--qa-native", str(qa_native), "--qa-report", str(qa_report),
+        "--qa-agent-id", AGENT, "--qa-config-id", CONFIG,
+        "--qa-config-version", "1", "--execution-kind", "ARCHIVED_REPLAY",
+    )
+    assert proc.returncode == 2, proc.stderr
+    assert result["status"] == "BLOCKED"
+    assert result["python_safety_status"] == "PASS_LOCAL"
+    assert result["studio_document_status"] == "NOT_VERIFIED"
+    assert "QA_C001_NATIVE_CASE_INCOMPLETE" in {
+        x["issue_code"] for x in result["issues"]
+    }
