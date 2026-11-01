@@ -22,8 +22,8 @@ from leadtime_guardian.qa.cross_agent import (
 from leadtime_guardian.qa.handoff_builder import build_studio_raw_handoff
 from leadtime_guardian.qa.portfolio import audit_portfolio
 from leadtime_guardian.qa.provenance_link import audit_team2_provenance_link
-from leadtime_guardian.qa.studio_contract import audit_native_envelope
 from leadtime_guardian.qa.studio_batch import audit_studio_case_batch
+from leadtime_guardian.qa.studio_contract import audit_native_envelope
 from leadtime_guardian.studio_adapter import apply_studio_extractions
 from leadtime_guardian.studio_integration import (
     analyze_studio_documents,
