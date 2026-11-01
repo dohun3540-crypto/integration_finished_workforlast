@@ -92,6 +92,12 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
         "status": "BLOCKED",
         "stage_contract_version": "leadtime-stage-intake/v1",
         "case_id": None,
+        "operational_job_id": None,
+        "config_id": None,
+        "config_version": None,
+        "xlsx_reference_sha256": (
+            "ad338d318f48c566dce3bf92e6b46c2cff49cd429dba90a79ea2941703ff82eb"
+        ),
         "stages": stages_out,
         "field_trace": [],
         "first_observed_conversion": "UNKNOWN",
@@ -120,6 +126,9 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
         result["status"] = "FAIL"
         return result
     result["case_id"] = manifest["case_id"]
+    result["operational_job_id"] = manifest["operational_job_id"]
+    result["config_id"] = manifest["config_id"]
+    result["config_version"] = manifest["config_version"]
     op_job = manifest["operational_job_id"]
     all_metadata = manifest["stages"]
     for stage in STAGES:
