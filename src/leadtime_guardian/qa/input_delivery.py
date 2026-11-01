@@ -120,11 +120,11 @@ def audit_normalize_qa_input(
                 (normalize_step, "NORMALIZE"),
                 (qa_step_input, "QA_INPUT"),
             ):
-                if isinstance(value, dict) and "case_id" in value:
-                    if value["case_id"] != expected_case_id:
-                        status = "LOCAL_CONTENT_MISMATCH"
-                        case_binding_conflict = True
-                        note(side + "_CASE_ID_MISMATCH", "ERROR")
+                if (isinstance(value, dict) and "case_id" in value
+                        and value["case_id"] != expected_case_id):
+                    status = "LOCAL_CONTENT_MISMATCH"
+                    case_binding_conflict = True
+                    note(side + "_CASE_ID_MISMATCH", "ERROR")
     if isinstance(qa_report, dict):
         feedback = qa_report.get("issues")
         if isinstance(feedback, list):
