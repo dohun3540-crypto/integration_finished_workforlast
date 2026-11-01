@@ -11,7 +11,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from leadtime_guardian.qa.audit import load_json_strict
 from leadtime_guardian.qa.cross_agent import (
-    APPROVED_SANDBOX_AGENTS, SANDBOX_AGENT_ID, audit_cross_agent_handoff,
+    APPROVED_SANDBOX_AGENTS,
+    SANDBOX_AGENT_ID,
+    audit_cross_agent_handoff,
 )
 
 
