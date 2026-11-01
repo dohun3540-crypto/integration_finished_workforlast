@@ -11,6 +11,7 @@ from typing import Any
 
 from .audit import load_json_strict
 from .studio_contract import audit_native_envelope
+from .studio_qa_adapter import STUDIO_REPORT_FORMAT, normalize_studio_qa_report
 
 HANDOFF_VERSION = "leadtime-cross-agent/v1"
 SANDBOX_AGENT_ID = "agt_GhP9GywhbcDWquFqWTsmtq"
@@ -161,7 +162,18 @@ def audit_cross_agent_handoff(
             if issue["code"] == "EXTERNAL_SAFETY_NOT_VERIFIED" and python == "PASS":
                 fail("UNVERIFIED_PYTHON_MARKED_PASS", field)
 
+    report_format = studio.get("qa_report_format", "HANDOFF_VERDICT_V1")
+    if report_format not in ("HANDOFF_VERDICT_V1", STUDIO_REPORT_FORMAT):
+        fail("UNSUPPORTED_QA_REPORT_FORMAT", "studio.qa_report_format")
+    if report_format == STUDIO_REPORT_FORMAT:
+        if (not isinstance(studio.get("case_id"), str) or not studio["case_id"].strip()
+                or not isinstance(studio.get("checked_document_ids"), list)):
+            fail("RAW_STUDIO_BINDING_MISSING", "studio.case_id/checked_document_ids")
+        if python != "NOT_VERIFIED":
+            fail("RAW_STUDIO_CANNOT_ASSERT_PYTHON_PASS", "verdict.python_qa_status")
+
     report_verified = False
+    mapped_report = None
     if report_bytes is not None:
         if not isinstance(report_bytes, bytes):
             fail("INVALID_QA_REPORT_BYTES", "qa_report_bytes")
@@ -176,9 +188,44 @@ def audit_cross_agent_handoff(
             else:
                 if not isinstance(report, dict):
                     fail("INVALID_QA_REPORT_OBJECT", "qa_report_bytes")
+                elif report_format == STUDIO_REPORT_FORMAT:
+                    mapped_report = normalize_studio_qa_report(
+                        report, expected_case_id=studio.get("case_id"),
+                        expected_document_ids=studio.get("checked_document_ids"),
+                    )
+                    if mapped_report["adapter_status"] != "PASS":
+                        for problem in mapped_report["adapter_issues"]:
+                            fail("STUDIO_" + problem["issue_code"], problem["field"])
+                    else:
+                        report_verified = True
+                    if mapped_report["document_qa_status"] != doc:
+                        fail("STUDIO_DOCUMENT_VERDICT_MISMATCH", "verdict.document_qa_status")
+                    if mapped_report["python_qa_status"] != python:
+                        fail("STUDIO_PYTHON_VERDICT_MISMATCH", "verdict.python_qa_status")
+                    if mapped_report["issues"] != feedback:
+                        fail("STUDIO_MAPPED_ISSUES_MISMATCH", "verdict.issues")
+                    if mapped_report["requires_human_review"]:
+                        requires_human_review = True
+                    # Only current QA execution identifiers are comparable.
+                    # An explicitly referenced historical prediction Job is
+                    # not required to match the Sandbox job.
+                    provenance = mapped_report["execution_provenance"]
+                    if isinstance(provenance, dict):
+                        for source, expected in (
+                            ("workflow_id", studio.get("agent_id")),
+                            ("config_id", studio.get("config_id")),
+                            ("job_id", studio.get("job_id")),
+                        ):
+                            actual = provenance.get(source)
+                            if actual is not None and actual != expected:
+                                issues.append({
+                                    "issue_code": "EXECUTION_PROVENANCE_MISMATCH",
+                                    "field": "qa_report.execution_provenance." + source,
+                                    "severity": "WARNING",
+                                })
+                                requires_human_review = True
                 else:
-                    # The external Studio QA schema is not yet observed. A
-                    # handoff adapter must explicitly expose these two statuses.
+                    # Legacy handoff report; preserved for earlier clients.
                     required = ("document_qa_status", "python_qa_status")
                     missing = [field for field in required if field not in report]
                     if missing:
@@ -210,6 +257,25 @@ def audit_cross_agent_handoff(
                         fail("NATIVE_" + issue["issue_code"], "native." + issue["field"])
                 else:
                     native_verified = True
+                if report_format == STUDIO_REPORT_FORMAT:
+                    try:
+                        native_doc_ids = [
+                            d["document_id"] for d in
+                            load_json_strict(native["content"])["documents"]
+                        ]
+                    except (KeyError, ValueError, TypeError, UnicodeDecodeError):
+                        fail("NATIVE_DOCUMENT_IDS_UNREADABLE", "native.content.documents")
+                    else:
+                        expected_docs = studio.get("checked_document_ids")
+                        if (not isinstance(expected_docs, list)
+                                or len(native_doc_ids) != len(expected_docs)
+                                or set(native_doc_ids) != set(expected_docs)):
+                            fail("NATIVE_QA_DOCUMENT_IDS_MISMATCH",
+                                 "studio.checked_document_ids")
+                    if not (isinstance(native, dict)
+                            and isinstance(native.get("metadata"), dict)
+                            and isinstance(native["metadata"].get("source_files"), list)):
+                        fail("NATIVE_SOURCE_FILES_MISSING", "native.metadata.source_files")
                 if (isinstance(native, dict) and isinstance(native.get("metadata"), dict)
                         and isinstance(file_ids, list)):
                     source_ids = native["metadata"].get("source_files")
