@@ -125,7 +125,7 @@ def audit_release_folder(manifest_path: Path) -> dict[str, Any]:
 
         stage = report["checked_inputs"].get("stage_manifest")
         if stage is not None:
-            from qa_stage_intake_check import inspect_manifest_path
+            from scripts.qa_stage_intake_check import inspect_manifest_path
 
             stage_report = inspect_manifest_path(directory / stage["relative_path"])
             report["local_stage_status"] = stage_report["status"]
