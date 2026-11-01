@@ -231,7 +231,7 @@ def test_mixed_operational_extract_branches_are_rejected():
 
 
 def test_cli_three_extract_branch_files(tmp_path):
-    manifest, data = evidence()
+    manifest, _ = evidence()
     branches = {}
     for kind, doc in zip(TYPES, synthetic_docs()):
         filename = f"{kind}.json"
