@@ -1,6 +1,5 @@
 """Only local synthetic receipts. Live Studio upload binding is NOT proven."""
 import hashlib
-import hashlib
 import json
 import subprocess
 import sys
