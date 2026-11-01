@@ -22,6 +22,7 @@ from leadtime_guardian.qa.cross_agent import (
 from leadtime_guardian.qa.handoff_builder import build_studio_raw_handoff
 from leadtime_guardian.qa.portfolio import audit_portfolio
 from leadtime_guardian.qa.studio_contract import audit_native_envelope
+from leadtime_guardian.qa.studio_batch import audit_studio_case_batch
 from leadtime_guardian.studio_adapter import apply_studio_extractions
 from leadtime_guardian.studio_integration import (
     analyze_studio_documents,
@@ -37,10 +38,13 @@ def audit_combined_bytes(
     qa_agent_id: str | None = None, qa_config_id: str | None = None,
     qa_config_version: int | None = None,
     execution_kind: str = "ARCHIVED_STUDIO",
+    studio_batch_report_bytes: bytes | None = None,
 ) -> dict:
     """Independently check the joined code path; no authentication of cloud runs."""
     result = {
         "status": "BLOCKED",
+        "single_case_grouping_status": "NOT_VERIFIED",
+        "experiment_comparison_allowed": False,
         "python_business_status": "NOT_VERIFIED",
         "python_safety_status": "NOT_VERIFIED",
         "studio_document_status": "NOT_VERIFIED",
@@ -57,6 +61,25 @@ def audit_combined_bytes(
         result["issues"].append({"issue_code": code, "stage": stage})
 
     try:
+        if studio_batch_report_bytes is not None:
+            if type(studio_batch_report_bytes) is not bytes:
+                raise TypeError("Studio batch observation must be original bytes")
+            result["sha256"]["studio_batch_observation"] = hashlib.sha256(
+                studio_batch_report_bytes
+            ).hexdigest()
+            batch = audit_studio_case_batch(
+                load_json_strict(studio_batch_report_bytes),
+                expected_case_id=case_id, expected_job_id=operational_job_id,
+            )
+            result["single_case_grouping_status"] = batch["single_case_grouping_status"]
+            result["studio_batch_issues"] = batch["issues"]
+            if batch["qa_status"] == "FAIL":
+                result["status"] = "FAIL"
+                record("INVALID_STUDIO_BATCH_GROUPING_EVIDENCE", "studio_batch")
+                return result
+            if batch["single_case_grouping_status"] == "INVALID_SPLIT_JOBS":
+                record("MULTI_JOB_B0_NOT_INTEGRATED_C001", "studio_batch")
+                return result
         if type(operational_native_bytes) is not bytes:
             raise TypeError("operational Native must be bytes")
         if type(base_case_bytes) is not bytes or type(schema_bytes) is not bytes:
@@ -158,6 +181,7 @@ def audit_combined_bytes(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--operational-native", required=True, type=Path)
+    parser.add_argument("--studio-batch-report", type=Path)
     parser.add_argument("--trusted-base", required=True, type=Path)
     parser.add_argument("--schema", type=Path, default=ROOT /
                         "configs/schemas/document_extraction.schema.json")
@@ -184,6 +208,8 @@ def main() -> int:
             qa_agent_id=args.qa_agent_id, qa_config_id=args.qa_config_id,
             qa_config_version=args.qa_config_version,
             execution_kind=args.execution_kind,
+            studio_batch_report_bytes=(args.studio_batch_report.read_bytes()
+                                       if args.studio_batch_report else None),
         )
     except OSError:
         result = {
