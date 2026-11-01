@@ -89,6 +89,9 @@ def audit_normalize_qa_input(
             elif qa_string_layers > 1:
                 status = "QA_INPUT_WRAPPING_UNVERIFIED"
                 note("QA_INPUT_DOUBLE_JSON_WRAPPED")
+            elif qa_docs != normalize_docs:
+                status = "LOCAL_CONTENT_MISMATCH"
+                note("QA_NORMALIZED_DOCUMENTS_MISMATCH", "ERROR")
             elif not (isinstance(normalize_docs, list)
                       and isinstance(qa_docs, list)
                       and bool(normalize_docs) and bool(qa_docs)
@@ -103,11 +106,8 @@ def audit_normalize_qa_input(
             ):
                 status = "QA_INPUT_MALFORMED"
                 note("DUPLICATE_DOCUMENT_IDS", "ERROR")
-            elif qa_docs == normalize_docs:
-                status = "LOCAL_CONTENT_MATCH"
             else:
-                status = "LOCAL_CONTENT_MISMATCH"
-                note("QA_NORMALIZED_DOCUMENTS_MISMATCH", "ERROR")
+                status = "LOCAL_CONTENT_MATCH"
 
     # Apply only a supplied explicit same-case binding; do not infer a case
     # from document file names, or promote local content match to cloud proof.
