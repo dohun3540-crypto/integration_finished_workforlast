@@ -3,7 +3,6 @@
 Synthetic OOXML reproduces the 22 coordinate pattern, NOT the user's XLSX.
 The original XLSX is never committed to GitHub.
 """
-import json
 import subprocess
 import sys
 import zipfile
