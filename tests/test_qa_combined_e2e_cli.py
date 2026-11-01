@@ -106,3 +106,118 @@ def test_malformed_trusted_case_json_is_error(tmp_path):
     proc, output = invoke("--trusted-base", str(bad))
     assert proc.returncode == 1
     assert output["status"] == "FAIL"
+
+
+
+def make_synthetic_pdf_receipt_bundle(tmp_path):
+    """Local contract fixture, deliberately NOT original real PDF or Studio QA."""
+    source = load_json_strict(OPERATING.read_bytes())
+    native_sources = source["metadata"]["source_files"]
+    doc_ids = [
+        d["document_id"] for d in load_json_strict(source["content"])["documents"]
+    ]
+    synthetic_qa = {
+        "case_id": "C001", "qa_status": "NOT_VERIFIED",
+        "checked_document_ids": doc_ids,
+        "issues": [], "evidence_status": "PARTIAL",
+        "recommended_action": "human review required",
+        "workflow_version": "v1", "execution_provenance": None,
+        "field_checks": [
+            {"field": d, "status": "SOURCE_NOT_VERIFIED"} for d in doc_ids
+        ],
+    }
+    rows = []
+    for item in native_sources:
+        filename = item["file_name"]
+        # These are synthetic PDF-like bytes solely for local SHA contract tests.
+        content = b"%PDF-1.4\nSynthetic CI bytes for " + filename.encode()
+        (tmp_path / filename).write_bytes(content)
+        rows.append({
+            "filename": filename,
+            "file_id": item["file_id"],
+            "sha256": hashlib.sha256(content).hexdigest(),
+        })
+    source_sha = hashlib.sha256(OPERATING.read_bytes()).hexdigest()
+    sidecar = {
+        "contract_version": "studio-provenance/1",
+        "export_sha256": source_sha,
+        "studio_metadata_supplied": source["metadata"],
+        "business_validation_status": "COMPLETED",
+        "evidence_verified_against_pdf": False,
+    }
+    paths = {
+        "qa_report": tmp_path / "synthetic_qa_report.json",
+        "sidecar": tmp_path / "synthetic_team2_sidecar.json",
+        "qa_receipt": tmp_path / "synthetic_qa_receipt.json",
+        "op_receipt": tmp_path / "synthetic_op_receipt.json",
+    }
+    payloads = {
+        "qa_report": synthetic_qa,
+        "sidecar": sidecar,
+        "qa_receipt": {"case_id": "C001", "files": rows},
+        "op_receipt": {"case_id": "C001", "files": rows},
+    }
+    for key, location in paths.items():
+        location.write_text(json.dumps(payloads[key]), encoding="utf-8")
+    return paths, payloads
+
+
+def invoke_with_synthetic_provenance(tmp_path, paths):
+    return invoke(
+        "--qa-native", str(OPERATING),
+        "--qa-report", str(paths["qa_report"]),
+        "--qa-agent-id", AGENT, "--qa-config-id", CONFIG,
+        "--qa-config-version", "1", "--execution-kind", "ARCHIVED_REPLAY",
+        "--team2-provenance", str(paths["sidecar"]),
+        "--qa-pdf-receipt", str(paths["qa_receipt"]),
+        "--operational-pdf-receipt", str(paths["op_receipt"]),
+        "--pdf-root", str(tmp_path),
+    )
+
+
+def test_synthetic_original_pdf_sha_link_never_authenticates_live(tmp_path):
+    paths, _ = make_synthetic_pdf_receipt_bundle(tmp_path)
+    proc, result = invoke_with_synthetic_provenance(tmp_path, paths)
+    assert proc.returncode == 2, proc.stderr
+    assert result["python_business_status"] == "COMPLETED"
+    assert result["python_safety_status"] == "PASS_LOCAL"
+    assert result["provenance_link_status"] == "BLOCKED"
+    assert result["same_original_pdf_bytes_verified"] is True
+    assert result["actual_studio_e2e_status"] == "NOT_VERIFIED"
+    assert result["release_or_merge_authorized"] is False
+
+
+def test_wrong_operational_upload_file_id_blocks_source_binding(tmp_path):
+    paths, payloads = make_synthetic_pdf_receipt_bundle(tmp_path)
+    payloads["op_receipt"]["files"][0]["file_id"] = "file_WRONG"
+    paths["op_receipt"].write_text(json.dumps(payloads["op_receipt"]), encoding="utf-8")
+    proc, result = invoke_with_synthetic_provenance(tmp_path, paths)
+    assert proc.returncode == 1, proc.stderr
+    assert result["provenance_link_status"] == "FAIL"
+    assert "OPERATION_NATIVE_UPLOAD_RECEIPT_MISMATCH" in {
+        x["issue_code"] for x in result["issues"]
+    }
+    assert result["status"] == "FAIL"
+
+
+def test_wrong_team2_native_sha_blocks_cross_job_provenance(tmp_path):
+    paths, payloads = make_synthetic_pdf_receipt_bundle(tmp_path)
+    payloads["sidecar"]["export_sha256"] = "0" * 64
+    paths["sidecar"].write_text(json.dumps(payloads["sidecar"]), encoding="utf-8")
+    proc, result = invoke_with_synthetic_provenance(tmp_path, paths)
+    assert proc.returncode == 1, proc.stderr
+    assert result["provenance_link_status"] == "FAIL"
+    assert "OPERATION_NATIVE_SIDECAR_SHA_MISMATCH" in {
+        x["issue_code"] for x in result["issues"]
+    }
+
+
+def test_incomplete_receipt_pair_cannot_claim_pdf_match(tmp_path):
+    paths, _ = make_synthetic_pdf_receipt_bundle(tmp_path)
+    proc, result = invoke("--team2-provenance", str(paths["sidecar"]))
+    assert proc.returncode == 2, proc.stderr
+    assert result["same_original_pdf_bytes_verified"] is False
+    assert "PDF_PROVENANCE_EVIDENCE_SET_INCOMPLETE" in {
+        x["issue_code"] for x in result["issues"]
+    }
+    assert result["status"] == "BLOCKED"
