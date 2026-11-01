@@ -23,6 +23,9 @@
 
 수정: src/leadtime_guardian/qa/release_inventory.py 및 scripts/qa_release_evidence_check.py. 독립 로컬 메타데이터 계약 leadtime-release-evidence/v1을 읽어서 정확히 누락된 원본, 각 로컬 파일의 SHA256, 경로/파일 크기, 선언 SHA 일치, 잘못된 증거와 요구되는 다음 행동을 출력한다. Stage 검사는 기존 Inspect 함수를 그대로 재사용. 어떤 경우에도 Studio Cloud 인증/Gold 정확도/Release PASS로 승격하지 않는다. JSON·Markdown 보고서 생성 가능. 상대 경로, 디렉터리 외부 심볼릭 링크, 잘못된 JSON, 선언 SHA 불일치 차단.
 
+### HIGH — 보고서 출력 경로가 기존 증거 파일을 덮어쓸 수 있음
+기존 9차 초안 scripts/qa_release_evidence_check.py가 Path.write_text로 결과를 저장해 --json-report/--markdown-report를 원본 Manifest/PDF 경로로 잘못 지정하면 파일을 손상할 수 있었다. 원본 보호를 위해 exclusive create (open mode x)로 수정했고 파일이 이미 존재할 때 FAIL/REPORT_OUTPUT_NOT_WRITABLE을 반환한다. 원본 파일 바이트 보존 부정 테스트를 추가했다.
+
 ### LOW — Stage manifest 없이도 Extract3/하위 Step의 누락 항목이 구체적이지 않음
 9차 Release Inventory는 Stage manifest 자체가 없는 경우에도 Extract 발주서·통보서·견적서, Merge, Normalize, IndependentQA INPUT/Report를 개별 missing_inputs로 표시하도록 개선했다.
 
