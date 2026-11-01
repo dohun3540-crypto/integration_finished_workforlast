@@ -2,12 +2,12 @@
 
 Date: 2026-11-01. PR #10: https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/10
 Base PR #9 SHA b4c01ecddbd00bc33bca1ae8c1735ac768eea20f.
-코드 검증 SHA 37fac1f3a3436d505afbd9778312e25998e85f06, CI #41304112310 SUCCESS: 전체 595 PASS(독립 QA 406 포함), Ruff PASS, Archived C001/Local Integration PASS_LOCAL; 전체 Release BLOCKED. 최종 문서 SHA의 CI는 별도 확인.
+코드 검증 SHA 9e15fcfed44190e71863f7c5a8f1a73d26ed2d1a, CI #41304643210 SUCCESS: 전체 597 PASS(독립 QA 408 포함), Ruff PASS, Archived C001/Local Integration PASS_LOCAL; 전체 Release BLOCKED. 최종 문서 SHA의 CI는 별도 확인.
 
 | Gate | 상태 | 원본 증거 / 범위 | BLOCKER 및 다음 담당/입력 |
 |---|---|---|---|
-| QA_CODE_GATE | PASS_AT_TESTED_SHA | GitHub QA pytest 406, Ruff | 최종 문서 SHA CI, 팀원1 |
-| COMBINED_CODE_CI_GATE | PASS_AT_TESTED_SHA | Python 전체 pytest 595, Ruff, CI #41304112310 | 최종 HEAD CI, 팀원1 |
+| QA_CODE_GATE | PASS_AT_TESTED_SHA | GitHub QA pytest 408, Ruff | 최종 문서 SHA CI, 팀원1 |
+| COMBINED_CODE_CI_GATE | PASS_AT_TESTED_SHA | Python 전체 pytest 597, Ruff, CI #41304112310 | 최종 HEAD CI, 팀원1 |
 | TEAM2_ENGINE_GATE | PASS_LOCAL | 원본 Team2 V6 코드의 통합 및 보관 회귀. 운영 PR#12 원본 무수정 | 실제 NCik 원본 실행/sidecar, 팀원2 |
 | COMBINED_SOURCE_COMPATIBILITY_GATE | PASS_LOCAL | Studio Adapter/Strict JSON/V6/QA/Provenance 코드 연결 및 런타임 회귀 | 실제 원본 실행·승인, 팀원1+2 |
 | OFFLINE_E2E_GATE | PASS_LOCAL | 기존 C001 Archived Replay 및 로컬 합성 음성 테스트 | 신규 Studio 실제 E2E 대체 불가 |
