@@ -29,7 +29,7 @@ def build_studio_raw_handoff(
 ) -> dict[str, Any]:
     """Fail closed on invalid raw artifacts, identifiers and format."""
     if not isinstance(native_bytes, bytes) or not isinstance(report_bytes, bytes):
-        raise ValueError("original raw file bytes required")
+        raise TypeError("original raw file bytes required")
     if not isinstance(case_id, str) or not case_id.strip():
         raise ValueError("explicit nonempty case_id required")
     if agent_id not in APPROVED_SANDBOX_AGENTS:
@@ -50,7 +50,7 @@ def build_studio_raw_handoff(
     native = load_json_strict(native_bytes)
     report = load_json_strict(report_bytes)
     if not isinstance(native, dict) or not isinstance(native.get("metadata"), dict):
-        raise ValueError("Native envelope metadata missing")
+        raise TypeError("Native envelope metadata missing")
     meta = native["metadata"]
     job_id, step_run_id = meta.get("job_execution_id"), meta.get("step_run_id")
     native_check = audit_native_envelope(
