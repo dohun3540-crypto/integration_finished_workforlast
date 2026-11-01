@@ -8,13 +8,13 @@
   "pr_url": "https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/10",
   "base_pr": 9,
   "base_sha": "b4c01ecddbd00bc33bca1ae8c1735ac768eea20f",
-  "verified_code_commit": "37fac1f3a3436d505afbd9778312e25998e85f06",
+  "verified_code_commit": "9e15fcfed44190e71863f7c5a8f1a73d26ed2d1a",
   "verified_code_ci": {
-    "url": "https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41304112310",
-    "run_id": 41304112310,
+    "url": "https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/actions/runs/41304643210",
+    "run_id": 41304643210,
     "conclusion": "SUCCESS",
-    "python_all_pass": 595,
-    "independent_qa_pass": 406,
+    "python_all_pass": 597,
+    "independent_qa_pass": 408,
     "qa_is_included_in_all": true,
     "ruff_qa": "PASS",
     "ruff_repo": "PASS",
@@ -22,7 +22,7 @@
     "local_checks_passed": true,
     "local_overall": "BLOCKED"
   },
-  "final_commit_sha": "Lookup latest PR #10 head_sha after checkpoint commit; cannot embed SHA of its own contents",
+  "final_commit_sha": "Lookup latest PR#10 HEAD after this checkpoint update; final SHA is self-referential and cannot be embedded in the file",
   "final_ci": "Must independently fetch CI for latest PR#10 head_sha and inspect QA/whole Python/Ruff/local Gate proof",
   "original_repo_module_status": "Team2 operational engine six core modules must remain byte-identical; compare latest PR#10 sha with team2 PR#12 sha before final response",
   "changed_files": [
@@ -43,7 +43,8 @@
     "NEW_LIVE_STUDIO without exact original Stage, QA, Provenance, PDF and QA saved config metadata BLOCKED/NOT_RUN before Python V6",
     "Structured release evidence missing/invalid originals inventory and per-file actual SHA256, JSON/Markdown reports, no source writes",
     "Reports exact missing Extract purchase_order/delivery_notice/quotation and other Stage originals even without Stage manifest",
-    "Stage case/job/config identity and local SHA declaration mismatch rejected, symlink directory escape rejected"
+    "Stage case/job/config identity and local SHA declaration mismatch rejected, symlink directory escape rejected",
+    "Release evidence JSON/Markdown report files are exclusively created; existing original Manifest/PDF paths cannot be overwritten, two non-overwrite regressions PASS"
   ],
   "cli": {
     "inventory": "python scripts/qa_release_evidence_check.py --manifest /private/evidence/release_evidence.json --json-report /private/results/missing_evidence.json --markdown-report /private/results/missing_evidence.md",
