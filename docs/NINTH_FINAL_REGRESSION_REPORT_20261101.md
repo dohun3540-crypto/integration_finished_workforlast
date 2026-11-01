@@ -20,6 +20,7 @@
 - 파일이 SHA 선언 이후 변경되면 FAIL; 문서 겉의 SHA만 믿지 않음.
 - 증거 폴더 외부로 탈출하는 심볼릭 링크 거부, 중복 JSON Key 입력 거부, Stage manifest Case/Job/Config 충돌 거부.
 - 로컬 원본 목록으로 JSON 및 Markdown 보고서를 생성하고 source raw 바이트 변경 없이 보존.
+- 보고서 출력 경로가 원본 Release Manifest 또는 기존 PDF 파일과 동일하면 exclusive create로 쓰기를 거부하고 FAIL; 기존 Manifest/PDF의 byte-for-byte SHA 보존 회귀 테스트 두 개 추가. 정확한 최종 pytest 개수는 최종 HEAD CI를 확인해야 함.
 
 ## 기존 회귀 테스트 지속 보존
 - Strict JSON/Studio Adapter/Team2 Python Safety V6 및 Document Match/Validate.
