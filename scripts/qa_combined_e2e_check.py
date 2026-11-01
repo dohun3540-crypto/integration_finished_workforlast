@@ -68,13 +68,13 @@ def audit_combined_bytes(
         base = load_json_strict(base_case_bytes)
         schema = load_json_strict(schema_bytes)
         if not isinstance(operational, dict) or not isinstance(base, dict):
-            raise ValueError("Native and base must be JSON objects")
+            raise TypeError("Native and base must be JSON objects")
         if not isinstance(case_id, str) or not case_id.strip():
             raise ValueError("explicit nonempty case ID required")
         if base.get("case_id") not in (case_id, "SYN-" + case_id):
             raise ValueError("operational trusted base case ID differs from expected case")
         if not isinstance(operational.get("metadata"), dict):
-            raise ValueError("operational Native metadata not observed")
+            raise TypeError("operational Native metadata not observed")
         metadata = operational["metadata"]
         if metadata.get("job_execution_id") != operational_job_id:
             raise ValueError("operational job ID does not match expected")
