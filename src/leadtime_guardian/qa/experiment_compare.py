@@ -120,9 +120,9 @@ def audit_b0_e1_readiness(b0: Any, e1: Any) -> dict[str, Any]:
         add("DUPLICATE_EXPERIMENT_JOB_ID", "pair", severity="ERROR")
     conditions_b = b0.get("execution_conditions")
     conditions_e = e1.get("execution_conditions")
-    if isinstance(conditions_b, dict) and isinstance(conditions_e, dict):
-        if set(conditions_b) != set(conditions_e):
-            add("EXPERIMENT_CONDITION_KEYS_DIFFER", "pair")
+    if (isinstance(conditions_b, dict) and isinstance(conditions_e, dict)
+            and set(conditions_b) != set(conditions_e)):
+        add("EXPERIMENT_CONDITION_KEYS_DIFFER", "pair")
     if any(x["severity"] == "ERROR" for x in issues):
         status = "FAIL"
     # No local raw bytes were supplied through this manifest-only API.
