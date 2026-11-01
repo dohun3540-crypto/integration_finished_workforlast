@@ -162,6 +162,9 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
         if (stage == "Extract" and isinstance(meta, dict)
                 and isinstance(meta.get("branches"), dict)):
             branches = meta["branches"]
+            unexpected_branches = set(branches) - set(DOC_TYPES)
+            for branch_name in sorted(unexpected_branches):
+                note("UNEXPECTED_EXTRACT_BRANCH", branch_name, "ERROR")
             raw_branches = raw if isinstance(raw, dict) else {}
             observed = {}
             observations = {}
