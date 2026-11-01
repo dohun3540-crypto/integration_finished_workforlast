@@ -324,6 +324,7 @@ def main() -> int:
             # Optional local evidence preflight is additive and fail closed.
             # Existing Team2 Python / QA / provenance execution stays untouched.
             from qa_stage_intake_check import inspect_manifest_path
+
             from leadtime_guardian.qa.stage_trace import canonical_documents_sha256
 
             stage = inspect_manifest_path(args.stage_intake_manifest)
