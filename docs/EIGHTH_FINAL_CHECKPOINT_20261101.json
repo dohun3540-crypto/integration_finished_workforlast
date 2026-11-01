@@ -58,6 +58,8 @@
     "comparison": "BLOCKED"
   },
   "changed_files": [
+    "src/leadtime_guardian/qa/input_delivery.py",
+    "tests/test_qa_input_delivery_strict_case.py",
     "src/leadtime_guardian/qa/stage_trace.py",
     "scripts/qa_stage_intake_check.py",
     "scripts/qa_combined_e2e_check.py",
@@ -78,7 +80,8 @@
     "Stage SHA/Job/Case/Normalize preflight before Python V6 execution with NOT_RUN when failed",
     "B0/E1 raw Normalize file SHA binding to Step manifest original_sha256 and optional Job/Step identity binding",
     "Reject duplicate Job-Step identity, mixed QA input-report Jobs, unknown stages and Extract branches",
-    "Bound raw JSON/manifest input; reject symlink traversal and recursion errors"
+    "Bound raw JSON/manifest input; reject symlink traversal and recursion errors",
+    "Existing Normalize→IndependentQA input_delivery validation also uses type-aware JSON equality, rejecting false==0 and true==1"
   ],
   "gates": {
     "QA_CODE_GATE": "PASS_AT_TESTED_CODE_SHA",
@@ -104,5 +107,7 @@
     "combined": "python scripts/qa_combined_e2e_check.py --operational-native /evidence/op_native_original.json --trusted-base data/cases/SYN-C001/trusted_base_case.json --operational-job-id job_NCik8shwrgM93PDnNNYukT --case-id C001 --github-sha <ACTUAL_GITHUB_SHA> --stage-intake-manifest /evidence/stage_manifest.json",
     "comparison": "python scripts/qa_b0_e1_compare_check.py --b0 /evidence/B0_manifest.json --e1 /evidence/E1_manifest.json --b0-normalize /evidence/B0_normalize.json --e1-normalize /evidence/E1_normalize.json"
   },
-  "immediate_next_action": "Verify latest PR #9 HEAD CI; then Studio owner should export existing NCik Extract3/Merge/Normalize/IndependentQA actual Input+Report, original PDF SHA/file receipts and Team2 sidecar. Keep Release BLOCKED until original provider and Human-reviewed Gold evidence."
+  "immediate_next_action": "Verify latest PR #9 HEAD CI; then Studio owner should export existing NCik Extract3/Merge/Normalize/IndependentQA actual Input+Report, original PDF SHA/file receipts and Team2 sidecar. Keep Release BLOCKED until original provider and Human-reviewed Gold evidence.",
+  "additional_code_sha_after_last_path_fix": "c2e82be91d7d6b3a0117177c78765719cba9a844",
+  "final_ci_policy": "The previously recorded 581/392 CI at 41302028422 predates the last input_delivery fix; final answer MUST use the SUCCESS workflow and actual counts for the latest docs+code HEAD"
 }
