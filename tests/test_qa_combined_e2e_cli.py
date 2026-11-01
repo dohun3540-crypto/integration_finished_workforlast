@@ -3,6 +3,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from decimal import Decimal
 from pathlib import Path
 
 from leadtime_guardian.qa.audit import load_json_strict
@@ -34,7 +35,7 @@ def test_verified_archive_to_team2_python_qa_without_live_pair():
     assert output["python_business_status"] == "COMPLETED"
     assert output["python_safety_status"] == "PASS_LOCAL"
     assert output["python_summary"]["changed_shortage_quantity"] == 60
-    assert output["python_summary"]["estimated_quote_cost_krw"] == "60500"
+    assert Decimal(output["python_summary"]["estimated_quote_cost_krw"]) == Decimal(60500)
     assert output["sha256"]["operational_native"] == hashlib.sha256(
         OPERATING.read_bytes()
     ).hexdigest()
