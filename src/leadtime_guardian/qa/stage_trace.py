@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import re
 from collections import Counter
+from itertools import pairwise
 from typing import Any
 
 from leadtime_guardian.qa.audit import load_json_strict
@@ -242,7 +243,7 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, bytes]) -> dict
     # are NOT bridged, because such bridging invents the conversion boundary.
     for trace in result["field_trace"]:
         states = trace["stage_values"]
-        for a, b in zip(DOCUMENT_STAGES, DOCUMENT_STAGES[1:]):
+        for a, b in pairwise(DOCUMENT_STAGES):
             if (states[a]["state"] == "NOT_PROVIDED"
                     or states[b]["state"] == "NOT_PROVIDED"):
                 continue
