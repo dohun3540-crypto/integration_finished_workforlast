@@ -61,10 +61,19 @@ def inspect_workbook(data):
                 else:
                     value = raw
                 category = classify(value, kind)
+                formula = cell.find(XML + "f")
+                has_formula = formula is not None
+                # A formula's cached 49 is not a literal source value.
                 if category in ("NUMBER_49", "STRING_49"):
                     matches.append({"cell": cell.get("r"), "raw_cell_type": kind,
                                     "raw_v": raw, "value": value,
-                                    "match_type": category})
+                                    "has_formula": has_formula,
+                                    "formula_expression": (
+                                        formula.text if has_formula else None
+                                    ),
+                                    "match_type": (
+                                        "FORMULA_CACHED_49" if has_formula else category
+                                    )})
             sheets.append({"worksheet_xml": sheet, "matches": matches})
     return sheets
 
