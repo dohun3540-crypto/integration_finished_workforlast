@@ -64,7 +64,7 @@
 - 증거 파일 부족: BLOCKED, 종료코드 2, missing_inputs에 원본의 **정확한 명칭** 포함.
 - 형식·해시·경로·Case/Job/Config 충돌: FAIL, 종료코드 1.
 - 모든 로컬 파일이 존재하는 경우에도 source_authentication_status=NOT_AUTHENTICATED, release_authorized=false. 이 inventory 도구는 Python 계산·Studio 실행을 하지 않는다.
-- 두 결과 보고서만 생성하며 실제 원본 입력 바이트는 수정하지 않는다.
+- 두 결과 보고서는 새 파일로만 생성한다. --json-report 또는 --markdown-report가 이미 존재하는 경로를 가리키면 FAIL로 차단하며 원본 Manifest/PDF/Native 바이트를 덮어쓰지 않는다. 결과를 다시 실행하려면 새로운 보고서 파일명을 지정한다.
 
 ## 5. 기존 Stage/안전 검증기 순서대로 실행
 
