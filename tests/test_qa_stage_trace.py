@@ -177,3 +177,80 @@ def test_cli_missing_stages_returns_blocked(tmp_path):
     out = json.loads(proc.stdout)
     assert proc.returncode == 2, proc.stderr
     assert out["status"] == "BLOCKED"
+
+
+
+def test_three_original_extract_branch_files_preserve_individual_step_provenance():
+    manifest, data = evidence()
+    raw = {}
+    branch_metadata = {}
+    for kind, doc in zip(TYPES, synthetic_docs()):
+        obj = {
+            "case_id": "C001", "job_id": JOB,
+            "step_run_id": "extract_" + kind, "document": doc,
+        }
+        content = json.dumps(obj).encode("utf-8")
+        raw[kind] = content
+        branch_metadata[kind] = {
+            "sha256": hashlib.sha256(content).hexdigest(),
+            "job_id": JOB, "step_run_id": "extract_" + kind,
+            "case_id": "C001", "config_id": "cfg_SYNTH",
+            "config_version": 1,
+        }
+    data["Extract"] = raw
+    manifest["stages"]["Extract"] = {"branches": branch_metadata}
+    report = audit_stage_evidence(manifest, data)
+    assert report["status"] == "BLOCKED"
+    assert report["stages"]["Extract"]["document_count"] == 3
+    assert report["stages"]["Extract"]["branches"]["quotation"]["step_run_id"] == (
+        "extract_quotation"
+    )
+    assert report["normalize_qa_input_status"] == "LOCAL_CONTENT_MATCH"
+
+
+def test_mixed_operational_extract_branches_are_rejected():
+    manifest, data = evidence()
+    branches = {}
+    branch_metadata = {}
+    for kind, doc in zip(TYPES, synthetic_docs()):
+        value = json.dumps({"document": doc}).encode()
+        branches[kind] = value
+        branch_metadata[kind] = {
+            "sha256": hashlib.sha256(value).hexdigest(),
+            "job_id": "job_OTHER" if kind == "quotation" else JOB,
+            "step_run_id": "extract_" + kind, "case_id": "C001",
+            "config_id": "cfg_SYNTH", "config_version": 1,
+        }
+    data["Extract"] = branches
+    manifest["stages"]["Extract"] = {"branches": branch_metadata}
+    result = audit_stage_evidence(manifest, data)
+    assert result["status"] == "FAIL"
+    assert "EXTRACT_BRANCH_SHA_OR_RUN_BINDING_MISMATCH" in {
+        i["issue_code"] for i in result["issues"]
+    }
+
+
+def test_cli_three_extract_branch_files(tmp_path):
+    manifest, data = evidence()
+    branches = {}
+    for kind, doc in zip(TYPES, synthetic_docs()):
+        filename = f"{kind}.json"
+        value = json.dumps({"document": doc}).encode("utf-8")
+        (tmp_path / filename).write_bytes(value)
+        branches[kind] = {
+            "path": filename, "sha256": hashlib.sha256(value).hexdigest(),
+            "job_id": JOB, "step_run_id": "extract_" + kind,
+            "case_id": "C001", "config_id": "cfg_SYNTH", "config_version": 1,
+        }
+    manifest["stages"]["Extract"] = {"branches": branches}
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest))
+    proc = subprocess.run(
+        [sys.executable, str(CLI), "--manifest", str(manifest_path)],
+        cwd=ROOT, capture_output=True, text=True, check=False, timeout=30,
+    )
+    out = json.loads(proc.stdout)
+    assert proc.returncode == 2, proc.stderr
+    assert out["status"] == "BLOCKED"
+    assert out["stages"]["Extract"]["document_count"] == 3
+    assert out["normalize_qa_input_status"] == "NOT_VERIFIED"
