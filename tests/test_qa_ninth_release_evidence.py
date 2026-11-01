@@ -145,3 +145,15 @@ def test_duplicate_release_json_keys_are_rejected(tmp_path):
     result = audit_release_folder(p)
     assert result["status"] == "FAIL"
     assert result["release_authorized"] is False
+
+
+
+def test_without_stage_manifest_names_all_three_extract_sources(tmp_path):
+    report = audit_release_folder(manifest(tmp_path))
+    for kind in ("purchase_order", "delivery_notice", "quotation"):
+        assert "stage.Extract." + kind in report["missing_inputs"]
+    assert "stage.MergeDocuments" in report["missing_inputs"]
+    assert "stage.NormalizeDocuments" in report["missing_inputs"]
+    assert "stage.IndependentQA_Input" in report["missing_inputs"]
+    assert "stage.IndependentQA_Report" in report["missing_inputs"]
+    assert report["status"] == "BLOCKED"
