@@ -83,7 +83,7 @@ def _read_field(doc: Any, dotted: str) -> dict[str, Any]:
     return {"state": state, "value": value if state != "INVALID_TYPE" else None}
 
 
-def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, bytes]) -> dict:
+def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
     """Bind each original raw JSON to explicit Job/Step/SHA before any trace."""
     issues: list[dict[str, str]] = []
     stages_out: dict[str, dict] = {}
@@ -129,6 +129,73 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, bytes]) -> dict
                        "job_id": None, "step_run_id": None,
                        "document_count": None}
         stages_out[stage] = observation
+        if (stage == "Extract" and isinstance(meta, dict)
+                and isinstance(meta.get("branches"), dict)):
+            branches = meta["branches"]
+            raw_branches = raw if isinstance(raw, dict) else {}
+            observed = {}
+            observations = {}
+            for kind in DOC_TYPES:
+                branch_meta = branches.get(kind)
+                payload = raw_branches.get(kind)
+                if branch_meta is None or payload is None:
+                    note("EXTRACT_BRANCH_NOT_PROVIDED", kind)
+                    continue
+                if not isinstance(branch_meta, dict) or type(payload) is not bytes:
+                    note("INVALID_EXTRACT_BRANCH_EVIDENCE", kind, "ERROR")
+                    continue
+                sha = hashlib.sha256(payload).hexdigest()
+                observations[kind] = {
+                    "sha256": sha, "job_id": branch_meta.get("job_id"),
+                    "step_run_id": branch_meta.get("step_run_id"),
+                }
+                if (branch_meta.get("sha256") != sha
+                        or branch_meta.get("job_id") != op_job
+                        or branch_meta.get("case_id") != manifest["case_id"]
+                        or branch_meta.get("config_id") != manifest["config_id"]
+                        or branch_meta.get("config_version") != manifest["config_version"]
+                        or not isinstance(branch_meta.get("step_run_id"), str)
+                        or not branch_meta["step_run_id"].strip()):
+                    note("EXTRACT_BRANCH_SHA_OR_RUN_BINDING_MISMATCH", kind, "ERROR")
+                    continue
+                try:
+                    raw_doc = load_json_strict(payload)
+                except (ValueError, TypeError, UnicodeDecodeError):
+                    note("STRICT_JSON_FAILED", kind, "ERROR")
+                    continue
+                if not isinstance(raw_doc, dict):
+                    note("EXTRACT_BRANCH_RAW_NOT_OBJECT", kind, "ERROR")
+                    continue
+                for field, expected in (("case_id", manifest["case_id"]),
+                                        ("job_id", op_job),
+                                        ("step_run_id", branch_meta["step_run_id"])):
+                    if field in raw_doc and raw_doc[field] != expected:
+                        note("EXTRACT_BRANCH_RAW_IDENTITY_MISMATCH:" + field,
+                             kind, "ERROR")
+                if "document" in raw_doc:
+                    docs = [raw_doc["document"]]
+                    error = None
+                else:
+                    docs, error, _, _ = _read_documents(raw_doc, qa_side=False)
+                if (error is not None or not isinstance(docs, list)
+                        or len(docs) != 1 or not isinstance(docs[0], dict)
+                        or docs[0].get("document_type") != kind
+                        or not isinstance(docs[0].get("document_id"), str)
+                        or not docs[0]["document_id"].strip()):
+                    note("EXTRACT_BRANCH_DOCUMENT_CONTRACT_FAILED", kind, "ERROR")
+                    continue
+                observed[kind] = docs[0]
+            observation["branches"] = observations
+            if len(observed) == 3:
+                ids = [d["document_id"] for d in observed.values()]
+                if len(set(ids)) != 3:
+                    note("EXTRACT_BRANCH_DUPLICATE_DOCUMENT_ID", stage, "ERROR")
+                else:
+                    docs_by_stage[stage] = observed
+                    observation["document_ids"] = ids
+                    observation["document_count"] = 3
+                    observation["status"] = "LOCAL_RAW_PARSED"
+            continue
         if meta is None and raw is None:
             note("STAGE_NOT_PROVIDED", stage)
             continue
