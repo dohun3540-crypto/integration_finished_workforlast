@@ -279,9 +279,13 @@ def audit_cross_agent_handoff(
                 if (isinstance(native, dict) and isinstance(native.get("metadata"), dict)
                         and isinstance(file_ids, list)):
                     source_ids = native["metadata"].get("source_files")
-                    if isinstance(source_ids, list):
+                    if not isinstance(source_ids, list) or not source_ids:
+                        fail("NATIVE_SOURCE_FILE_EVIDENCE_MISSING",
+                             "native.metadata.source_files")
+                    else:
                         actual = [x.get("file_id") for x in source_ids if isinstance(x, dict)]
-                        if (any(not isinstance(x, str) for x in actual)
+                        if (len(actual) != len(source_ids)
+                                or any(not isinstance(x, str) for x in actual)
                                 or any(not isinstance(x, str) for x in file_ids)
                                 or set(actual) != set(file_ids)):
                             fail("NATIVE_INPUT_FILE_MISMATCH", "studio.input_file_ids")
