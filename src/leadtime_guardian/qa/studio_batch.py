@@ -92,7 +92,7 @@ def audit_studio_case_batch(
             flag("INVALID_SOURCE_PDF_FILENAME", prefix + ".filename")
         else:
             names.append(filename)
-        if kind not in REQUIRED_TYPES:
+        if not isinstance(kind, str) or kind not in REQUIRED_TYPES:
             flag("INVALID_EXPECTED_DOCUMENT_TYPE", prefix + ".document_type")
         else:
             kinds.append(kind)
@@ -128,10 +128,12 @@ def audit_studio_case_batch(
         file_names = [s.get("filename") for s in sources]
         file_ids = [s.get("file_id") for s in sources]
         types = [s.get("document_type") for s in sources]
-        if (len(set(x for x in file_names if isinstance(x, str))) != 3
-                or not all(isinstance(x, str) and x.endswith(".pdf") for x in file_names)
+        if (not all(isinstance(x, str) and x.endswith(".pdf") for x in file_names)
+                or len(set(x for x in file_names if isinstance(x, str))) != 3
                 or not all(isinstance(x, str) and x.startswith("file_") for x in file_ids)
-                or len(set(file_ids)) != 3 or Counter(types) != Counter(REQUIRED_TYPES)):
+                or len(set(x for x in file_ids if isinstance(x, str))) != 3
+                or not all(isinstance(x, str) for x in types)
+                or Counter(x for x in types if isinstance(x, str)) != Counter(REQUIRED_TYPES)):
             flag("SINGLE_JOB_SOURCE_SET_INCONSISTENT", "jobs[0].source_files")
             answer["qa_status"] = "FAIL"
             return answer
