@@ -6,6 +6,7 @@ A sharedStrings pointer 49 is a decoded EMPTY_STRING in the preserved XLSX.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from collections import Counter
 from itertools import pairwise
@@ -63,6 +64,14 @@ def classify_missing(value: Any, *, present: bool) -> str:
     if type(value) in (int, float):
         return "NUMBER_ZERO" if value == 0 else "ACTUAL_VALUE"
     return "INVALID_TYPE"
+
+
+def canonical_documents_sha256(documents: list[dict]) -> str:
+    """Semantic same-case comparison; never represents original raw file SHA."""
+    ordered = sorted(documents, key=lambda x: (x["document_type"], x["document_id"]))
+    canonical = json.dumps(ordered, sort_keys=True, separators=(",", ":"),
+                           ensure_ascii=False, allow_nan=False).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
 
 
 def _read_field(doc: Any, dotted: str) -> dict[str, Any]:
@@ -203,6 +212,9 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
                     docs_by_stage[stage] = observed
                     observation["document_ids"] = ids
                     observation["document_count"] = 3
+                    observation["document_content_sha256"] = canonical_documents_sha256(
+                        list(observed.values())
+                    )
                     observation["status"] = "LOCAL_RAW_PARSED"
             continue
         if meta is None and raw is None:
@@ -288,6 +300,7 @@ def audit_stage_evidence(manifest: Any, raw_artifacts: dict[str, Any]) -> dict:
         docs_by_stage[stage] = {d["document_type"]: d for d in docs}
         observation["document_count"] = 3
         observation["document_ids"] = ids
+        observation["document_content_sha256"] = canonical_documents_sha256(docs)
         observation["status"] = "LOCAL_RAW_PARSED"
     result["normalize_qa_input_status"] = "NOT_VERIFIED"
     if ("NormalizeDocuments" in docs_by_stage
