@@ -7,7 +7,6 @@ report the path/encoding, without authenticating the Studio provider.
 from __future__ import annotations
 
 import json
-
 from typing import Any
 
 from leadtime_guardian.strict_json import loads_strict
