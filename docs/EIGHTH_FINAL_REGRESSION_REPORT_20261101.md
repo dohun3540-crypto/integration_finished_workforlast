@@ -32,6 +32,7 @@
 
 ## Reproduced and corrected failures
 1. Previous Python dict equality could silently equate JSON false with numeric 0 and return LOCAL_CONTENT_MATCH. Eighth test asserts FAIL and QA_NORMALIZED_CONTENT_MISMATCH.
+1b. The separate existing Normalize->IndependentQA input_delivery validator (not just stage_trace) also compared lists with unsafe Python primitive equality. It now rejects false vs 0 and true vs 1, with two additional regression tests; final test counts must be read from the newest HEAD CI.
 2. Previously invalid Stage SHA/Job/Normalize content reached Python V6 and failed only after local business calculations; new preflight returns FAIL with python_safety_status NOT_RUN and no python_summary.
 3. Previously B0/E1 comparator accepted replacement JSON if manifests otherwise self-asserted PDFs; eighth original Normalize file SHA matching fails closed and a wrong embedded Job ID is blocked.
 4. Missing QA Input+Report provenance link, identical Job-Step IDs, unexpected Extract branch/Stage entries and out-of-evidence-folder paths now fail closed in local Stage validation.
