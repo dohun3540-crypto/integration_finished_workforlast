@@ -28,6 +28,7 @@
 ## C. Eight-pass operational safeguards
 - Reject malformed Stage original bytes, incorrect SHA, conflicting Job/Config/Case/Step and mixed QA Input+Report Jobs.
 - Check each unexpected Stage and Extract branch instead of silently ignoring it.
+- Both stage_trace and the older input_delivery Normalize-to-IndependentQA checker now distinguish integer 0/1 from Boolean false/true using strict typed JSON equality. Neither result alone authenticates cloud transfer.
 - Compare normalized documents by stable typed JSON serialization: false is not 0, arrays can legitimately be reorder-equivalent by document ID.
 - If the optional Stage original fails: Python V6 is NOT_RUN by the combined CLI and no safety execution result is claimed.
 - Missing original Normalize leaves uncertainty as BLOCKED and does not imply the cloud transmission failed.
