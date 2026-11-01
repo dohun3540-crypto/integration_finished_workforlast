@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from itertools import pairwise
 from typing import Any
 
 CLASSIFICATIONS = frozenset({"purchase_order", "delivery_notice", "quotation", "other"})
@@ -116,7 +117,7 @@ def audit_studio_config_draft(config: Any) -> dict[str, Any]:
                             f"pipelineEdges[{i}].target")
         if set(routes) != CLASSIFICATIONS or any(v != 1 for v in Counter(routes).values()):
             add("CLASSIFY_ROUTE_COVERAGE_MISMATCH", "pipelineEdges")
-        for src, dst in zip(REQUIRED_FLOW, REQUIRED_FLOW[1:]):
+        for src, dst in pairwise(REQUIRED_FLOW):
             if (src, dst) not in graph:
                 add("MISSING_REQUIRED_GRAPH_TRANSITION", f"{src}->{dst}")
     return {
