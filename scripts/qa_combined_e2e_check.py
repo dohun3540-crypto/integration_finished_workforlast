@@ -116,6 +116,20 @@ def audit_combined_bytes(
         docs = documents_from_export(
             operational, expected_job_id=operational_job_id
         )
+        if case_id == "C001":
+            # C001 is a three-document case, not three independent Job outputs
+            # or a one-document extract paired to a trusted base case.
+            expected = {"purchase_order", "delivery_notice", "quotation"}
+            source_rows = metadata.get("source_files")
+            if (len(docs) != 3
+                    or {d.get("document_type") for d in docs} != expected
+                    or not isinstance(source_rows, list)
+                    or len(source_rows) != 3
+                    or any(not isinstance(x, dict) for x in source_rows)
+                    or len({x.get("file_id") for x in source_rows}) != 3):
+                record("C001_NOT_SINGLE_THREE_DOCUMENT_JOB", "operational_native")
+                return result
+            result["single_case_grouping_status"] = "NATIVE_THREE_DOCUMENT_CONTRACT_PASS"
         python_result = analyze_studio_documents(base, docs, schema)
         result["python_business_status"] = python_result["execution_status"]
         result["python_summary"] = {
@@ -163,6 +177,15 @@ def audit_combined_bytes(
                 config_version=qa_config_version,
                 github_sha=github_sha, execution_kind=execution_kind,
             )
+            if case_id == "C001":
+                qa_raw = load_json_strict(qa_native_bytes)
+                qa_docs = load_json_strict(qa_raw["content"])["documents"]
+                expected = {"purchase_order", "delivery_notice", "quotation"}
+                if (len(qa_docs) != 3
+                        or {d.get("document_type") for d in qa_docs} != expected
+                        or len(qa_raw["metadata"]["source_files"]) != 3):
+                    record("QA_C001_NATIVE_CASE_INCOMPLETE", "qa_native")
+                    return result
             verdict = audit_cross_agent_handoff(
                 manifest, native_bytes=qa_native_bytes,
                 report_bytes=qa_report_bytes,
@@ -205,20 +228,27 @@ def audit_combined_bytes(
                     record("OPERATION_SIDECAR_JOB_MISMATCH", "team2_provenance")
                 # Match operational receipt File IDs to original Native metadata.
                 native_sources = metadata.get("source_files")
-                expected_ids = (
-                    [x.get("file_id") for x in native_sources]
+                expected_sources = (
+                    {(x.get("file_id"), x.get("file_name")) for x in native_sources}
                     if isinstance(native_sources, list)
-                    and all(isinstance(x, dict) for x in native_sources) else []
+                    and all(isinstance(x, dict)
+                            and isinstance(x.get("file_id"), str)
+                            and isinstance(x.get("file_name"), str)
+                            for x in native_sources) else set()
                 )
                 actual_rows = op_receipt.get("files")
-                receipt_ids = (
-                    [x.get("file_id") for x in actual_rows]
+                receipt_sources = (
+                    {(x.get("file_id"), x.get("filename")) for x in actual_rows}
                     if isinstance(actual_rows, list)
-                    and all(isinstance(x, dict) for x in actual_rows) else []
+                    and all(isinstance(x, dict)
+                            and isinstance(x.get("file_id"), str)
+                            and isinstance(x.get("filename"), str)
+                            for x in actual_rows) else set()
                 )
-                if (not expected_ids or not receipt_ids
-                        or len(expected_ids) != len(receipt_ids)
-                        or set(expected_ids) != set(receipt_ids)):
+                if (not expected_sources or not receipt_sources
+                        or len(expected_sources) != len(native_sources)
+                        or len(receipt_sources) != len(actual_rows)
+                        or expected_sources != receipt_sources):
                     result["provenance_link_status"] = "FAIL"
                     record("OPERATION_NATIVE_UPLOAD_RECEIPT_MISMATCH", "pdf_provenance")
                 link = audit_team2_provenance_link(
@@ -233,6 +263,8 @@ def audit_combined_bytes(
                     record("PDF_PROVENANCE_LINK_FAILED", "pdf_provenance")
                 elif result["provenance_link_status"] != "FAIL":
                     result["provenance_link_status"] = "BLOCKED"
+                if result["provenance_link_status"] == "FAIL":
+                    result["same_original_pdf_bytes_verified"] = False
         if (result["python_safety_status"] == "FAIL"
                 or result["cross_agent_status"] == "FAIL"
                 or result["provenance_link_status"] == "FAIL"):
