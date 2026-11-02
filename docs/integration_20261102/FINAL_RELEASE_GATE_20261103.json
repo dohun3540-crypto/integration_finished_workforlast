@@ -32,11 +32,14 @@
     "case_data_git_blobs_matching_copy_pr17": 68,
     "existing_pdf_baseline_mechanically_validated": 60,
     "source_pdf_modified": false,
-    "operational_code_modified": false,
+    "operational_code_modified": true,
     "existing_ci_workflow_modified": false,
     "team2_core_files_with_safety_fix": 1,
     "modified_upstream_core_path": "src/leadtime_guardian/strict_json.py",
-    "original_strict_json_blob_sha": "342357bb271f0e96900effb6401b73a19c4a41fc"
+    "original_strict_json_blob_sha": "342357bb271f0e96900effb6401b73a19c4a41fc",
+    "operational_change_scope": "Security-only float parsing underflow guard in src/leadtime_guardian/strict_json.py; five other original Team2 core blobs unchanged.",
+    "team3_validation_code_modified": true,
+    "team3_validation_change_scope": "Underflow guard in qa/inventory.py; no PDFs, Gold candidates or approved labels modified."
   },
   "confirmed_gold_flags": {
     "label_status": "AI_CANDIDATE",
@@ -117,7 +120,7 @@
     ],
     "core_sha_diverges_from_team2_on_purpose": true,
     "other_five_core_blob_shas_preserved": true,
-    "pending_latest_exact_sha_ci": true
+    "final_exact_head_ci_evidence_location": "Draft PR #2 body; CI success verified on final SHA without a further self-referential documentation commit."
   },
   "defect_fix_verified_checkpoint": {
     "sha": "d43e497861adbd2c2c930e818e936cac551dded6",
@@ -130,5 +133,5 @@
     "pdf_inventory_passed": 60,
     "archived_replay": "PASS_LOCAL"
   },
-  "final_head_proof": "New commit after extra nonstring boundary regressions requires independent exact-HEAD CI; final run and SHA recorded in GitHub PR #2 description, not recursively in this file."
+  "final_head_proof": "Latest GitHub Actions run and exact final SHA are recorded in Draft PR #2 description; no source file contains its own commit SHA. Any further commit requires new CI confirmation."
 }
