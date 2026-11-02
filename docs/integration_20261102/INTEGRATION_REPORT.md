@@ -164,3 +164,11 @@ The existing `.github/workflows/ci.yml` performs full Python pytest + Ruff + imm
 **Next responsibility:** 구도훈—retrieve original B0/E1 Stage/Native/QA receipts, verify operational↔QA provenance and run comparison; 윤현준—run real Safety V6 on *identical* Native bytes, provide Python result plus provenance sidecar; 김민주—supply latest XLSX bytes, independently PDF-ground each reviewed field, confirm separate human approval and only then quantify evaluation. If Studio cannot produce one 3-PDF case job, record the actual platform limit and approved alternative; never concatenate three jobs to imply success.
 
 **Final Code Freeze** is conditional on the *new* exact-HEAD complete CI, final PR state and reverified source Sha. **Overall Release remains BLOCKED** even when code freeze is PASS.
+
+## 2026-11-02 Code Freeze decision (separate from product Release)
+
+The **actual checked-out code-and-docs SHA** `93138e0d29c267a91164797442057d3ccc6b9ba5` was verified by [Integrated Python QA run #41462111826](https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41462111826): completed / SUCCESS, **748 pytest passed, 0 failed, 0 skipped**, Ruff PASS, C001 archived integrity/local gate PASS_LOCAL, and PDF inventory **60/60 machine PASS**. These 748 include the baseline 739 and PR #18's 9 synthetic identity-hardening tests, not independent sums of QA subsets.
+
+**CODE_FREEZE_CONFIRMED = PASS (code only)**, subject to checking the exact later documentation-only PR HEAD against its own GitHub CI. **STUDIO_E2E / live provenance / human Gold / B0-vs-E1 metrics remain unverified; OVERALL_RELEASE = BLOCKED.** The source Git tree never altered Team 2's six operating blobs, original `data/cases/` blobs, original QA safety enforcement, or Studio. Do not claim real improvement or publish approved Gold.
+
+Final CI and final branch HEAD are documented in the Draft PR description, not recursively embedded into these files. No further SHA-only documentation commit is required.

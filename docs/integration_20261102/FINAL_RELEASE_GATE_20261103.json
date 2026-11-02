@@ -25,7 +25,7 @@
     "regression_blob_sha": "220f0a43f3e6638b90cf6721b1abb7f1e4d31ccb",
     "new_synthetic_test_cases": 9,
     "existing_test_baseline": 739,
-    "expected_test_count_not_yet_verified": 748
+    "full_pytest_actual_confirmed": 748
   },
   "integrity": {
     "team2_core_files_matching_upstream": 6,
@@ -44,15 +44,15 @@
   },
   "gates": {
     "SOURCE_INTEGRATION_COMPLETE": "PASS_SOURCE",
-    "CODE_GATE": "PENDING_NEW_EXACT_HEAD_CI",
-    "CONTRACT_GATE": "LOCAL_ONLY",
-    "DATA_INTEGRITY_GATE": "PASS_BASELINE_MACHINE_ONLY",
+    "CODE_GATE": "PASS",
+    "CONTRACT_GATE": "PASS_LOCAL_ONLY",
+    "DATA_INTEGRITY_GATE": "PASS_MACHINE_ONLY",
     "PROVENANCE_GATE": "NOT_VERIFIED_LIVE",
     "GOLD_GATE": "PENDING",
     "STUDIO_E2E_GATE": "NOT_VERIFIED",
     "B0_E1_COMPARISON_GATE": "NOT_MEASURED",
     "OVERALL_RELEASE_GATE": "BLOCKED",
-    "CODE_FREEZE_CONFIRMED": "CONDITIONAL_ON_NEW_HEAD_CI"
+    "CODE_FREEZE_CONFIRMED": "PASS"
   },
   "missing_external_evidence": [
     "new B0-C001 and E1-C001 native step artifacts with upload/file/job/config/step identities",
@@ -65,5 +65,24 @@
   "final_exact_head_ci": "Authoritative GitHub Actions links and complete conclusion are recorded in the final Draft PR description after checks; this commit cannot self-reference its own SHA",
   "no_studio_execution": true,
   "no_release_or_merge_authorized": true,
-  "target_deadline": "2026-11-03"
+  "target_deadline": "2026-11-03",
+  "final_code_checkpoint": {
+    "sha": "93138e0d29c267a91164797442057d3ccc6b9ba5",
+    "github_actions_run": "https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41462111826",
+    "github_actions_status": "completed",
+    "github_actions_conclusion": "success",
+    "full_pytest_passed": 748,
+    "failed": 0,
+    "skipped": 0,
+    "ruff": "PASS",
+    "archive_c001": "PASS_LOCAL",
+    "local_gate": "PASS_LOCAL_RELEASE_BLOCKED",
+    "pdf_inventory": {
+      "passed": 60,
+      "failed": 0,
+      "blocked": 0
+    },
+    "new_tests": 9,
+    "note": "This checkpoint CI proves code and docs up to the referenced commit. The subsequent gate-document commit SHA must independently pass GitHub CI; find exact final HEAD check in PR description, not via recursive self-SHA edits."
+  }
 }
