@@ -104,19 +104,19 @@ main, 원본 저장소, 기존 PR은 수정·병합·삭제하지 않았다. Stu
 
 ---
 
-## Final 2026-11-03 selective QA hardening — all-team integration candidate
+## Final 2026-11-02 selective QA hardening — all-team integration candidate
 
-**Write repository:** \`dohun3540-crypto/yuseok_integration\` only. **Parent/source of this final candidate:** PR #1 HEAD \`427138a52d99585d9b6847b78fc6e14c6bb5e288\` (baseline 739 pytest PASS, 0 failed, 0 skipped, Ruff PASS, PDF inventory 60/60 PASS; workflow run [41451016385](https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41451016385)). This historical CI MUST NOT be called the new commit's CI.
+**Write repository:** `dohun3540-crypto/yuseok_integration` only. **Parent/source of this final candidate:** PR #1 HEAD `427138a52d99585d9b6847b78fc6e14c6bb5e288` (baseline 739 pytest PASS, 0 failed, 0 skipped, Ruff PASS, PDF inventory 60/60 PASS; workflow run [41451016385](https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41451016385)). This historical CI MUST NOT be called the new commit's CI.
 
 **Source read-only comparisons:**
-- Copy [PR #17](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/17) @ \`fcc2afb2be315e261fa35b9ab17ee1a1134f578c\`: already-integrated member 3 tool paths retained, no bulk merge; original QA data/Gold labels remain unapproved. Its team 3 docs/migration and duplicate workflows are not copied: \`yuseok_integration\` already has a single integrated CI and handoff structure.
-- Copy [PR #18](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/18) @ \`34f023f594e6bfeea60cb7ee88fce9b7f3140121\`: precisely import \`src/leadtime_guardian/qa/experiment_compare.py\` and \`tests/test_qa_experiment_identity_hardening.py\` (the only PR #18 source/test change; other PR #18 files are historical reports). Original PR #18 module SHA \`0c0bbf2c38456019d891625e7486e379e1f96ecf\`; synthetic tests SHA \`220f0a43f3e6638b90cf6721b1abb7f1e4d31ccb\`.
-- Upstream original PR #12 @ \`e9b9992b593a42d427ff1bbadeb9a9866ca593bd\` and PR #13 @ \`a925103077173b37d1cefcd6a9576ae644dc2040\` remain read-only. All six original Safety V6 operational Git Blob SHAs match the baseline integration. Existing \`src/leadtime_guardian/qa/audit.py\`, \`input_delivery.py\`, \`qa/inventory.py\` have stronger local type/finite-number protections than the unmodified copy PR #17 version; preserve their implementation.
+- Copy [PR #17](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/17) @ `fcc2afb2be315e261fa35b9ab17ee1a1134f578c`: already-integrated member 3 tool paths retained, no bulk merge; original QA data/Gold labels remain unapproved. Its team 3 docs/migration and duplicate workflows are not copied: `yuseok_integration` already has a single integrated CI and handoff structure.
+- Copy [PR #18](https://github.com/dohun3540-crypto/leadtime-guardian-agent.copy/pull/18) @ `34f023f594e6bfeea60cb7ee88fce9b7f3140121`: precisely import `src/leadtime_guardian/qa/experiment_compare.py` and `tests/test_qa_experiment_identity_hardening.py` (the only PR #18 source/test change; other PR #18 files are historical reports). Original PR #18 module SHA `0c0bbf2c38456019d891625e7486e379e1f96ecf`; synthetic tests SHA `220f0a43f3e6638b90cf6721b1abb7f1e4d31ccb`.
+- Upstream original PR #12 @ `e9b9992b593a42d427ff1bbadeb9a9866ca593bd` and PR #13 @ `a925103077173b37d1cefcd6a9576ae644dc2040` remain read-only. All six original Safety V6 operational Git Blob SHAs match the baseline integration. Existing `src/leadtime_guardian/qa/audit.py`, `input_delivery.py`, `qa/inventory.py` have stronger local type/finite-number protections than the unmodified copy PR #17 version; preserve their implementation.
 
 ### Selected behavior added from PR #18
 
-1. Fail on duplicate source \`file_id\` within a B0 or E1 run, rather than merely checking distinct filenames.
-2. Fail on reused operational Extract/MergeDocuments/NormalizeDocuments \`step_run_id\`; on optional Stage metadata present but contradicting its operational \`job_id\`, \`config_id\` or \`config_version\`. Do **not** require absent optional metadata.
+1. Fail on duplicate source `file_id` within a B0 or E1 run, rather than merely checking distinct filenames.
+2. Fail on reused operational Extract/MergeDocuments/NormalizeDocuments `step_run_id`; on optional Stage metadata present but contradicting its operational `job_id`, `config_id` or `config_version`. Do **not** require absent optional metadata.
 3. Permit IndependentQA evidence to use its own legitimately separate Studio QA Job (no false operational-stage binding errors).
 4. Compare C013 or any **same established case ID** locally, while still blocking mismatched B0/E1 cases, unauthenticated comparisons and any claim of measured improvement.
 5. Preserve nine synthetic-only PR #18 tests; these do not establish authenticated Studio evidence or human Gold accuracy.
@@ -125,27 +125,27 @@ No Safety V6 core/Agent API/Adapter modules, original PDF/data cases, native Stu
 
 ### Data/SHA and case review — scope and limits
 
-- Existing Git tree: 68 \`data/cases/\` files remained Git Blob identical to copy PR #17. This includes the original C001 PDFs and C002-C020 archive/manifests; no extraction/regeneration.
+- Existing Git tree: 68 `data/cases/` files remained Git Blob identical to copy PR #17. This includes the original C001 PDFs and C002-C020 archive/manifests; no extraction/regeneration.
 - Previous exact baseline CI 60/60 PDFs machine SHA/page/structure PASS, 0 duplicate hashes, 0 FAIL, 0 BLOCKED. All 20 synthetic cases are included in the archive/manifest inventory; mechanical inspection ≠ PDF visual verification or gold accuracy.
 - C001 archived Studio V4 replay only: local 0→60 shortage, extra 60 EA, KRW 60,500; **not** new authenticated V6 run.
 - C013 PO1/PO999 must remain distinct and apply fail-closed; C017 Korean/ISO date source normalization remains dependent on actual Extract/Normalize native output; C008 R1 40 / R2 60 partial receipts and R2-only change tested synthetically.
-- C001 \`qa/gold_candidates/SYN-C001/candidate.v1.json\`: \`AI_CANDIDATE\`, \`human_reviewed=false\`, \`team_approved=false\`, \`eligible_for_official_metrics=false\`, \`gold_frozen=false\`. No latest human-approved XLSX source bytes are present on this branch.
+- C001 `qa/gold_candidates/SYN-C001/candidate.v1.json`: `AI_CANDIDATE`, `human_reviewed=false`, `team_approved=false`, `eligible_for_official_metrics=false`, `gold_frozen=false`. No latest human-approved XLSX source bytes are present on this branch.
 - Schema: preserve Strict JSON float exponent overflow, finite number checks, negative quantities/amounts, case/document uniqueness and signed-zero/recursive-type protections. Team 2 live provenance and PDF File/Job/Step receipts remain unavailable; neither local hash equality nor stored V4 archive authenticates new Studio jobs.
-- Studio configuration STATIC ONLY: 68 suspected nullable/type-instruction conflicts across the four extraction schemas, classified in \`STUDIO_CONFIG_CHANGE_REQUEST.md\`; this is a static path count, NOT 68 reproduced live errors. Studio operator must confirm against actual saved configuration and stage outputs.
+- Studio configuration STATIC ONLY: 68 suspected nullable/type-instruction conflicts across the four extraction schemas, classified in `STUDIO_CONFIG_CHANGE_REQUEST.md`; this is a static path count, NOT 68 reproduced live errors. Studio operator must confirm against actual saved configuration and stage outputs.
 
 ### Regression/CI protocol for new final commit
 
 The source integration baseline must remain **739 passed / 0 skipped** on Linux CI. PR #18 introduces nine synthetic-only tests, so the expected full collection is **748** if no overlapping test paths were removed. Confirm *actual* count in the new exact-HEAD CI; do not assert success from this document alone.
 
-- \`python -m pip install -r requirements-validation.txt\`
-- \`python -m ruff check .\`
-- \`python -m pytest -q\`
-- \`python scripts/qa_archive_check.py --root .\`
-- \`python scripts/qa_gate_check.py --root .\`
-- \`python -m qa.inventory --root . --out <NEW_OUTPUT_PATH>\` (new path required, never overwrite originals)
-- \`python -m qa.integration --case-id C001 --job-id <ACTUAL_JOB_ID> --github-sha <EXACT_CODE_SHA> ...\` for a read-only integration check with source evidence. CLI exit 2 / status BLOCKED is expected if no live/Gold evidence is provided, not integration success.
+- `python -m pip install -r requirements-validation.txt`
+- `python -m ruff check .`
+- `python -m pytest -q`
+- `python scripts/qa_archive_check.py --root .`
+- `python scripts/qa_gate_check.py --root .`
+- `python -m qa.inventory --root . --out <NEW_OUTPUT_PATH>` (new path required, never overwrite originals)
+- `python -m qa.integration --case-id C001 --job-id <ACTUAL_JOB_ID> --github-sha <EXACT_CODE_SHA> ...` for a read-only integration check with source evidence. CLI exit 2 / status BLOCKED is expected if no live/Gold evidence is provided, not integration success.
 
-The existing \`.github/workflows/ci.yml\` performs full Python pytest + Ruff + immutable C001 replay + conservative Local Gate + 60-PDF inventory on PR commits. The current document deliberately does not claim to contain its own latest Git commit SHA; verify the final PR HEAD at [GitHub Actions](https://github.com/dohun3540-crypto/yuseok_integration/actions), and record that proof in the PR description. Do not loop commit-on-self-SHA.
+The existing `.github/workflows/ci.yml` performs full Python pytest + Ruff + immutable C001 replay + conservative Local Gate + 60-PDF inventory on PR commits. The current document deliberately does not claim to contain its own latest Git commit SHA; verify the final PR HEAD at [GitHub Actions](https://github.com/dohun3540-crypto/yuseok_integration/actions), and record that proof in the PR description. Do not loop commit-on-self-SHA.
 
 ### Release and owner handoff
 

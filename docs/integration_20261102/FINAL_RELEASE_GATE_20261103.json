@@ -1,6 +1,6 @@
 {
   "schema_version": "leadtime-guardian/yuseok-final-validation-gate/1",
-  "date": "2026-11-03",
+  "date": "2026-11-02",
   "write_repository": "dohun3540-crypto/yuseok_integration",
   "source_baseline": {
     "pr": 1,
@@ -64,5 +64,6 @@
   ],
   "final_exact_head_ci": "Authoritative GitHub Actions links and complete conclusion are recorded in the final Draft PR description after checks; this commit cannot self-reference its own SHA",
   "no_studio_execution": true,
-  "no_release_or_merge_authorized": true
+  "no_release_or_merge_authorized": true,
+  "target_deadline": "2026-11-03"
 }
