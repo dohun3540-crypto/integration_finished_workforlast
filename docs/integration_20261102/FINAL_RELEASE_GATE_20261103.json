@@ -1,0 +1,68 @@
+{
+  "schema_version": "leadtime-guardian/yuseok-final-validation-gate/1",
+  "date": "2026-11-03",
+  "write_repository": "dohun3540-crypto/yuseok_integration",
+  "source_baseline": {
+    "pr": 1,
+    "sha": "427138a52d99585d9b6847b78fc6e14c6bb5e288",
+    "full_pytest_passed": 739,
+    "failed": 0,
+    "skipped": 0,
+    "pdf_inventory_passed": 60,
+    "ruff": "PASS",
+    "ci": "https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41451016385"
+  },
+  "read_only_sources": {
+    "copy_pr17": "fcc2afb2be315e261fa35b9ab17ee1a1134f578c",
+    "copy_pr18": "34f023f594e6bfeea60cb7ee88fce9b7f3140121",
+    "original_team2_pr12": "e9b9992b593a42d427ff1bbadeb9a9866ca593bd",
+    "original_team3_pr13": "a925103077173b37d1cefcd6a9576ae644dc2040"
+  },
+  "selective_import": {
+    "source_module": "src/leadtime_guardian/qa/experiment_compare.py",
+    "source_blob_sha": "0c0bbf2c38456019d891625e7486e379e1f96ecf",
+    "regression_file": "tests/test_qa_experiment_identity_hardening.py",
+    "regression_blob_sha": "220f0a43f3e6638b90cf6721b1abb7f1e4d31ccb",
+    "new_synthetic_test_cases": 9,
+    "existing_test_baseline": 739,
+    "expected_test_count_not_yet_verified": 748
+  },
+  "integrity": {
+    "team2_core_files_matching_upstream": 6,
+    "case_data_git_blobs_matching_copy_pr17": 68,
+    "existing_pdf_baseline_mechanically_validated": 60,
+    "source_pdf_modified": false,
+    "operational_code_modified": false,
+    "existing_ci_workflow_modified": false
+  },
+  "confirmed_gold_flags": {
+    "label_status": "AI_CANDIDATE",
+    "human_reviewed": false,
+    "team_approved": false,
+    "gold_frozen": false,
+    "official_metrics_eligible": false
+  },
+  "gates": {
+    "SOURCE_INTEGRATION_COMPLETE": "PASS_SOURCE",
+    "CODE_GATE": "PENDING_NEW_EXACT_HEAD_CI",
+    "CONTRACT_GATE": "LOCAL_ONLY",
+    "DATA_INTEGRITY_GATE": "PASS_BASELINE_MACHINE_ONLY",
+    "PROVENANCE_GATE": "NOT_VERIFIED_LIVE",
+    "GOLD_GATE": "PENDING",
+    "STUDIO_E2E_GATE": "NOT_VERIFIED",
+    "B0_E1_COMPARISON_GATE": "NOT_MEASURED",
+    "OVERALL_RELEASE_GATE": "BLOCKED",
+    "CODE_FREEZE_CONFIRMED": "CONDITIONAL_ON_NEW_HEAD_CI"
+  },
+  "missing_external_evidence": [
+    "new B0-C001 and E1-C001 native step artifacts with upload/file/job/config/step identities",
+    "new B0-C013 and E1-C013 native step artifacts",
+    "matching Python Safety V6 real execution and provenance sidecar",
+    "independent QA native raw input/report and authenticated link",
+    "latest human-reviewed XLSX with original PDF evidence and team approval",
+    "verified B0-E1 measured comparisons"
+  ],
+  "final_exact_head_ci": "Authoritative GitHub Actions links and complete conclusion are recorded in the final Draft PR description after checks; this commit cannot self-reference its own SHA",
+  "no_studio_execution": true,
+  "no_release_or_merge_authorized": true
+}
