@@ -5,6 +5,8 @@ import sys
 from copy import deepcopy
 from pathlib import Path
 
+import pytest
+
 from leadtime_guardian.qa.audit import load_json_strict
 from leadtime_guardian.qa.studio_batch import audit_studio_case_batch
 
