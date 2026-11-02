@@ -95,3 +95,17 @@ def test_local_symlink_rejected(tmp_path):
         pytest.skip("이 환경은 심볼릭 링크 생성 권한이 없음")
     with pytest.raises(ValueError):
         read_local(tmp_path, "link.pdf")
+
+
+@pytest.mark.parametrize("raw", [
+    '{"value":1e-9999}', '{"value":-1e-9999}',
+    '{"nested":[1E-9999]}', '{"value":1e999}',
+])
+def test_inventory_json_rejects_nonrepresentable_exponents(raw):
+    with pytest.raises(ValueError):
+        strict_json(raw)
+
+
+def test_inventory_json_preserves_finite_numbers_and_true_zero():
+    value = strict_json('{"value":1.25e2,"zero":0e-9999,"negative_zero":-0e-9999}')
+    assert value == {"value": 125.0, "zero": 0.0, "negative_zero": -0.0}

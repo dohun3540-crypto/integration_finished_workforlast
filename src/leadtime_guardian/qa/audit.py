@@ -151,7 +151,7 @@ def audit_provenance(record: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(record, dict):
         return {"qa_status": "FAIL", "issues": [issue("INVALID_PROVENANCE", "$", "object required")]}
     kind = record.get("provenance")
-    if kind not in PROVENANCE:
+    if not isinstance(kind, str) or kind not in PROVENANCE:
         issues.append(issue("UNKNOWN_PROVENANCE", "provenance", "unrecognized source type"))
     if kind == "REAL_STUDIO_RUN":
         for field in ("agent_id", "config_id", "job_id"):

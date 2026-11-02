@@ -172,3 +172,16 @@ The **actual checked-out code-and-docs SHA** `93138e0d29c267a91164797442057d3ccc
 **CODE_FREEZE_CONFIRMED = PASS (code only)**, subject to checking the exact later documentation-only PR HEAD against its own GitHub CI. **STUDIO_E2E / live provenance / human Gold / B0-vs-E1 metrics remain unverified; OVERALL_RELEASE = BLOCKED.** The source Git tree never altered Team 2's six operating blobs, original `data/cases/` blobs, original QA safety enforcement, or Studio. Do not claim real improvement or publish approved Gold.
 
 Final CI and final branch HEAD are documented in the Draft PR description, not recursively embedded into these files. No further SHA-only documentation commit is required.
+
+
+## 2026-11-02 — P0/P1 defect reproduction and minimal repair (supersedes prior 6/6 SHA status)
+
+**Actual failing GitHub Action:** [CI #41464204131](https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41464204131), from test-only commit `d6a43083b61bb89b798b80951e3bc5a25b23842a`, **757 passed / 8 failed**. Baseline before new boundary tests was **748 passed**. Breakdown: 4 unhashable `audit_provenance` inputs, 1 unhashable Studio Batch provenance, 3 nonzero JSON underflow values wrongly accepted by the common parser. Five new C001 consistency tests already passed in red CI. This failure was intentional reproduction, NOT current code-freeze proof.
+
+- P0: `src/leadtime_guardian/qa/audit.py` now checks `isinstance(kind, str)` before frozenset membership. Malformed arrays/objects/false/null are rejected via established `UNKNOWN_PROVENANCE` instead of TypeError.
+- P0: `src/leadtime_guardian/qa/studio_batch.py` now type-checks `provenance_level`, retaining `UNVERIFIED_BATCH_OBSERVATION_SOURCE`, `qa_status=FAIL`, `release_or_merge_authorized=false`.
+- P1: `src/leadtime_guardian/strict_json.py` adds a parse-float boundary that rejects overflow and **nonzero numeric underflow to zero** (including large negative exponents) while preserving real zero/negative signed zero, finite values, duplicate-key and UTF-8 checks. This is a **necessary verified exception** to original Team 2 V6 identity: core Git Blob match is now **5/6**, not 6/6. The other five core modules remain byte-identical to original Team 2 PR #12.
+- P1: `qa/inventory.py` (independent Team 3 JSON loader) receives the same nonzero-underflow safety guard, and 5 new parametrized numeric inventory tests. No PDF/source asset is rewritten.
+- C001: 5 read-only candidate/manifest/DRAFT/evidence-matrix tests from copy PR #19 verify 3 original source hashes, 40 evidence matrix rows and **AI_CANDIDATE not human-reviewed**, PO/notice 100 EA vs quote capacity 60 EA, 1000.00/500 KRW string monetary values. These verify **internal record consistency only**, not PDF semantic/human Gold truth.
+
+New exact-head Python/Ruff/Archive/Local Gate/60-PDF inventory CI **must** be inspected after this patch; no results invented here. Release remains `BLOCKED`: no authenticated new B0/E1 Studio Native/QA/Python execution or human-approved Gold, no measured accuracy/improvement. Preserve all existing 748 tests and source data. Record final CI SHA and links in Draft PR #2 body, not recursively in source files.

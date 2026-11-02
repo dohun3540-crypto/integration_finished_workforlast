@@ -12,6 +12,7 @@ import math
 import re
 import tarfile
 from datetime import UTC, datetime
+from decimal import Decimal, InvalidOperation
 from pathlib import Path, PurePosixPath
 
 MAX_FILE_BYTES = 20 * 1024 * 1024
@@ -41,8 +42,12 @@ def strict_json(text):
 
     def finite_float(value):
         result = float(value)
-        if not math.isfinite(result):
-            raise ValueError("non-finite JSON number")
+        try:
+            lost_nonzero = result == 0.0 and not Decimal(value).is_zero()
+        except InvalidOperation as exc:
+            raise ValueError("invalid JSON numeric exponent") from exc
+        if not math.isfinite(result) or lost_nonzero:
+            raise ValueError("non-representable JSON number")
         return result
 
     return json.loads(text, object_pairs_hook=pairs, parse_constant=invalid,
