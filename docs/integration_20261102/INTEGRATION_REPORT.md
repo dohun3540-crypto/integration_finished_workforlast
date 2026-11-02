@@ -56,11 +56,13 @@ null로 바꾸지 않고, PO999를 PO1로 치환하지 않으며, 다른 Receipt
 | 새 연결 CLI | 실제 archived C001 + AI 후보 연결 확인; exit 2는 미확보 외부 Gate BLOCKED 의미 |
 | 새 JSON overflow red/green | 수정 전 4 failed → 수정 후 타입 회귀와 합쳐 56 passed |
 | 로컬 SDK HTTP mock | 13 passed; 127.0.0.1만 사용, 실제 Studio 호출 없음 |
+| GitHub Ubuntu / Python 3.11 CI | **739 passed, 0 skipped**, 전체 Ruff/Archive/인벤토리 성공; [run 41450548344](https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41450548344) |
 
 처음 기본 임시 경로의 권한 오류와 Windows CRLF·locale·symlink 및 로컬 HTTP 제한을
 별도로 기록했다. 작업 내부 임시 경로, UTF-8 실행 모드, 원본 바이트 보존 설정으로
-재검증했다. Windows에서 skip한 5개는 GitHub Ubuntu CI에서 실행되어야 한다.
-최종 CI URL과 head SHA는 `CI_RESULT.json`에 기록한다.
+재검증했다. Windows에서 skip한 5개도 GitHub Ubuntu CI에서 모두 통과했다.
+구현 커밋 `21bff34a254a7d24295357ac745f418de03366be`의 CI URL과 SHA는
+`CI_RESULT.json`에 기록한다. 이후 보고서 보강 커밋의 검사도 PR Checks에서 확인한다.
 
 ## 3차 Native 검증과 케이스 Gate
 
@@ -81,7 +83,7 @@ null로 바꾸지 않고, PO999를 PO1로 치환하지 않으며, 다른 Receipt
 
 | 상태 | 판정 |
 |---|---|
-| GITHUB_CODE_INTEGRATION | PASS_LOCAL; CI 결과는 CI_RESULT.json |
+| GITHUB_CODE_INTEGRATION | PASS_LOCAL / GitHub CI SUCCESS; CI_RESULT.json 참조 |
 | STUDIO_CONFIG_BY_GU_DOHUN | CONFIG_STATIC_ONLY, 68개 null 지시/타입 충돌 지점 발견 |
 | STUDIO_NATIVE_E2E | BLOCKED |
 | HUMAN_GOLD | BLOCKED / NEEDS_REVIEW |

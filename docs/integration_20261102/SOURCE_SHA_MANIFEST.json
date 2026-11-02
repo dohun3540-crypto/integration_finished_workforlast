@@ -59,8 +59,8 @@
       "path": "qa/README.md",
       "source_blob": "b6c7e6354edd25eb6abdda8752910f020632d586",
       "source_commit": "a925103077173b37d1cefcd6a9576ae644dc2040",
-      "integrated_sha256": "c88e6b64c29c9134a7661f690189d236987232688d2276c67807cba5a3ed2a96",
-      "local_change": "none"
+      "integrated_sha256": "4d381e6b4a1353214baa61865144f26976993c25c19fc8cacc98ef3a95d696c6",
+      "local_change": "Added current integration notice; historical handoff content retained"
     },
     {
       "path": "qa/__init__.py",
@@ -229,5 +229,11 @@
       "sha256": "c1d2b810d0fd318996fcd92cf3f6bebd7fcb52476c6ceb2838c1b3ad91584cee",
       "duplicate": true
     }
-  ]
+  ],
+  "qa_function_selection": {
+    "path": "src/leadtime_guardian/qa/input_delivery.py",
+    "baseline_blob": "f56825a1a6202cc468e1f86c059b0d8dffa6e8de",
+    "parallel_blob": "da61abb9dc2a2381ef611f3735265168e5539d63",
+    "decision": "Select recursive comparator, preserve cycle/depth and signed zero protection; do not revert baseline studio_qa_adapter"
+  }
 }

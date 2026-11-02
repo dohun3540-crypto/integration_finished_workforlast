@@ -79,5 +79,6 @@
     "passed": 489,
     "errors": 136,
     "reason": "default temporary directory permissions; not a product-pass claim"
-  }
+  },
+  "provenance_note": "Local tests ran in the integration working tree based on ece3a7d before implementation commit 21bff34. The CLI github-sha argument was the baseline identifier, not a claim that changes existed at baseline. Exact committed code is validated in CI_RESULT.json."
 }

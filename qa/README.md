@@ -1,5 +1,11 @@
 # 팀원 3 원본 검사·Gold 검수 기반
 
+2026-11-02 통합 안내: 아래는 팀원 3 소스 브랜치의 인계 설명입니다. 당시의 NOT_RUN과
+미연결 상태는 현재 통합 검증 결과가 아닙니다. 최신 결과·출처·제한은
+[통합 보고서](../docs/integration_20261102/INTEGRATION_REPORT.md)를 참고하세요.
+독립 inventory/CSV/XLSX 도구는 아래 명령을 계속 지원하며, 전체 연결 경로는
+`requirements-validation.txt` 설치 후 `python -m qa.integration`으로 실행합니다.
+
 이 디렉터리는 팀원 1 독립 QA, 팀원 2 운영 코드와 별개다. 원본 PDF와 DRAFT를 수정하지 않는다.
 
 ## 이번 구현 범위
