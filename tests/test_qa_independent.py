@@ -187,3 +187,16 @@ def test_finite_json_exponent_and_explicit_zero_are_preserved():
     assert load_json_strict('{"value":1.25e2,"zero":0e-9999}') == {
         "value": 125.0, "zero": 0.0,
     }
+
+
+@pytest.mark.parametrize("invalid_kind", [None, 0, False])
+def test_nonstring_provenance_never_promoted_or_crashes(invalid_kind):
+    result = audit_provenance({"provenance": invalid_kind})
+    assert result["qa_status"] == "FAIL"
+    assert "UNKNOWN_PROVENANCE" in codes(result)
+
+
+def test_strict_json_preserves_negative_zero_and_nested_underflow_is_blocked():
+    assert repr(load_json_strict('{"zero":-0e-9999}')["zero"]) == "-0.0"
+    with pytest.raises(ValueError):
+        load_json_strict('{"nested":[{"amount":-1e-9999}]}')

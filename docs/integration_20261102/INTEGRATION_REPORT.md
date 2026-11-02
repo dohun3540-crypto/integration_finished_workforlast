@@ -185,3 +185,10 @@ Final CI and final branch HEAD are documented in the Draft PR description, not r
 - C001: 5 read-only candidate/manifest/DRAFT/evidence-matrix tests from copy PR #19 verify 3 original source hashes, 40 evidence matrix rows and **AI_CANDIDATE not human-reviewed**, PO/notice 100 EA vs quote capacity 60 EA, 1000.00/500 KRW string monetary values. These verify **internal record consistency only**, not PDF semantic/human Gold truth.
 
 New exact-head Python/Ruff/Archive/Local Gate/60-PDF inventory CI **must** be inspected after this patch; no results invented here. Release remains `BLOCKED`: no authenticated new B0/E1 Studio Native/QA/Python execution or human-approved Gold, no measured accuracy/improvement. Preserve all existing 748 tests and source data. Record final CI SHA and links in Draft PR #2 body, not recursively in source files.
+
+
+### Exact fixed-source CI and final invalid-type coverage
+
+[Fix verification run #41464582467](https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41464582467) on SHA `d43e497861adbd2c2c930e818e936cac551dded6` completed **SUCCESS**: **770 passed, 0 failed, 0 skipped**, Ruff PASS, C001 archived/local gate PASS_LOCAL, and 60/60 PDF machine inventory PASS. This validates all 8 previously reproduced failures plus existing 748 and five new inventory-underflow cases. These totals overlap; 770 is the full test collection, not an additive QA count.
+
+A final small test-only extension covers explicit `None`, numeric `0`, boolean `False`, nested invalid Studio provenance objects, negative signed zero and nested nonzero underflow. Source behavior is unchanged by that extension. **Check its exact final HEAD CI in Draft PR #2** before treating current Code Freeze as authoritative; no repeated SHA-only documentation commits are needed. Team 2 core Blob SHA now **5/6 identical** vs original PR #12; `strict_json.py` differs intentionally due to the verified accuracy/security fix. No source PDFs, candidate Gold approval state, Studio workflows or other operational engines were changed.

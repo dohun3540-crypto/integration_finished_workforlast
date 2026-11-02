@@ -167,3 +167,13 @@ def test_unhashable_reported_provenance_level_fails_closed():
         result = audit_studio_case_batch(raw, expected_case_id="C001")
         assert result["qa_status"] == "FAIL"
         assert "UNVERIFIED_BATCH_OBSERVATION_SOURCE" in codes(result)
+
+
+@pytest.mark.parametrize("invalid_level", [None, 0, False, {"nested": {"items": []}}])
+def test_reported_provenance_nonstring_is_rejected_safely(invalid_level):
+    raw = reported()
+    raw["provenance_level"] = invalid_level
+    result = audit_studio_case_batch(raw, expected_case_id="C001")
+    assert result["qa_status"] == "FAIL"
+    assert "UNVERIFIED_BATCH_OBSERVATION_SOURCE" in codes(result)
+    assert result["release_or_merge_authorized"] is False

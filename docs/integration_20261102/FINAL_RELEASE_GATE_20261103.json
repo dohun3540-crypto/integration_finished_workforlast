@@ -47,7 +47,7 @@
   },
   "gates": {
     "SOURCE_INTEGRATION_COMPLETE": "PASS_SOURCE",
-    "CODE_GATE": "PENDING_FIX_CI",
+    "CODE_GATE": "PASS",
     "CONTRACT_GATE": "PASS_LOCAL_ONLY",
     "DATA_INTEGRITY_GATE": "PASS_MACHINE_ONLY",
     "PROVENANCE_GATE": "NOT_VERIFIED_LIVE",
@@ -55,7 +55,7 @@
     "STUDIO_E2E_GATE": "NOT_VERIFIED",
     "B0_E1_COMPARISON_GATE": "NOT_MEASURED",
     "OVERALL_RELEASE_GATE": "BLOCKED",
-    "CODE_FREEZE_CONFIRMED": "PENDING_FIX_CI"
+    "CODE_FREEZE_CONFIRMED": "PASS"
   },
   "missing_external_evidence": [
     "new B0-C001 and E1-C001 native step artifacts with upload/file/job/config/step identities",
@@ -118,5 +118,17 @@
     "core_sha_diverges_from_team2_on_purpose": true,
     "other_five_core_blob_shas_preserved": true,
     "pending_latest_exact_sha_ci": true
-  }
+  },
+  "defect_fix_verified_checkpoint": {
+    "sha": "d43e497861adbd2c2c930e818e936cac551dded6",
+    "run": "https://github.com/dohun3540-crypto/yuseok_integration/actions/runs/41464582467",
+    "conclusion": "success",
+    "pytest_passed": 770,
+    "pytest_failed": 0,
+    "pytest_skipped": 0,
+    "ruff": "PASS",
+    "pdf_inventory_passed": 60,
+    "archived_replay": "PASS_LOCAL"
+  },
+  "final_head_proof": "New commit after extra nonstring boundary regressions requires independent exact-HEAD CI; final run and SHA recorded in GitHub PR #2 description, not recursively in this file."
 }
