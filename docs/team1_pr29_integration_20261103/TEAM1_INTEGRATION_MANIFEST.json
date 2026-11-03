@@ -15,7 +15,8 @@
     "src/leadtime_guardian/qa/handoff_builder.py",
     "src/leadtime_guardian/qa/release_inventory.py",
     "src/leadtime_guardian/qa/stage_trace.py",
-    "tests/test_qa_native_closure.py"
+    "tests/test_qa_native_closure.py",
+    "scripts/qa_final_file_integrity_check.py"
   ],
   "source_path_blob_shas": {
     "scripts/qa_combined_e2e_check.py": "f68256faf48fcc7c15427e49fb83f4de8459e414",
@@ -47,5 +48,19 @@
   "tests_prior_source": "PR29 CI 41650045135 SUCCESS; reported 787 full/538 QA",
   "tests_prior_target": "PR3 CI 41604857978 SUCCESS; reported 861 full",
   "new_commit_tests": "CI_PENDING",
-  "release_authorized": false
+  "release_authorized": false,
+  "integrity_audit_exception": {
+    "reason": "Exact two intentional Team1 source replacements previously pinned in CI",
+    "failed_ci_run": 41652592519,
+    "failed_step": "Full tracked JSON CSV Gold and protected-file audit",
+    "failed_issues": [
+      "PROTECTED_BLOB_MISMATCH:src/leadtime_guardian/qa/release_inventory.py",
+      "PROTECTED_BLOB_MISMATCH:src/leadtime_guardian/qa/experiment_compare.py"
+    ],
+    "confirmed_blobs_from_original_PR29": {
+      "release_inventory": "69bc2b0bc5d8bdb683836ded89b94429e5a745a9",
+      "experiment_compare": "379d3c77e93152087a57fc48acb0a837462c13f0"
+    },
+    "other_protected_blobs_unchanged": true
+  }
 }

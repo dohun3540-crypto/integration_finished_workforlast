@@ -23,9 +23,9 @@ PROTECTED_BLOBS = {
     "src/leadtime_guardian/strict_json.py": "afa56a5f201af250eeb28a20580bd0188fe5cb51",
     "src/leadtime_guardian/qa/input_delivery.py": "f838759de7f188b1330a3c93a466f8cfab344e2a",
     "qa/inventory.py": "6bdb6f6d710066e491451bdc21c6233a5965a19d",
-    "src/leadtime_guardian/qa/release_inventory.py": "fb8982edb23078cb98a333ac4f9c581ad219ef47",
+    "src/leadtime_guardian/qa/release_inventory.py": "69bc2b0bc5d8bdb683836ded89b94429e5a745a9",
     "src/leadtime_guardian/qa/studio_contract.py": "08b23233ce12575c1c18f654e3ae296b8efa3e7c",
-    "src/leadtime_guardian/qa/experiment_compare.py": "0c0bbf2c38456019d891625e7486e379e1f96ecf",
+    "src/leadtime_guardian/qa/experiment_compare.py": "379d3c77e93152087a57fc48acb0a837462c13f0",
 }
 EXPECTED_ARCHIVE_SHA256 = "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc"
 

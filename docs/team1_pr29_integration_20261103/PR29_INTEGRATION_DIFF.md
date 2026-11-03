@@ -10,3 +10,5 @@ Source PR29 modifies six Team1 QA/CLI files and adds one Team1 regression file. 
 - `tests/test_qa_native_closure.py`: 17 regression cases imported from PR29; previous source CI passed them, new shared environment pending.
 
 Team2 calculation engine, Studio Adapter, Team3 frozen Gold, original PDFs, common PR3 and main untouched. A green PR does not mean a complete Studio Live E2E or approved release.
+
+- `scripts/qa_final_file_integrity_check.py` (integration-only maintenance): bind the exact two intentionally changed PR29 Team1 Git Blobs in the existing strict SHA allowlist; all other protected hash requirements, PDF/Gold parsers and release prohibitions unchanged. CI artifact on attempt #41652592519 proved these were the only two integrity issues.
