@@ -120,3 +120,10 @@ def test_explicit_null_token_not_excel_blank(book):
     bad = inspect_xlsx_review(payload2.getvalue(), text.getvalue().encode())
     assert "BASELINE_TYPE_OR_VALUE_MISMATCH" in {
         i["code"] for i in bad["issues"]}
+
+
+def test_team_approved_without_accept_is_inconsistent(book):
+    csv_bytes, xlsx = sample(book, edits={"approval_state": "TEAM_APPROVED"})
+    report = inspect_xlsx_review(xlsx, csv_bytes)
+    assert report["status"] == "BLOCKED"
+    assert "APPROVAL_WITHOUT_ACCEPT" in {x["code"] for x in report["issues"]}

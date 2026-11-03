@@ -100,6 +100,8 @@ def compare_snapshot(data, csv_bytes):
         decision, state = row["decision"], row["approval_state"]
         if decision not in DECISIONS or state not in STATES:
             issues.append({"row": number, "code": "INVALID_REVIEW_STATE"})
+        if decision != "ACCEPT" and state in {"REVIEWED_BY_MEMBER3", "TEAM_APPROVED"}:
+            issues.append({"row": number, "code": "APPROVAL_WITHOUT_ACCEPT"})
         if decision not in {None, "", "ACCEPT"}:
             issues.append({"row": number, "code": "CORRECTION_REQUIRES_NEW_VERSION"})
         if decision == "ACCEPT":

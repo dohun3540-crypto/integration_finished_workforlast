@@ -192,3 +192,63 @@ def test_known_case_prefix_alias_does_not_mix_jobs():
     assert evaluate(prediction, gold, binding)["accuracy_status"] == "MEASURED"
     binding["case_id"] = "SYN-C999"
     assert evaluate(prediction, gold, binding)["accuracy_status"] == "NOT_MEASURED"
+
+
+def test_invalid_gold_approval_provenance_never_measures():
+    gold, binding, prediction = sample()
+    gold["approval_provenance"]["reviewed_at"] = "not-a-timestamp"
+    assert evaluate(prediction, gold, binding)["accuracy_status"] == "NOT_MEASURED"
+    gold["approval_provenance"]["reviewed_at"] = "2026-11-02T11:00:00+09:00"
+    gold["approval_provenance"]["approval_record_sha256"] = "not-a-sha"
+    assert evaluate(prediction, gold, binding)["accuracy_status"] == "NOT_MEASURED"
+    gold["approval_provenance"]["approval_record_sha256"] = "b" * 64
+    gold["approval_provenance"]["reviewer"] = 123
+    assert evaluate(prediction, gold, binding)["accuracy_status"] == "NOT_MEASURED"
+
+
+def test_duplicate_prediction_evidence_must_never_pass():
+    gold, binding, prediction = sample()
+    prediction["evidence"] = deepcopy(gold["approved_field_evidence"])
+    assert evaluate(prediction, gold, binding)["status"] == "PASS"
+    prediction["evidence"].append(deepcopy(prediction["evidence"][0]))
+    report = evaluate(prediction, gold, binding)
+    assert report["status"] == "FAIL"
+    assert "DUPLICATE_EVIDENCE" in {x["code"] for x in report["evidence_issues"]}
+    assert report["metrics"]["evidence_linkage"]["numerator"] < (
+        report["metrics"]["evidence_linkage"]["denominator"])
+
+
+def test_cross_case_or_unknown_source_evidence_must_never_pass():
+    gold, binding, prediction = sample()
+    prediction["evidence"] = deepcopy(gold["approved_field_evidence"])
+    prediction["evidence"][0]["case_id"] = "SYN-C013"
+    result = evaluate(prediction, gold, binding)
+    assert result["status"] == "FAIL"
+    assert "CROSS_CASE_EVIDENCE" in {x["code"] for x in result["evidence_issues"]}
+    prediction["evidence"][0].pop("case_id")
+    prediction["evidence"].append({
+        "document_id": "FOREIGN-DOC", "field_path": "po_id",
+        "source_file_sha256": "f" * 64, "source_original_text": "PO1", "page": 1})
+    result = evaluate(prediction, gold, binding)
+    assert result["status"] == "FAIL"
+    assert "UNAPPROVED_EVIDENCE_SCOPE" in {
+        x["code"] for x in result["evidence_issues"]}
+
+
+def test_boolean_pdf_page_never_matches_page_one():
+    gold, binding, prediction = sample()
+    prediction["evidence"] = deepcopy(gold["approved_field_evidence"])
+    prediction["evidence"][0]["page"] = True
+    result = evaluate(prediction, gold, binding)
+    assert result["status"] == "FAIL"
+    assert "INVALID_EVIDENCE_PAGE" in {x["code"] for x in result["evidence_issues"]}
+    assert result["metrics"]["evidence_linkage"]["numerator"] < (
+        result["metrics"]["evidence_linkage"]["denominator"])
+
+
+def test_no_po_conflict_business_block_not_measured_has_zero_successes():
+    gold, binding, prediction = sample()
+    result = evaluate(prediction, gold, binding)
+    metric = result["metrics"]["po_conflict_business_block"]
+    assert metric == {"status": "NOT_MEASURED", "numerator": 0,
+                      "denominator": 0, "rate": None}

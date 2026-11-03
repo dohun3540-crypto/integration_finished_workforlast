@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 
 from qa.inventory import strict_json
+from qa.review_records import valid_timestamp
 
 MISSING = object()
 DATE_KEYS = {"original_delivery", "revised_delivery", "arrival_date", "eta", "due_date"}
@@ -63,6 +64,8 @@ def lookup(value, path):
 
 
 def is_approved(gold):
+    if not isinstance(gold, dict):
+        return False
     flags = ("human_reviewed", "team_approved", "eligible_for_official_metrics",
              "gold_frozen")
     review = gold.get("approval_provenance")
@@ -70,7 +73,11 @@ def is_approved(gold):
             and all(gold.get(k) is True for k in flags)
             and re.fullmatch(r"[0-9a-f]{64}", str(gold.get("gold_sha256", ""))) is not None
             and isinstance(review, dict)
-            and all(review.get(k) for k in ("reviewer", "reviewed_at", "approval_record_sha256")))
+            and isinstance(review.get("reviewer"), str)
+            and bool(review["reviewer"].strip())
+            and valid_timestamp(review.get("reviewed_at"))
+            and re.fullmatch(r"[0-9a-f]{64}",
+                             str(review.get("approval_record_sha256", ""))) is not None)
 
 
 def approved_evidence(gold):
@@ -188,8 +195,39 @@ def evaluate(prediction, gold, native=None):
                                   "date_normalization", "receipt_identity",
                                   "quotation_fields", "evidence_linkage", "item_receipt_identity",
                                   "sentinel_preservation", "date_source_preservation")}
-    evidence = prediction.get("evidence", [])
-    evidence = evidence if isinstance(evidence, list) else []
+    evidence = prediction.get("evidence")
+    evidence_issues = []
+    if not isinstance(evidence, list):
+        evidence_issues.append({"code": "EVIDENCE_NOT_ARRAY"})
+        evidence = []
+    evidence_index = {}
+    seen_evidence = set()
+    for record in evidence:
+        if not isinstance(record, dict):
+            evidence_issues.append({"code": "MALFORMED_EVIDENCE_RECORD"})
+            continue
+        did, field_path = record.get("document_id"), record.get("field_path")
+        if not isinstance(did, str) or not isinstance(field_path, str):
+            evidence_issues.append({"code": "INVALID_EVIDENCE_KEY"})
+            continue
+        key = did, field_path
+        if key in seen_evidence:
+            evidence_issues.append({"code": "DUPLICATE_EVIDENCE",
+                                    "document_id": did, "field_path": field_path})
+            evidence_index.pop(key, None)
+        else:
+            evidence_index[key] = record
+            seen_evidence.add(key)
+        if key not in approved_citations:
+            evidence_issues.append({"code": "UNAPPROVED_EVIDENCE_SCOPE",
+                                    "document_id": did, "field_path": field_path})
+        if ("case_id" in record and
+                not same_case_id(gold.get("case_id"), record["case_id"])):
+            evidence_issues.append({"code": "CROSS_CASE_EVIDENCE",
+                                    "document_id": did, "field_path": field_path})
+        if type(record.get("page")) is not int:
+            evidence_issues.append({"code": "INVALID_EVIDENCE_PAGE",
+                                    "document_id": did, "field_path": field_path})
     failed = []
     missing = []
     for did, expected in gold_docs.items():
@@ -227,45 +265,51 @@ def evaluate(prediction, gold, native=None):
             approved_citation = approved_citations[did, path]
             # Each output slot is counted once; raw text must match approved source.
             scores["evidence_linkage"][1] += 1
-            if any(isinstance(e, dict) and e.get("document_id") == did
-                   and e.get("field_path") == path
-                   and e.get("source_file_sha256") == source.get("sha256")
-                   and e.get("page") == source.get("source_page")
-                   and e.get("source_original_text") == approved_citation.get(
-                       "source_original_text")
-                   and (want is not None or
-                        (e.get("absence_confirmed") is True
-                         and e.get("review_record_sha256") ==
-                         approved_citation.get("review_record_sha256")))
-                   for e in evidence):
+            e = evidence_index.get((did, path))
+            if (e is not None
+                    and type(e.get("page")) is int
+                    and ("case_id" not in e or
+                         same_case_id(gold.get("case_id"), e["case_id"]))
+                    and e.get("source_file_sha256") == source.get("sha256")
+                    and e.get("page") == source.get("source_page")
+                    and e.get("source_original_text") == approved_citation.get(
+                        "source_original_text")
+                    and (want is not None or
+                         (e.get("absence_confirmed") is True
+                          and e.get("review_record_sha256") ==
+                          approved_citation.get("review_record_sha256")))):
                 scores["evidence_linkage"][0] += 1
     # Preserve original language dates separately from their normalized ISO values.
     for did, source in sources.items():
         for entry in source.get("date_evidence", []):
             scores["date_source_preservation"][1] += 1
-            if any(isinstance(e, dict) and e.get("document_id") == did
-                   and e.get("field_path") == entry.get("field")
-                   and e.get("source_original_text") == entry.get("source_text")
-                   and approved_citations.get((did, entry.get("field")), {}).get(
-                       "source_original_text") == entry.get("source_text")
-                   and e.get("source_file_sha256") == source.get("sha256")
-                   and e.get("page") == source.get("source_page") for e in evidence):
+            e = evidence_index.get((did, entry.get("field")))
+            if (e is not None and type(e.get("page")) is int
+                    and ("case_id" not in e or
+                         same_case_id(gold.get("case_id"), e["case_id"]))
+                    and e.get("source_original_text") == entry.get("source_text")
+                    and approved_citations.get((did, entry.get("field")), {}).get(
+                        "source_original_text") == entry.get("source_text")
+                    and e.get("source_file_sha256") == source.get("sha256")
+                    and e.get("page") == source.get("source_page")):
                 scores["date_source_preservation"][0] += 1
     po = {d.get("po_id") for d in gold_docs.values() if isinstance(d.get("po_id"), str)}
     conflict = len(po) > 1
     detected = typed_equal(conflict, prediction.get("po_conflict_detected", MISSING))
     blocked = not conflict or prediction.get("business_status") == "BLOCKED"
     scores["po_conflict_detection"] = [int(detected), 1]
-    scores["po_conflict_business_block"] = [int(blocked), int(conflict)]
+    scores["po_conflict_business_block"] = [int(conflict and blocked), int(conflict)]
     # Incidence is a missing-field rate (lower is better), not detection accuracy.
     scores["missing_field_incidence"] = [len(missing), scores["fields"][1]]
     result["metrics"] = {key: metric(*score) for key, score in scores.items()}
     result["field_results"] = failed
+    result["evidence_issues"] = evidence_issues
     result["missing_fields"] = missing
     result["extra_document_ids"] = sorted(pred_docs.keys() - gold_docs.keys())
     result["accuracy_status"] = "MEASURED"
     result["official_metrics_eligible"] = True
-    result["status"] = ("PASS" if not failed and not result["extra_document_ids"]
+    result["status"] = ("PASS" if not failed and not evidence_issues
+                        and not result["extra_document_ids"]
                         and detected and blocked
                         and scores["evidence_linkage"][0] == scores["evidence_linkage"][1]
                         and scores["date_source_preservation"][0] ==

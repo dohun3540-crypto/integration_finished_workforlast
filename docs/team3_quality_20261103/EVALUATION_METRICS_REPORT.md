@@ -74,3 +74,25 @@ fixture results are not Studio performance.
 
 
 **Case ID compatibility:** Team 1 uses short `C001` while Gold uses `SYN-C001`. The evaluator canonicalizes **only** a leading `SYN-` prefix, so the same case binds without relaxing cross-case safety. `C001` and `C013` remain different and are rejected if mixed.
+
+
+## Final regression audit: discovered defects and minimal safeguards
+
+A pre-freeze audit identified that source Evidence was previously scored with an
+`any(...)` match: a valid citation **plus** a duplicate, contradictory or
+foreign-case citation could leave case status `PASS`. The read-only evaluator
+now fails the case on duplicate `document_id + field_path`, unknown/foreign
+citations, malformed evidence records, and Boolean page numbers masquerading
+as page 1. Only uniquely keyed citations can contribute to Evidence coverage.
+Authentic human approval is **still independently required**; fake source
+metadata in a synthetic test fixture is not authentication.
+
+The Gold approval metadata gate also validates reviewer string, strict
+timezone-aware `reviewed_at`, and SHA-256-shaped approval digest rather than
+accepting arbitrary truthy values. `po_conflict_business_block` returns a zero
+numerator as well as a zero denominator for non-conflict cases. XLSX
+`TEAM_APPROVED` without an `ACCEPT` decision is structurally `BLOCKED`.
+
+All modifications are limited to the independent Team 3 evaluator, typed
+review bridge, directly relevant tests and this evaluator contract. There is
+no change to approval statuses, source data or existing Team 1/2 code.
