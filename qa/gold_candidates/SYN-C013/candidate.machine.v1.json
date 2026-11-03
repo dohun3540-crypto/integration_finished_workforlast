@@ -1,0 +1,192 @@
+{
+  "case_id": "SYN-C013",
+  "candidate_version": "SYN-C013-machine-candidate-v1",
+  "label_status": "AI_CANDIDATE",
+  "human_reviewed": false,
+  "team_approved": false,
+  "eligible_for_official_metrics": false,
+  "gold_frozen": false,
+  "gold_sha256": null,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "studio_job_id": null,
+  "studio_config_id": null,
+  "provenance": "Previously archived machine PDF template text audit cross-checked with generator-produced DRAFT. NOT independent Human Gold; not new Studio prediction; not visual human PDF review.",
+  "archive_reference": "docs/final_audit_20261103/evidence/semantic-pdf.json",
+  "manifest_reference": "data/cases/SYN-C013/manifest.json",
+  "draft_reference": "data/cases/SYN-C013/extraction_gold.DRAFT.json",
+  "sources": [
+    {
+      "document_id": "C013-PO",
+      "filename": "SYN-C013_purchase_order.pdf",
+      "sha256": "8616adc32f2a12495586c674020011174d2c97812b3bced9638bc91f221ee2d9",
+      "source_page": 1,
+      "document_type": "purchase_order",
+      "checked_fields": [
+        "document_type",
+        "case_id",
+        "document_id",
+        "po_id",
+        "original_delivery",
+        "items"
+      ],
+      "date_evidence": [
+        {
+          "field": "original_delivery",
+          "source_text": "2026-11-03",
+          "normalized": "2026-11-03"
+        }
+      ],
+      "source": "ARCHIVED_MACHINE_TEMPLATE_TEXT_VS_DRAFT"
+    },
+    {
+      "document_id": "C013-NOTICE",
+      "filename": "SYN-C013_delivery_notice.pdf",
+      "sha256": "f4d7446b540c7dd2a50cf566ba47982cc4fcc8ce1230743d8175239eac9d2bfb",
+      "source_page": 1,
+      "document_type": "delivery_notice",
+      "checked_fields": [
+        "document_type",
+        "case_id",
+        "document_id",
+        "po_id",
+        "original_delivery",
+        "revised_delivery",
+        "items"
+      ],
+      "date_evidence": [
+        {
+          "field": "original_delivery",
+          "source_text": "2026-11-03",
+          "normalized": "2026-11-03"
+        },
+        {
+          "field": "revised_delivery",
+          "source_text": "2026-11-08",
+          "normalized": "2026-11-08"
+        }
+      ],
+      "source": "ARCHIVED_MACHINE_TEMPLATE_TEXT_VS_DRAFT"
+    },
+    {
+      "document_id": "C013-QUOTE",
+      "filename": "SYN-C013_quotation.pdf",
+      "sha256": "590a11d68814d8e35ba1dee1734a71791b703b464dd87f3661fab8ea5bdbd735",
+      "source_page": 1,
+      "document_type": "quotation",
+      "checked_fields": [
+        "document_type",
+        "case_id",
+        "document_id",
+        "po_id",
+        "quote.quote_id",
+        "quote.supplier_id",
+        "quote.currency",
+        "quote.arrival_date",
+        "quote.unit_price",
+        "quote.shipping_cost",
+        "items"
+      ],
+      "date_evidence": [
+        {
+          "field": "quote.arrival_date",
+          "source_text": "2026-11-04",
+          "normalized": "2026-11-04"
+        }
+      ],
+      "source": "ARCHIVED_MACHINE_TEMPLATE_TEXT_VS_DRAFT"
+    }
+  ],
+  "field_gold_candidate": [
+    {
+      "po_id": "PO1",
+      "supplier_id": null,
+      "original_delivery": "2026-11-03",
+      "revised_delivery": null,
+      "quote": null,
+      "document_id": "C013-PO",
+      "document_type": "purchase_order",
+      "items": [
+        {
+          "product_id": "A",
+          "receipt_id": "R1",
+          "quantity": 100,
+          "unit": "EA"
+        }
+      ]
+    },
+    {
+      "po_id": "PO999",
+      "supplier_id": null,
+      "original_delivery": "2026-11-03",
+      "revised_delivery": "2026-11-08",
+      "quote": null,
+      "document_id": "C013-NOTICE",
+      "document_type": "delivery_notice",
+      "items": [
+        {
+          "product_id": "A",
+          "receipt_id": "R1",
+          "quantity": 100,
+          "unit": "EA"
+        }
+      ]
+    },
+    {
+      "document_id": "C013-QUOTE",
+      "document_type": "quotation",
+      "po_id": "PO1",
+      "supplier_id": "S1",
+      "original_delivery": null,
+      "revised_delivery": null,
+      "items": [
+        {
+          "product_id": "A",
+          "receipt_id": null,
+          "quantity": 60,
+          "unit": "EA"
+        }
+      ],
+      "quote": {
+        "quote_id": "Q013",
+        "supplier_id": "S1",
+        "product_id": "A",
+        "capacity": 60,
+        "arrival_date": "2026-11-04",
+        "unit_price": "1000.00",
+        "shipping_cost": "500",
+        "currency": "KRW"
+      }
+    }
+  ],
+  "critical_review_checks": [
+    {
+      "field": "purchase_order.po_id",
+      "candidate": "PO1",
+      "reason": "Original PO source"
+    },
+    {
+      "field": "delivery_notice.po_id",
+      "candidate": "PO999",
+      "reason": "Conflicting original text; never autocorrect to PO1"
+    },
+    {
+      "field": "quotation.po_id",
+      "candidate": "PO1",
+      "reason": "Quote reference is PO1"
+    },
+    {
+      "field": "po_conflict_detection",
+      "candidate": true,
+      "reason": "Evaluate extraction correctness separately from cross-document safety block"
+    }
+  ],
+  "review_status": "BLOCKED",
+  "source_visual_review": "NOT_VERIFIED",
+  "official_accuracy": "NOT_MEASURED",
+  "notes": [
+    "Existing source PDF and original DRAFT unchanged.",
+    "Archive machine text vs DRAFT cannot establish blind independent Gold.",
+    "Human must verify source layout, missing fields, approval authority, history and all original dates."
+  ]
+}

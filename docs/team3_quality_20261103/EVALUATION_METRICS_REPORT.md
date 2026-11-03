@@ -1,0 +1,98 @@
+# Read-only Ground Truth Evaluation Contract
+
+Implementation: `qa/gold_metrics.py` and `qa/review_bridge.py`. Both avoid updates to the studio adapter, QA safety, original PDFs, existing DRAFT and workflow configs.
+
+## Hard gate
+`evaluate(prediction, gold, native_binding)` only emits measured official metrics if ALL are supplied:
+1. Gold metadata `label_status=HUMAN_GOLD_FROZEN`, `human_reviewed=true`, `team_approved=true`, `gold_frozen=true`, `eligible_for_official_metrics=true`, 64-hex Gold digest, plus nonempty reviewer/time/approval-record hash. Human authority and hashes still require independently verified records; metadata alone does not authenticate a person.
+2. Native run `execution_kind=STUDIO_NATIVE`, nonempty `job_id`, `config_id`, `workflow_version`, and per-document `file_bindings` with `file_id`, exact filename and original source SHA equal to Gold sources. The calling team must independently verify those identities in Studio.
+3. Prediction `documents` with unique `document_id` and Gold `sources` matching each approved document ID.
+
+If not met: `status=BLOCKED, accuracy_status=NOT_MEASURED, metrics={}`. Archived C001 Replay, synthetic DRAFT, AI candidates and detached XLSX cannot yield official accuracy.
+
+## Numerators / denominators
+| Indicator (JSON metrics key) | Numerator | Denominator | Meaning |
+|---|---|---|---|
+| classification | Documents with exact document_type | Approved Gold documents | Classification accuracy |
+| fields | Exact type-and-value matches per normalized leaf field | All Gold normalized leaf field slots, document_type included | Field accuracy |
+| missing_field_incidence | Expected leaf slots missing from prediction | All expected leaf field slots | Missing incidence, lower is better, NOT accuracy |
+| null_preservation | Explicit output null for Gold-null slot | Gold-null slots | Distinguishes null from absent/0 |
+| sentinel_preservation | Exact null/zero/false/empty-string values | Gold sentinel slots | Distinguishes null/0/false/empty/missing by strict type |
+| date_normalization | Exact typed ISO output matches for date-named slots | Date-named slots in Gold | ISO candidate match |
+| date_source_preservation | Evidence raw date exactly matches the approved source date text and SHA/page | Each Gold source date_evidence record | Korean date original preservation, NOT a substitute for visual human review |
+| receipt_identity | Exact `receipt_id` value matches | Gold receipt_id slots (null included if present) | Identity, not quantity correctness |
+| quotation_fields | Exact leaf match under `quote.*` | Gold quotation leaf slots | Quote identifiers, supplier, capacity, cost and currency |
+| evidence_linkage | Leaf output slots with matching doc/SHA/page/path and nonempty original text | All Gold leaf slots | Source binding per output slot; null absence requires explicit absence_confirmed=true plus review_record_sha256 instead of invented source text |
+| po_conflict_detection | 1 if predicted boolean equals Gold cross-document PO conflict | 1 per case | Collision classification |
+| po_conflict_business_block | 1 if contradictory PO IDs and business status BLOCKED | 1 only for conflict cases | Safety gate; no conflict => NOT_MEASURED |
+
+Each metric returns `status`, `numerator`, `denominator`, and `rate`; zero denominator produces `NOT_MEASURED` with rate null, never divide by zero. Missing fields also return precise coordinates in `missing_fields`; errors and extra document IDs are separate. `case status=PASS` requires all checked fields, source evidence, PO conflict detection and business block conditions to pass, but release authorization is always false.
+
+**Duplicate-source policy:** field accuracy and evidence linkage are per *normalized output slot* (`document_id + field_path`), not per independent physical observation. Reused quotation supplier/product/capacity in multiple slots is counted once **per output slot**, so these rates are not the number of distinct ground-truth facts; do not call them independent-observation accuracy. A later analysis may group aliases by shared source cell for an independent factual metric.
+
+**Value policy:** strict Python/JSON type comparison: `null`, missing, `false`, `0`, `0.0`, `""`, `"1000.00"`, `1000` are distinct. No rounding, date guessing, exchange-rate conversion or implicit string→number conversion. List positions use `items[0].receipt_id` paths; the approved Gold must define receipt matching policy when order changes.
+
+## Example
+```bash
+python -m qa.gold_metrics \
+ --gold review/approved/SYN-C001.gold.frozen.json \
+ --prediction review/native/latest-studio-result.json \
+ --binding review/native/studio-source-bindings.json \
+ --out /tmp/team3-official-evaluation.json
+```
+Input paths are examples, not claims that those files exist. A file labelled Human Gold must be independently verified before this command. **Actual measured extraction accuracy: NOT_MEASURED** as of this audit.
+
+
+
+## Team 3 follow-up safeguard (2026-11-03)
+
+The read-only evaluator now requires a separate `approved_field_evidence[]`
+collection in the frozen Gold, containing **exactly one approved entry per
+`document_id + field_path`**. Each entry must contain
+`document_id`, `field_path`, `source_file_sha256`, original `page`,
+`decision="ACCEPT"`, and a 64-character `review_record_sha256`. Non-null
+fields require the original nonempty `source_original_text`; null fields require
+`absence_confirmed=true` and must not fabricate an original-text string.
+Missing, extra, duplicate or inconsistent citations BLOCK the entire official
+evaluation and return `NOT_MEASURED`. All citations require independent human
+validation; providing these strings alone is not proof of authorization.
+
+The Native binding now also requires `case_id` matching frozen Gold. If a
+Native prediction itself contains `case_id`, that must match as well.
+`evidence_linkage` is credited only if the Studio output's original text
+**exactly matches the approved source citation**, in addition to document,
+SHA and page. `date_normalization` includes only non-null expected
+date fields; optional nulls are evaluated under null/sentinel preservation,
+not counted as correctly parsed dates. The XLSX reader distinguishes an
+explicit literal `"null"` in a `null`-typed candidate cell from an empty
+Excel cell, and marks a missing null-source-text cell as requiring human
+absence verification.
+
+These safeguards do not change the actual production state:
+Human Gold BLOCKED, official accuracy NOT_MEASURED. Older synthetic evaluation
+fixture results are not Studio performance.
+
+
+**Case ID compatibility:** Team 1 uses short `C001` while Gold uses `SYN-C001`. The evaluator canonicalizes **only** a leading `SYN-` prefix, so the same case binds without relaxing cross-case safety. `C001` and `C013` remain different and are rejected if mixed.
+
+
+## Final regression audit: discovered defects and minimal safeguards
+
+A pre-freeze audit identified that source Evidence was previously scored with an
+`any(...)` match: a valid citation **plus** a duplicate, contradictory or
+foreign-case citation could leave case status `PASS`. The read-only evaluator
+now fails the case on duplicate `document_id + field_path`, unknown/foreign
+citations, malformed evidence records, and Boolean page numbers masquerading
+as page 1. Only uniquely keyed citations can contribute to Evidence coverage.
+Authentic human approval is **still independently required**; fake source
+metadata in a synthetic test fixture is not authentication.
+
+The Gold approval metadata gate also validates reviewer string, strict
+timezone-aware `reviewed_at`, and SHA-256-shaped approval digest rather than
+accepting arbitrary truthy values. `po_conflict_business_block` returns a zero
+numerator as well as a zero denominator for non-conflict cases. XLSX
+`TEAM_APPROVED` without an `ACCEPT` decision is structurally `BLOCKED`.
+
+All modifications are limited to the independent Team 3 evaluator, typed
+review bridge, directly relevant tests and this evaluator contract. There is
+no change to approval statuses, source data or existing Team 1/2 code.

@@ -1,0 +1,98 @@
+{
+  "recorded_date_kst": "2026-11-03",
+  "repository": "dohun3540-crypto/integration_finished_workforlast",
+  "base_branch": "feat/final-quality-regression-audit-20261103",
+  "base_head": "e948a4a6d3aba6aacd68495bec422b1e845075a0",
+  "work_branch": "feat/team3-gold-data-quality-20261103",
+  "draft_pr_url": "https://github.com/dohun3540-crypto/integration_finished_workforlast/pull/3",
+  "overall_release_gate": "BLOCKED",
+  "data_source_integrity": {
+    "status": "PASS",
+    "documents": 60,
+    "checked": 60,
+    "fail": 0,
+    "duplicate_sha": 0,
+    "archive_sha256": "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc"
+  },
+  "verified_software_ci": {
+    "status": "PASS",
+    "code_head": "f6fdd1f3d263f86a985e21100d99fbd9986e914e",
+    "integration_run_id": 41602469455,
+    "full_pytest_passed": 855,
+    "team1_targeted_passed": 37,
+    "team3_run_id": 41602469577,
+    "team3_pytest_passed": 89,
+    "ruff": "PASS",
+    "source_pdf": "PASS"
+  },
+  "code_after_verified_head": "FINAL_REPORT_PACKAGING_REQUIRES_SEPARATE_CI",
+  "human_gold": {
+    "status": "BLOCKED",
+    "c001": "AI_CANDIDATE",
+    "reviewed_xlsx": "MISSING_REQUIRED_EVIDENCE",
+    "human_reviewed": false,
+    "team_approved": false,
+    "gold_frozen": false,
+    "c008": "AI_CANDIDATE",
+    "c013": "AI_CANDIDATE",
+    "c017": "AI_CANDIDATE"
+  },
+  "studio_native": {
+    "status": "NOT_VERIFIED",
+    "new_case_job_id": null,
+    "new_config_id": null,
+    "verified_file_bindings": false,
+    "required_fields": [
+      "case_id",
+      "execution_kind",
+      "job_id",
+      "config_id",
+      "workflow_version",
+      "file_bindings"
+    ],
+    "case_id_policy": "C001 and SYN-C001 are canonical aliases; different numeric cases are rejected"
+  },
+  "official_accuracy": {
+    "status": "NOT_MEASURED",
+    "metrics": null,
+    "source": "approved_gold_and_native_run_absent"
+  },
+  "independent_business_safety": {
+    "archived_C001": "PASS_LOCAL",
+    "live": "NOT_VERIFIED"
+  },
+  "release_authorized": false,
+  "merge_authorized": false,
+  "missing_evidence": [
+    "review/latest/PDF_EVIDENCE_MATRIX.xlsx exact original bytes and SHA",
+    "real reviewer authorization, reviewed_at, decision and corrections",
+    "field-level human visual review against source PDFs",
+    "immutable frozen Gold version and signed/verified approval record",
+    "current authentic Studio native prediction JSON and Job/Config/File IDs with SHA bindings",
+    "current cross-agent integrated live validation results",
+    "Approved field-level source evidence entries for each output slot, with verified decision and original text/absence"
+  ],
+  "note": "CI green does not satisfy the human Gold or live Studio release gate.",
+  "known_intermediate_failure": {
+    "status": "FIXED",
+    "intermediate_head": "cb1d45f70984098fa5d813c794e244bcf8b44f07",
+    "failed_tests": 3,
+    "passed_tests": 845,
+    "explanation": "literal escaped newline in metrics assignment, resolved at verified code head"
+  },
+  "gold_field_evidence": {
+    "status": "BLOCKED",
+    "approved_field_evidence_available": false,
+    "required_keys": [
+      "document_id",
+      "field_path",
+      "source_file_sha256",
+      "page",
+      "decision",
+      "review_record_sha256",
+      "source_original_text or absence_confirmed"
+    ],
+    "exact_approved_source_text_check_implemented": true,
+    "reviewer_identity_verified": false
+  }
+}
