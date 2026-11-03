@@ -1,0 +1,204 @@
+{
+  "case_id": "SYN-C017",
+  "candidate_version": "SYN-C017-machine-candidate-v1",
+  "label_status": "AI_CANDIDATE",
+  "human_reviewed": false,
+  "team_approved": false,
+  "eligible_for_official_metrics": false,
+  "gold_frozen": false,
+  "gold_sha256": null,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "studio_job_id": null,
+  "studio_config_id": null,
+  "provenance": "Previously archived machine PDF template text audit cross-checked with generator-produced DRAFT. NOT independent Human Gold; not new Studio prediction; not visual human PDF review.",
+  "archive_reference": "docs/final_audit_20261103/evidence/semantic-pdf.json",
+  "manifest_reference": "data/cases/SYN-C017/manifest.json",
+  "draft_reference": "data/cases/SYN-C017/extraction_gold.DRAFT.json",
+  "sources": [
+    {
+      "document_id": "C017-PO",
+      "filename": "SYN-C017_purchase_order.pdf",
+      "sha256": "22d5f85e9bfe46d759ff57c079e02db11ca949e81de02119d88eb4add6ac6ab6",
+      "source_page": 1,
+      "document_type": "purchase_order",
+      "checked_fields": [
+        "document_type",
+        "case_id",
+        "document_id",
+        "po_id",
+        "original_delivery",
+        "items"
+      ],
+      "date_evidence": [
+        {
+          "field": "original_delivery",
+          "source_text": "2026년 11월 3일",
+          "normalized": "2026-11-03"
+        }
+      ],
+      "source": "ARCHIVED_MACHINE_TEMPLATE_TEXT_VS_DRAFT"
+    },
+    {
+      "document_id": "C017-NOTICE",
+      "filename": "SYN-C017_delivery_notice.pdf",
+      "sha256": "17f06614b3fcc1a0e33eb6d48199768d8a02a32b48bff0b91cabdecd2a993e2e",
+      "source_page": 1,
+      "document_type": "delivery_notice",
+      "checked_fields": [
+        "document_type",
+        "case_id",
+        "document_id",
+        "po_id",
+        "original_delivery",
+        "revised_delivery",
+        "items"
+      ],
+      "date_evidence": [
+        {
+          "field": "original_delivery",
+          "source_text": "2026년 11월 3일",
+          "normalized": "2026-11-03"
+        },
+        {
+          "field": "revised_delivery",
+          "source_text": "2026년 11월 8일",
+          "normalized": "2026-11-08"
+        }
+      ],
+      "source": "ARCHIVED_MACHINE_TEMPLATE_TEXT_VS_DRAFT"
+    },
+    {
+      "document_id": "C017-QUOTE",
+      "filename": "SYN-C017_quotation.pdf",
+      "sha256": "aad4125f7501653211fcd764c163930f74a3c031b5681d0bdee01c9fbd8b654c",
+      "source_page": 1,
+      "document_type": "quotation",
+      "checked_fields": [
+        "document_type",
+        "case_id",
+        "document_id",
+        "po_id",
+        "quote.quote_id",
+        "quote.supplier_id",
+        "quote.currency",
+        "quote.arrival_date",
+        "quote.unit_price",
+        "quote.shipping_cost",
+        "items"
+      ],
+      "date_evidence": [
+        {
+          "field": "quote.arrival_date",
+          "source_text": "2026년 11월 4일",
+          "normalized": "2026-11-04"
+        }
+      ],
+      "source": "ARCHIVED_MACHINE_TEMPLATE_TEXT_VS_DRAFT"
+    }
+  ],
+  "field_gold_candidate": [
+    {
+      "po_id": "PO1",
+      "supplier_id": null,
+      "original_delivery": "2026-11-03",
+      "revised_delivery": null,
+      "quote": null,
+      "document_id": "C017-PO",
+      "document_type": "purchase_order",
+      "items": [
+        {
+          "product_id": "A",
+          "receipt_id": "R1",
+          "quantity": 100,
+          "unit": "EA"
+        }
+      ]
+    },
+    {
+      "po_id": "PO1",
+      "supplier_id": null,
+      "original_delivery": "2026-11-03",
+      "revised_delivery": "2026-11-08",
+      "quote": null,
+      "document_id": "C017-NOTICE",
+      "document_type": "delivery_notice",
+      "items": [
+        {
+          "product_id": "A",
+          "receipt_id": "R1",
+          "quantity": 100,
+          "unit": "EA"
+        }
+      ]
+    },
+    {
+      "document_id": "C017-QUOTE",
+      "document_type": "quotation",
+      "po_id": "PO1",
+      "supplier_id": "S1",
+      "original_delivery": null,
+      "revised_delivery": null,
+      "items": [
+        {
+          "product_id": "A",
+          "receipt_id": null,
+          "quantity": 60,
+          "unit": "EA"
+        }
+      ],
+      "quote": {
+        "quote_id": "Q017",
+        "supplier_id": "S1",
+        "product_id": "A",
+        "capacity": 60,
+        "arrival_date": "2026-11-04",
+        "unit_price": "1000.00",
+        "shipping_cost": "500",
+        "currency": "KRW"
+      }
+    }
+  ],
+  "critical_review_checks": [
+    {
+      "document_id": "C017-PO",
+      "field": "original_delivery",
+      "source_original_text": "2026년 11월 3일",
+      "normalized_candidate": "2026-11-03",
+      "source_page": 1,
+      "reason": "Retain Korean original; strict ISO normalization without guessing"
+    },
+    {
+      "document_id": "C017-NOTICE",
+      "field": "original_delivery",
+      "source_original_text": "2026년 11월 3일",
+      "normalized_candidate": "2026-11-03",
+      "source_page": 1,
+      "reason": "Retain Korean original; strict ISO normalization without guessing"
+    },
+    {
+      "document_id": "C017-NOTICE",
+      "field": "revised_delivery",
+      "source_original_text": "2026년 11월 8일",
+      "normalized_candidate": "2026-11-08",
+      "source_page": 1,
+      "reason": "Retain Korean original; strict ISO normalization without guessing"
+    },
+    {
+      "document_id": "C017-QUOTE",
+      "field": "quote.arrival_date",
+      "source_original_text": "2026년 11월 4일",
+      "normalized_candidate": "2026-11-04",
+      "source_page": 1,
+      "reason": "Retain Korean original; strict ISO normalization without guessing"
+    }
+  ],
+  "review_status": "BLOCKED",
+  "source_visual_review": "NOT_VERIFIED",
+  "official_accuracy": "NOT_MEASURED",
+  "notes": [
+    "Existing source PDF and original DRAFT unchanged.",
+    "Archive machine text vs DRAFT cannot establish blind independent Gold.",
+    "Human must verify source layout, missing fields, approval authority, history and all original dates."
+  ]
+}
