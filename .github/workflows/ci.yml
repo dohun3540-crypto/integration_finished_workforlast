@@ -54,6 +54,8 @@ jobs:
         run: python -m qa.inventory --root . --out validation-logs/inventory
       - name: Full tracked JSON CSV Gold and protected-file audit
         run: python scripts/qa_final_file_integrity_check.py > validation-logs/final-file-audit.json
+      - name: Synthetic PDF labelled-field consistency (not Human Gold)
+        run: python scripts/qa_semantic_pdf_audit.py > validation-logs/semantic-pdf-audit.json
       - name: Retain verification evidence
         if: always()
         uses: actions/upload-artifact@v4

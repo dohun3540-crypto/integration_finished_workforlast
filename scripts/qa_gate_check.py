@@ -5,7 +5,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from leadtime_guardian.qa.cross_agent import APPROVED_SANDBOX_AGENTS, SANDBOX_AGENT_ID
+from leadtime_guardian.qa.cross_agent import (
+    APPROVED_SANDBOX_AGENTS,
+    LEGACY_QA_REPOSITORY,
+    SANDBOX_AGENT_ID,
+)
 from leadtime_guardian.qa.gate import build_integration_gate
 
 
@@ -19,6 +23,7 @@ def main() -> int:
                         default=SANDBOX_AGENT_ID)
     parser.add_argument("--expected-config-id")
     parser.add_argument("--expected-github-sha")
+    parser.add_argument("--expected-github-repository", default=LEGACY_QA_REPOSITORY)
     parser.add_argument(
         "--require-release", action="store_true",
         help="Return exit code 2 when external release evidence remains blocked",
@@ -30,6 +35,7 @@ def main() -> int:
         expected_agent_id=args.expected_agent_id,
         expected_config_id=args.expected_config_id,
         expected_github_sha=args.expected_github_sha,
+        expected_github_repository=args.expected_github_repository,
     )
     print(json.dumps(result, indent=2, ensure_ascii=False, sort_keys=True))
     if not result["local_checks_passed"]:

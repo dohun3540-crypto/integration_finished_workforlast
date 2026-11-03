@@ -138,6 +138,8 @@ def main():
         parser.add_argument("--" + name, type=Path)
     for name in ("case-id", "job-id", "github-sha"):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--github-repository",
+                        default="dohun3540-crypto/integration_finished_workforlast")
     for name in ("sheet", "qa-agent-id", "qa-config-id"):
         parser.add_argument("--" + name)
     parser.add_argument("--qa-config-version", type=int)
@@ -152,6 +154,7 @@ def main():
             args.root, native_bytes=read(args.native), base_bytes=read(args.trusted_base),
             schema_bytes=read(schema), case_id=args.case_id, job_id=args.job_id,
             github_sha=args.github_sha, candidate_bytes=read(args.candidate),
+            github_repository=args.github_repository,
             review_bytes=read(args.review), baseline_bytes=read(args.baseline),
             xlsx_bytes=read(args.xlsx), sheet=args.sheet,
             qa_native_bytes=read(args.qa_native), qa_report_bytes=read(args.qa_report),

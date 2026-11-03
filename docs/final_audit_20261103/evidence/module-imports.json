@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "modules": [
+    "leadtime_guardian.engine",
+    "leadtime_guardian.studio_adapter",
+    "leadtime_guardian.agents_api",
+    "leadtime_guardian.studio_integration",
+    "leadtime_guardian.qa.cross_agent",
+    "leadtime_guardian.qa.e2e_bundle_preflight",
+    "qa.integration",
+    "qa.inventory",
+    "qa.xlsx_snapshot"
+  ],
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]"
+}

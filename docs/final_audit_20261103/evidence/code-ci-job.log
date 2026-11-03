@@ -1,0 +1,467 @@
+2026-11-03T04:50:03.3194815Z Current runner version: '2.338.2'
+2026-11-03T04:50:03.3231788Z ##[group]Runner Image Provisioner
+2026-11-03T04:50:03.3233348Z Hosted Compute Agent
+2026-11-03T04:50:03.3234700Z Version: 20261021.618
+2026-11-03T04:50:03.3235983Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-11-03T04:50:03.3237266Z Build Date: 2026-10-21T00:45:21Z
+2026-11-03T04:50:03.3238529Z Worker ID: {ca97cb1e-b8fb-4108-a42d-26bc30e08190}
+2026-11-03T04:50:03.3239965Z Region: westus3
+2026-11-03T04:50:03.3241030Z Cloud: Azure
+2026-11-03T04:50:03.3241940Z ##[endgroup]
+2026-11-03T04:50:03.3264842Z ##[group]Operating System
+2026-11-03T04:50:03.3265971Z Ubuntu
+2026-11-03T04:50:03.3267165Z 24.04.5
+2026-11-03T04:50:03.3268107Z LTS
+2026-11-03T04:50:03.3268969Z ##[endgroup]
+2026-11-03T04:50:03.3270047Z ##[group]Runner Image
+2026-11-03T04:50:03.3271078Z Image: ubuntu-24.04
+2026-11-03T04:50:03.3272215Z Version: 20261025.353.1
+2026-11-03T04:50:03.3274819Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-03T04:50:03.3277799Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-11-03T04:50:03.3279552Z ##[endgroup]
+2026-11-03T04:50:03.3281630Z ##[group]GITHUB_TOKEN Permissions
+2026-11-03T04:50:03.3305322Z Contents: read
+2026-11-03T04:50:03.3306474Z Metadata: read
+2026-11-03T04:50:03.3307496Z ##[endgroup]
+2026-11-03T04:50:03.3310471Z Secret source: Actions
+2026-11-03T04:50:03.3312150Z Cache mode: write
+2026-11-03T04:50:03.3330104Z Prepare workflow directory
+2026-11-03T04:50:03.4207854Z Prepare all required actions
+2026-11-03T04:50:03.4342071Z Getting action download info
+2026-11-03T04:50:03.8738498Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-03T04:50:04.0058196Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-03T04:50:04.1020764Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-03T04:50:04.3625158Z Complete job name: lint-test
+2026-11-03T04:50:04.4541169Z ##[group]Run actions/checkout@v4
+2026-11-03T04:50:04.4542071Z with:
+2026-11-03T04:50:04.4542616Z   persist-credentials: false
+2026-11-03T04:50:04.4543293Z   repository: dohun3540-crypto/integration_finished_workforlast
+2026-11-03T04:50:04.4547315Z   token: ***
+2026-11-03T04:50:04.4547767Z   ssh-strict: true
+2026-11-03T04:50:04.4548214Z   ssh-user: git
+2026-11-03T04:50:04.4548643Z   clean: true
+2026-11-03T04:50:04.4549092Z   sparse-checkout-cone-mode: true
+2026-11-03T04:50:04.4549633Z   fetch-depth: 1
+2026-11-03T04:50:04.4550079Z   fetch-tags: false
+2026-11-03T04:50:04.4550537Z   show-progress: true
+2026-11-03T04:50:04.4550995Z   lfs: false
+2026-11-03T04:50:04.4551414Z   submodules: false
+2026-11-03T04:50:04.4551870Z   set-safe-directory: true
+2026-11-03T04:50:04.4552389Z   allow-unsafe-pr-checkout: false
+2026-11-03T04:50:04.4553176Z env:
+2026-11-03T04:50:04.4553595Z   PYTHONUTF8: 1
+2026-11-03T04:50:04.4554212Z ##[endgroup]
+2026-11-03T04:50:04.7650538Z Syncing repository: dohun3540-crypto/integration_finished_workforlast
+2026-11-03T04:50:04.7676279Z ##[group]Getting Git version info
+2026-11-03T04:50:04.7678150Z Working directory is '/home/runner/work/integration_finished_workforlast/integration_finished_workforlast'
+2026-11-03T04:50:04.7680510Z [command]/usr/bin/git version
+2026-11-03T04:50:04.7681585Z git version 2.56.0
+2026-11-03T04:50:04.7746727Z ##[endgroup]
+2026-11-03T04:50:04.7754972Z Temporarily overriding HOME='/home/runner/work/_temp/e29aa1ac-22c4-4ada-a7a3-4ca9d546a5c8' before making global git config changes
+2026-11-03T04:50:04.7757939Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-03T04:50:04.7760986Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/integration_finished_workforlast/integration_finished_workforlast
+2026-11-03T04:50:04.7836621Z Deleting the contents of '/home/runner/work/integration_finished_workforlast/integration_finished_workforlast'
+2026-11-03T04:50:04.7840509Z ##[group]Initializing the repository
+2026-11-03T04:50:04.7875950Z [command]/usr/bin/git init /home/runner/work/integration_finished_workforlast/integration_finished_workforlast
+2026-11-03T04:50:04.7950730Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-03T04:50:04.7965548Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-03T04:50:04.7984530Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-03T04:50:04.8218071Z hint: call:
+2026-11-03T04:50:04.8219126Z hint:
+2026-11-03T04:50:04.8220343Z hint: 	git config --global init.defaultBranch <name>
+2026-11-03T04:50:04.8221704Z hint:
+2026-11-03T04:50:04.8223156Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-03T04:50:04.8228783Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-03T04:50:04.8230601Z hint:
+2026-11-03T04:50:04.8231734Z hint: 	git branch -m <name>
+2026-11-03T04:50:04.8233055Z hint:
+2026-11-03T04:50:04.8234909Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-03T04:50:04.8238021Z Initialized empty Git repository in /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/.git/
+2026-11-03T04:50:04.8243250Z [command]/usr/bin/git remote add origin https://github.com/dohun3540-crypto/integration_finished_workforlast
+2026-11-03T04:50:04.8262431Z ##[endgroup]
+2026-11-03T04:50:04.8273482Z ##[group]Disabling automatic garbage collection
+2026-11-03T04:50:04.8275286Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-03T04:50:04.8278605Z ##[endgroup]
+2026-11-03T04:50:04.8280071Z ##[group]Setting up auth
+2026-11-03T04:50:04.8281504Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-03T04:50:04.8286717Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-03T04:50:04.8879917Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-03T04:50:04.8923399Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-03T04:50:04.9219817Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-03T04:50:04.9273060Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-03T04:50:04.9696182Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-03T04:50:04.9750929Z ##[endgroup]
+2026-11-03T04:50:04.9753219Z ##[group]Fetching the repository
+2026-11-03T04:50:04.9764780Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a23d0ab1910c95a51cb7734faa50660b2cb61ab2:refs/remotes/pull/2/merge
+2026-11-03T04:50:05.7441952Z From https://github.com/dohun3540-crypto/integration_finished_workforlast
+2026-11-03T04:50:05.7669372Z  * [new ref]         a23d0ab1910c95a51cb7734faa50660b2cb61ab2 -> pull/2/merge
+2026-11-03T04:50:05.7677282Z ##[endgroup]
+2026-11-03T04:50:05.7678622Z ##[group]Determining the checkout info
+2026-11-03T04:50:05.7679855Z ##[endgroup]
+2026-11-03T04:50:05.7680635Z [command]/usr/bin/git sparse-checkout disable
+2026-11-03T04:50:05.7683642Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-03T04:50:05.7695472Z ##[group]Checking out the ref
+2026-11-03T04:50:05.7696975Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/2/merge
+2026-11-03T04:50:05.7914657Z Note: switching to 'refs/remotes/pull/2/merge'.
+2026-11-03T04:50:05.7915667Z 
+2026-11-03T04:50:05.7917740Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-03T04:50:05.7921465Z changes and commit them, and you can discard any commits you make in this
+2026-11-03T04:50:05.7922994Z state without impacting any branches by switching back to a branch.
+2026-11-03T04:50:05.7924803Z 
+2026-11-03T04:50:05.7926144Z If you want to create a new branch to retain commits you create, you may
+2026-11-03T04:50:05.7928359Z do so (now or later) by using -c with the switch command. Example:
+2026-11-03T04:50:05.7929580Z 
+2026-11-03T04:50:05.7930791Z   git switch -c <new-branch-name>
+2026-11-03T04:50:05.7931895Z 
+2026-11-03T04:50:05.7933007Z Or undo this operation with:
+2026-11-03T04:50:05.7933890Z 
+2026-11-03T04:50:05.7935280Z   git switch -
+2026-11-03T04:50:05.7936505Z 
+2026-11-03T04:50:05.7938024Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-03T04:50:05.7941108Z 
+2026-11-03T04:50:05.7941985Z HEAD is now at a23d0ab Merge b78c8c0e8dff5480c850bce8868de40ed71f49c8 into 9684b8d9f2098191ca2b1bc3f1c5645321fc6ed5
+2026-11-03T04:50:05.7945051Z ##[endgroup]
+2026-11-03T04:50:05.7993643Z [command]/usr/bin/git log -1 --format=%H
+2026-11-03T04:50:05.8032155Z a23d0ab1910c95a51cb7734faa50660b2cb61ab2
+2026-11-03T04:50:05.8057890Z ##[group]Removing auth
+2026-11-03T04:50:05.8058963Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-03T04:50:05.8103355Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-03T04:50:05.9675918Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-03T04:50:05.9678161Z http.https://github.com/.extraheader
+2026-11-03T04:50:05.9685171Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-03T04:50:05.9693823Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-03T04:50:05.9755273Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-03T04:50:05.9858575Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-03T04:50:06.0205078Z ##[endgroup]
+2026-11-03T04:50:06.0677869Z ##[group]Run actions/setup-python@v5
+2026-11-03T04:50:06.0678774Z with:
+2026-11-03T04:50:06.0679476Z   python-version: 3.11
+2026-11-03T04:50:06.0680206Z   check-latest: false
+2026-11-03T04:50:06.0685964Z   token: ***
+2026-11-03T04:50:06.0686719Z   update-environment: true
+2026-11-03T04:50:06.0687540Z   allow-prereleases: false
+2026-11-03T04:50:06.0688306Z   freethreaded: false
+2026-11-03T04:50:06.0689002Z env:
+2026-11-03T04:50:06.0689638Z   PYTHONUTF8: 1
+2026-11-03T04:50:06.0690322Z ##[endgroup]
+2026-11-03T04:50:06.3292866Z ##[group]Installed versions
+2026-11-03T04:50:06.3394736Z (node:2056) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-03T04:50:06.3396739Z Successfully set up CPython (3.11.17)
+2026-11-03T04:50:06.3398102Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-03T04:50:06.3423869Z ##[endgroup]
+2026-11-03T04:50:06.3697474Z ##[group]Run python -m pip install -r requirements-validation.txt
+2026-11-03T04:50:06.3698692Z [36;1mpython -m pip install -r requirements-validation.txt[0m
+2026-11-03T04:50:06.3763650Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:06.3764816Z env:
+2026-11-03T04:50:06.3765402Z   PYTHONUTF8: 1
+2026-11-03T04:50:06.3766153Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:06.3767246Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:06.3768420Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:06.3769465Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:06.3770825Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:06.3771844Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:06.3772704Z ##[endgroup]
+2026-11-03T04:50:07.5895991Z Obtaining file:///home/runner/work/integration_finished_workforlast/integration_finished_workforlast (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 1))
+2026-11-03T04:50:07.5911331Z   Installing build dependencies: started
+2026-11-03T04:50:08.8292337Z   Installing build dependencies: finished with status 'done'
+2026-11-03T04:50:08.8299145Z   Checking if build backend supports build_editable: started
+2026-11-03T04:50:09.1721554Z   Checking if build backend supports build_editable: finished with status 'done'
+2026-11-03T04:50:09.1723790Z   Getting requirements to build editable: started
+2026-11-03T04:50:09.4814653Z   Getting requirements to build editable: finished with status 'done'
+2026-11-03T04:50:09.4823939Z   Preparing editable metadata (pyproject.toml): started
+2026-11-03T04:50:09.6634934Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+2026-11-03T04:50:09.7486534Z Collecting pytest<10,>=8 (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 2))
+2026-11-03T04:50:09.8204277Z   Downloading pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+2026-11-03T04:50:10.1574276Z Collecting ruff<1,>=0.6 (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 3))
+2026-11-03T04:50:10.1688765Z   Downloading ruff-0.17.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (20 kB)
+2026-11-03T04:50:10.1968279Z Collecting jsonschema<5,>=4.23 (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 4))
+2026-11-03T04:50:10.2080277Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+2026-11-03T04:50:10.2606137Z Collecting openai<3,>=1.68 (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:10.2717883Z   Downloading openai-2.54.0-py3-none-any.whl.metadata (40 kB)
+2026-11-03T04:50:10.3013536Z Collecting pypdf<7,>=5 (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/qa/requirements.txt (line 2))
+2026-11-03T04:50:10.3122748Z   Downloading pypdf-6.21.4-py3-none-any.whl.metadata (7.6 kB)
+2026-11-03T04:50:10.3365803Z Collecting openpyxl<4,>=3.1.5 (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/qa/requirements.txt (line 5))
+2026-11-03T04:50:10.3476492Z   Downloading openpyxl-3.1.5-py2.py3-none-any.whl.metadata (2.5 kB)
+2026-11-03T04:50:10.3583249Z Collecting defusedxml<1,>=0.7.1 (from -r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/qa/requirements.txt (line 6))
+2026-11-03T04:50:10.3700387Z   Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+2026-11-03T04:50:10.3825175Z Collecting iniconfig>=2 (from pytest<10,>=8->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 2))
+2026-11-03T04:50:10.3943734Z   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+2026-11-03T04:50:10.4094693Z Collecting packaging>=24 (from pytest<10,>=8->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 2))
+2026-11-03T04:50:10.4202835Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-11-03T04:50:10.4499022Z Collecting pluggy<2,>=1.6 (from pytest<10,>=8->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 2))
+2026-11-03T04:50:10.4614344Z   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+2026-11-03T04:50:10.4790598Z Collecting pygments>=2.15 (from pytest<10,>=8->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 2))
+2026-11-03T04:50:10.4909395Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-11-03T04:50:10.5046630Z Collecting attrs>=22.2.0 (from jsonschema<5,>=4.23->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 4))
+2026-11-03T04:50:10.5154011Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-11-03T04:50:10.5293272Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5,>=4.23->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 4))
+2026-11-03T04:50:10.5403489Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-11-03T04:50:10.5588363Z Collecting referencing>=0.28.4 (from jsonschema<5,>=4.23->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 4))
+2026-11-03T04:50:10.5697525Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+2026-11-03T04:50:10.8122594Z Collecting rpds-py>=0.25.0 (from jsonschema<5,>=4.23->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-dev.txt (line 4))
+2026-11-03T04:50:10.8240765Z   Downloading rpds_py-2026.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+2026-11-03T04:50:10.8423393Z Collecting anyio<5,>=3.5.0 (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:10.8532743Z   Downloading anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+2026-11-03T04:50:10.8656729Z Collecting distro<2,>=1.7.0 (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:10.8769344Z   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+2026-11-03T04:50:10.8932688Z Collecting httpx<1,>=0.23.0 (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:10.9043055Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+2026-11-03T04:50:11.0131373Z Collecting jiter<1,>=0.10.0 (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.0244146Z   Downloading jiter-0.18.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+2026-11-03T04:50:11.1461896Z Collecting pydantic<3,>=1.9.0 (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.1575342Z   Downloading pydantic-2.14.2-py3-none-any.whl.metadata (137 kB)
+2026-11-03T04:50:11.1816044Z Collecting sniffio (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.1927585Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+2026-11-03T04:50:11.2212482Z Collecting tqdm>4 (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.2323553Z   Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+2026-11-03T04:50:11.2513622Z Collecting typing-extensions<5,>=4.14 (from openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.2627001Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-11-03T04:50:11.2735224Z Collecting et-xmlfile (from openpyxl<4,>=3.1.5->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/qa/requirements.txt (line 5))
+2026-11-03T04:50:11.2849663Z   Downloading et_xmlfile-2.0.0-py3-none-any.whl.metadata (2.7 kB)
+2026-11-03T04:50:11.2987664Z Collecting idna>=2.8 (from anyio<5,>=3.5.0->openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.3097620Z   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-11-03T04:50:11.3309800Z Collecting certifi (from httpx<1,>=0.23.0->openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.3420561Z   Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+2026-11-03T04:50:11.3580747Z Collecting httpcore==1.* (from httpx<1,>=0.23.0->openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.3693485Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+2026-11-03T04:50:11.3818259Z Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.3926699Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+2026-11-03T04:50:11.4049897Z Collecting annotated-types>=0.6.0 (from pydantic<3,>=1.9.0->openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:11.4161500Z   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+2026-11-03T04:50:12.0796363Z Collecting pydantic-core==2.50.2 (from pydantic<3,>=1.9.0->openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:12.0909023Z   Downloading pydantic_core-2.50.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.5 kB)
+2026-11-03T04:50:12.1015067Z Collecting typing-inspection>=0.4.4 (from pydantic<3,>=1.9.0->openai<3,>=1.68->-r /home/runner/work/integration_finished_workforlast/integration_finished_workforlast/requirements-agents.txt (line 2))
+2026-11-03T04:50:12.1121951Z   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+2026-11-03T04:50:12.1367092Z Downloading pytest-9.2.0-py3-none-any.whl (411 kB)
+2026-11-03T04:50:12.1615619Z Downloading ruff-0.17.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.6 MB)
+2026-11-03T04:50:12.2139355Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.6/10.6 MB 208.0 MB/s  0:00:00
+2026-11-03T04:50:12.2253319Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+2026-11-03T04:50:12.2392553Z Downloading openai-2.54.0-py3-none-any.whl (1.7 MB)
+2026-11-03T04:50:12.2470300Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 267.5 MB/s  0:00:00
+2026-11-03T04:50:12.2604466Z Downloading pypdf-6.21.4-py3-none-any.whl (410 kB)
+2026-11-03T04:50:12.2762923Z Downloading openpyxl-3.1.5-py2.py3-none-any.whl (250 kB)
+2026-11-03T04:50:12.2893274Z Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+2026-11-03T04:50:12.3025125Z Downloading anyio-4.16.0-py3-none-any.whl (134 kB)
+2026-11-03T04:50:12.3157384Z Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+2026-11-03T04:50:12.3285726Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+2026-11-03T04:50:12.3431939Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+2026-11-03T04:50:12.3567914Z Downloading jiter-0.18.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (337 kB)
+2026-11-03T04:50:12.3711163Z Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+2026-11-03T04:50:12.3841218Z Downloading pydantic-2.14.2-py3-none-any.whl (490 kB)
+2026-11-03T04:50:12.3984932Z Downloading pydantic_core-2.50.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.2 MB)
+2026-11-03T04:50:12.4096832Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 238.2 MB/s  0:00:00
+2026-11-03T04:50:12.4205267Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-11-03T04:50:12.4332389Z Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+2026-11-03T04:50:12.4460560Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-11-03T04:50:12.4590812Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+2026-11-03T04:50:12.4721157Z Downloading idna-3.20-py3-none-any.whl (69 kB)
+2026-11-03T04:50:12.4850490Z Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+2026-11-03T04:50:12.4978176Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-11-03T04:50:12.5110098Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-11-03T04:50:12.5242984Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-11-03T04:50:12.5322018Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 208.1 MB/s  0:00:00
+2026-11-03T04:50:12.5431992Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+2026-11-03T04:50:12.5562935Z Downloading rpds_py-2026.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (375 kB)
+2026-11-03T04:50:12.5701826Z Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+2026-11-03T04:50:12.5855973Z Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+2026-11-03T04:50:12.5982977Z Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+2026-11-03T04:50:12.6112907Z Downloading et_xmlfile-2.0.0-py3-none-any.whl (18 kB)
+2026-11-03T04:50:12.6242114Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+2026-11-03T04:50:12.7761022Z Building wheels for collected packages: leadtime-guardian-agent
+2026-11-03T04:50:12.7770202Z   Building editable for leadtime-guardian-agent (pyproject.toml): started
+2026-11-03T04:50:13.0985534Z   Building editable for leadtime-guardian-agent (pyproject.toml): finished with status 'done'
+2026-11-03T04:50:13.1005768Z   Created wheel for leadtime-guardian-agent: filename=leadtime_guardian_agent-0.1.0-0.editable-py3-none-any.whl size=4659 sha256=3cb44ff5ca74eaee23abbc3c4a1f1b93582d4f5860559f2904bcd33542fb3159
+2026-11-03T04:50:13.1025186Z   Stored in directory: /tmp/pip-ephem-wheel-cache-yjn39qq9/wheels/f3/23/2a/844623ebb3197e83f17e192021200d0488d11b1fa22ef99f28
+2026-11-03T04:50:13.1034903Z Successfully built leadtime-guardian-agent
+2026-11-03T04:50:13.2271389Z Installing collected packages: typing-extensions, tqdm, sniffio, ruff, rpds-py, pypdf, pygments, pluggy, packaging, leadtime-guardian-agent, jiter, iniconfig, idna, h11, et-xmlfile, distro, defusedxml, certifi, attrs, annotated-types, typing-inspection, referencing, pytest, pydantic-core, openpyxl, httpcore, anyio, pydantic, jsonschema-specifications, httpx, openai, jsonschema
+2026-11-03T04:50:17.0011224Z 
+2026-11-03T04:50:17.0034578Z Successfully installed annotated-types-0.8.0 anyio-4.16.0 attrs-26.1.0 certifi-2026.10.23 defusedxml-0.7.1 distro-1.9.0 et-xmlfile-2.0.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 iniconfig-2.3.1 jiter-0.18.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 leadtime-guardian-agent-0.1.0 openai-2.54.0 openpyxl-3.1.5 packaging-26.3 pluggy-1.7.0 pydantic-2.14.2 pydantic-core-2.50.2 pygments-2.21.0 pypdf-6.21.4 pytest-9.2.0 referencing-0.37.0 rpds-py-2026.9.1 ruff-0.17.3 sniffio-1.3.1 tqdm-4.70.1 typing-extensions-4.16.0 typing-inspection-0.4.4
+2026-11-03T04:50:17.0045144Z 
+2026-11-03T04:50:17.0045704Z [notice] A new release of pip is available: 26.2.2 -> 26.3
+2026-11-03T04:50:17.0046812Z [notice] To update, run: pip install --upgrade pip
+2026-11-03T04:50:17.1448209Z ##[group]Run mkdir -p validation-logs
+2026-11-03T04:50:17.1448584Z [36;1mmkdir -p validation-logs[0m
+2026-11-03T04:50:17.1448930Z [36;1mgit rev-parse HEAD > validation-logs/checkout-sha.txt[0m
+2026-11-03T04:50:17.1449345Z [36;1mpython --version > validation-logs/python.txt[0m
+2026-11-03T04:50:17.1449742Z [36;1mpython -m pip freeze > validation-logs/dependencies.txt[0m
+2026-11-03T04:50:17.1471932Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:17.1472271Z env:
+2026-11-03T04:50:17.1472457Z   PYTHONUTF8: 1
+2026-11-03T04:50:17.1472735Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:17.1473176Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:17.1473802Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:17.1474508Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:17.1474942Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:17.1475328Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:17.1475651Z ##[endgroup]
+2026-11-03T04:50:18.0317420Z ##[group]Run python -m ruff check . | tee validation-logs/ruff.txt
+2026-11-03T04:50:18.0317937Z [36;1mpython -m ruff check . | tee validation-logs/ruff.txt[0m
+2026-11-03T04:50:18.0339104Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:18.0339448Z env:
+2026-11-03T04:50:18.0339645Z   PYTHONUTF8: 1
+2026-11-03T04:50:18.0339943Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.0340399Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:18.0340852Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.0341251Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.0341642Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.0342029Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:18.0342365Z ##[endgroup]
+2026-11-03T04:50:18.1034845Z All checks passed!
+2026-11-03T04:50:18.1104873Z ##[group]Run python -m pytest -q tests/test_qa_parallel_e2e_bundle.py | tee validation-logs/team1-e2e-regression.txt
+2026-11-03T04:50:18.1105798Z [36;1mpython -m pytest -q tests/test_qa_parallel_e2e_bundle.py | tee validation-logs/team1-e2e-regression.txt[0m
+2026-11-03T04:50:18.1106540Z [36;1mpython scripts/team1_e2e_preflight.py --help > validation-logs/team1-e2e-cli-help.txt[0m
+2026-11-03T04:50:18.1107169Z [36;1mpython -m qa.integration --help > validation-logs/qa-integration-cli-help.txt[0m
+2026-11-03T04:50:18.1128587Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:18.1128958Z env:
+2026-11-03T04:50:18.1129161Z   PYTHONUTF8: 1
+2026-11-03T04:50:18.1129453Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.1129909Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:18.1130352Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.1130774Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.1131173Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:18.1131558Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:18.1131883Z ##[endgroup]
+2026-11-03T04:50:18.9732546Z .....................................                                    [100%]
+2026-11-03T04:50:18.9739109Z 37 passed in 0.34s
+2026-11-03T04:50:19.1373119Z ##[group]Run python -m pytest -q --junitxml=validation-logs/pytest.xml | tee validation-logs/pytest.txt
+2026-11-03T04:50:19.1373883Z [36;1mpython -m pytest -q --junitxml=validation-logs/pytest.xml | tee validation-logs/pytest.txt[0m
+2026-11-03T04:50:19.1395541Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:19.1395892Z env:
+2026-11-03T04:50:19.1396089Z   PYTHONUTF8: 1
+2026-11-03T04:50:19.1396391Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:19.1396845Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:19.1397289Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:19.1397680Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:19.1398088Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:19.1398477Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:19.1398819Z ##[endgroup]
+2026-11-03T04:50:21.4384648Z ........................................................................ [  8%]
+2026-11-03T04:50:30.2618713Z ........................................................................ [ 17%]
+2026-11-03T04:50:30.3553858Z ........................................................................ [ 26%]
+2026-11-03T04:50:32.1615553Z ........................................................................ [ 34%]
+2026-11-03T04:50:33.2604934Z ........................................................................ [ 43%]
+2026-11-03T04:50:34.1485014Z ........................................................................ [ 52%]
+2026-11-03T04:50:34.2012352Z ........................................................................ [ 60%]
+2026-11-03T04:50:34.9730752Z ........................................................................ [ 69%]
+2026-11-03T04:50:35.1053152Z ........................................................................ [ 78%]
+2026-11-03T04:50:36.1555584Z ........................................................................ [ 86%]
+2026-11-03T04:50:36.3128158Z ........................................................................ [ 95%]
+2026-11-03T04:50:38.9213341Z ....................................                                     [100%]
+2026-11-03T04:50:38.9214539Z 828 passed in 19.40s
+2026-11-03T04:50:39.2110921Z ##[group]Run python scripts/qa_archive_check.py --root . > validation-logs/archive.json
+2026-11-03T04:50:39.2111595Z [36;1mpython scripts/qa_archive_check.py --root . > validation-logs/archive.json[0m
+2026-11-03T04:50:39.2112162Z [36;1mpython scripts/qa_gate_check.py --root . > validation-logs/gate.json[0m
+2026-11-03T04:50:39.2133492Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:39.2133838Z env:
+2026-11-03T04:50:39.2134298Z   PYTHONUTF8: 1
+2026-11-03T04:50:39.2134594Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.2135036Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:39.2135469Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.2135851Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.2136243Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.2136659Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:39.2136981Z ##[endgroup]
+2026-11-03T04:50:39.4059916Z ##[group]Run set +e
+2026-11-03T04:50:39.4060341Z [36;1mset +e[0m
+2026-11-03T04:50:39.4062679Z [36;1mpython -m qa.integration --native data/results/studio_runs/C001_20261030_v4/instruct_original.json --trusted-base data/cases/SYN-C001/trusted_base_case.json --candidate qa/gold_candidates/SYN-C001/candidate.v1.json --case-id C001 --job-id job_gPmEYKzuJdBA6BmKhVnujs --github-sha ece3a7dcc254b5c7a14c72792750170346419eb8 > validation-logs/offline-c001.json[0m
+2026-11-03T04:50:39.4065487Z [36;1mreplay_exit=$?[0m
+2026-11-03T04:50:39.4065886Z [36;1mset -e[0m
+2026-11-03T04:50:39.4066253Z [36;1mtest "$replay_exit" -eq 2[0m
+2026-11-03T04:50:39.4067678Z [36;1mpython -c 'import json; r=json.load(open("validation-logs/offline-c001.json")); assert r["status"]=="BLOCKED" and r["combined"]["python_safety_status"]=="PASS_LOCAL" and r["release_or_merge_authorized"] is False'[0m
+2026-11-03T04:50:39.4097767Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:39.4098405Z env:
+2026-11-03T04:50:39.4098744Z   PYTHONUTF8: 1
+2026-11-03T04:50:39.4099246Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.4100010Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:39.4100773Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.4101443Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.4102117Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:39.4102821Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:39.4103375Z ##[endgroup]
+2026-11-03T04:50:40.0003762Z ##[group]Run python -m qa.inventory --root . --out validation-logs/inventory
+2026-11-03T04:50:40.0004706Z [36;1mpython -m qa.inventory --root . --out validation-logs/inventory[0m
+2026-11-03T04:50:40.0025399Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:40.0025746Z env:
+2026-11-03T04:50:40.0025938Z   PYTHONUTF8: 1
+2026-11-03T04:50:40.0026235Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.0026682Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:40.0027104Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.0027493Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.0027895Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.0028285Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:40.0028608Z ##[endgroup]
+2026-11-03T04:50:40.5042076Z {"status": "PASS", "scope": "원본 기계 검사만; 사람 검수·성능 평가 아님", "created_at": "2026-11-03T04:50:40.500225+00:00", "archive_sha256": "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc", "documents": 60, "status_counts": {"PASS": 60, "FAIL": 0, "BLOCKED": 0}, "duplicate_hashes": {}, "human_review": "NOT_RUN", "studio_evaluation": "NOT_RUN", "visual_review": "NOT_RUN"}
+2026-11-03T04:50:40.5246172Z ##[group]Run python scripts/qa_final_file_integrity_check.py > validation-logs/final-file-audit.json
+2026-11-03T04:50:40.5246920Z [36;1mpython scripts/qa_final_file_integrity_check.py > validation-logs/final-file-audit.json[0m
+2026-11-03T04:50:40.5267557Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:40.5267892Z env:
+2026-11-03T04:50:40.5268076Z   PYTHONUTF8: 1
+2026-11-03T04:50:40.5268355Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.5268797Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:40.5269226Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.5269599Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.5269975Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:40.5270362Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:40.5270684Z ##[endgroup]
+2026-11-03T04:50:41.0796729Z ##[group]Run python scripts/qa_semantic_pdf_audit.py > validation-logs/semantic-pdf-audit.json
+2026-11-03T04:50:41.0797422Z [36;1mpython scripts/qa_semantic_pdf_audit.py > validation-logs/semantic-pdf-audit.json[0m
+2026-11-03T04:50:41.0818067Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-03T04:50:41.0818414Z env:
+2026-11-03T04:50:41.0818605Z   PYTHONUTF8: 1
+2026-11-03T04:50:41.0819010Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.0819551Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:41.0820082Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.0820699Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.0821227Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.0821805Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:41.0822296Z ##[endgroup]
+2026-11-03T04:50:41.6903233Z ##[group]Run actions/upload-artifact@v4
+2026-11-03T04:50:41.6903540Z with:
+2026-11-03T04:50:41.6903873Z   name: integrated-validation-a23d0ab1910c95a51cb7734faa50660b2cb61ab2
+2026-11-03T04:50:41.6904657Z   path: validation-logs/
+2026-11-03T04:50:41.6904896Z   retention-days: 14
+2026-11-03T04:50:41.6905116Z   if-no-files-found: warn
+2026-11-03T04:50:41.6905343Z   compression-level: 6
+2026-11-03T04:50:41.6905547Z   overwrite: false
+2026-11-03T04:50:41.6905752Z   include-hidden-files: false
+2026-11-03T04:50:41.6905977Z env:
+2026-11-03T04:50:41.6906151Z   PYTHONUTF8: 1
+2026-11-03T04:50:41.6906418Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.6906850Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-11-03T04:50:41.6907264Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.6907839Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.6908236Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-11-03T04:50:41.6908612Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-11-03T04:50:41.6908933Z ##[endgroup]
+2026-11-03T04:50:41.8775738Z (node:2436) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-03T04:50:41.8777263Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-03T04:50:41.9204876Z With the provided path, there will be 17 files uploaded
+2026-11-03T04:50:41.9244953Z Artifact name is valid!
+2026-11-03T04:50:41.9245912Z Root directory input is valid!
+2026-11-03T04:50:42.3540686Z Beginning upload of artifact content to blob storage
+2026-11-03T04:50:42.4071312Z (node:2436) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-03T04:50:42.6506832Z Uploaded bytes 33773
+2026-11-03T04:50:42.7078441Z Finished uploading artifact content to blob storage!
+2026-11-03T04:50:42.7080032Z SHA256 digest of uploaded artifact zip is a193589c463f7ff78e7ed59d4eec4e0eb2cc26277ae26999b448e0a41f4d556d
+2026-11-03T04:50:42.7081359Z Finalizing artifact upload
+2026-11-03T04:50:43.1619921Z Artifact integrated-validation-a23d0ab1910c95a51cb7734faa50660b2cb61ab2.zip successfully finalized. Artifact ID 13205064917
+2026-11-03T04:50:43.1622309Z Artifact integrated-validation-a23d0ab1910c95a51cb7734faa50660b2cb61ab2 has been successfully uploaded! Final size is 33773 bytes. Artifact ID is 13205064917
+2026-11-03T04:50:43.1629199Z Artifact download URL: https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41580379496/artifacts/13205064917
+2026-11-03T04:50:43.1833615Z Post job cleanup.
+2026-11-03T04:50:43.3170536Z (node:2449) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-03T04:50:43.3172459Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-03T04:50:43.3464515Z Post job cleanup.
+2026-11-03T04:50:43.5144969Z [command]/usr/bin/git version
+2026-11-03T04:50:43.5214679Z git version 2.56.0
+2026-11-03T04:50:43.5336574Z Temporarily overriding HOME='/home/runner/work/_temp/ac1adf55-4822-45c6-b81e-ca0a9ae31ec1' before making global git config changes
+2026-11-03T04:50:43.5374935Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-03T04:50:43.5415893Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/integration_finished_workforlast/integration_finished_workforlast
+2026-11-03T04:50:43.5480360Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-03T04:50:43.5520605Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-03T04:50:43.5947975Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-03T04:50:43.6010995Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-03T04:50:43.6525138Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-03T04:50:43.6547066Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-03T04:50:43.7021736Z Cleaning up orphan processes
+2026-11-03T04:50:43.7389904Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

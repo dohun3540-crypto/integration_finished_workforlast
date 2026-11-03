@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from leadtime_guardian.qa.audit import load_json_strict
 from leadtime_guardian.qa.cross_agent import (
     APPROVED_SANDBOX_AGENTS,
+    LEGACY_QA_REPOSITORY,
     SANDBOX_AGENT_ID,
     audit_cross_agent_handoff,
 )
@@ -26,6 +27,7 @@ def main() -> int:
                         default=SANDBOX_AGENT_ID)
     parser.add_argument("--expected-config-id")
     parser.add_argument("--expected-github-sha")
+    parser.add_argument("--expected-github-repository", default=LEGACY_QA_REPOSITORY)
     parser.add_argument("--require-contract", action="store_true")
     args = parser.parse_args()
 
@@ -45,6 +47,7 @@ def main() -> int:
         expected_agent_id=args.expected_agent_id,
         expected_config_id=args.expected_config_id,
         expected_github_sha=args.expected_github_sha,
+        expected_github_repository=args.expected_github_repository,
     )
     print(json.dumps(result, indent=2, ensure_ascii=False, sort_keys=True))
     if result["qa_status"] == "FAIL":

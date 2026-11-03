@@ -1,0 +1,33 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_explicit_repository_and_sha_survive_handoff_and_are_independently_bound _
+
+    def test_explicit_repository_and_sha_survive_handoff_and_are_independently_bound():
+        native, report = artifacts()
+>       manifest = build_studio_raw_handoff(
+            native, report, case_id="C001", agent_id=AGENT, config_id=CONFIG,
+            config_version=1, github_sha=SHA, github_repository=REPOSITORY,
+            execution_kind="ARCHIVED_REPLAY",
+        )
+E       TypeError: build_studio_raw_handoff() got an unexpected keyword argument 'github_repository'
+
+tests/test_final_repository_binding.py:30: TypeError
+_____ test_combined_path_records_and_passes_the_explicit_source_repository _____
+
+    def test_combined_path_records_and_passes_the_explicit_source_repository():
+        native, report = artifacts()
+>       result = audit_combined_bytes(
+            native, (ROOT / "data/cases/SYN-C001/trusted_base_case.json").read_bytes(),
+            (ROOT / "configs/schemas/document_extraction.schema.json").read_bytes(),
+            operational_job_id="job_gPmEYKzuJdBA6BmKhVnujs", case_id="C001",
+            github_sha=SHA, github_repository=REPOSITORY, qa_native_bytes=native,
+            qa_report_bytes=report, qa_agent_id=AGENT, qa_config_id=CONFIG,
+            qa_config_version=1, execution_kind="ARCHIVED_REPLAY",
+        )
+E       TypeError: audit_combined_bytes() got an unexpected keyword argument 'github_repository'
+
+tests/test_final_repository_binding.py:50: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_final_repository_binding.py::test_explicit_repository_and_sha_survive_handoff_and_are_independently_bound
+FAILED tests/test_final_repository_binding.py::test_combined_path_records_and_passes_the_explicit_source_repository
+2 failed in 0.03s

@@ -1,0 +1,58 @@
+{
+  "schema_version": "leadtime-final-audit/v1",
+  "recorded_at_kst": "2026-11-03T13:53:16.870235+09:00",
+  "repository": "dohun3540-crypto/integration_finished_workforlast",
+  "branch": "feat/final-quality-regression-audit-20261103",
+  "baseline_head": "9684b8d9f2098191ca2b1bc3f1c5645321fc6ed5",
+  "validated_code_head": "b78c8c0e8dff5480c850bce8868de40ed71f49c8",
+  "validated_code_tree": "5e378f4bb3c3f40c67e81a7bbe5d8686cf3ab450",
+  "packaging_commit": "Resolve current PR #2 head; final exact-HEAD CI recorded in PR body",
+  "draft_pr": "https://github.com/dohun3540-crypto/integration_finished_workforlast/pull/2",
+  "SOURCE_INTEGRATION": "PASS_LOCAL",
+  "FULL_REGRESSION": "PASS",
+  "test_counts": {
+    "baseline": 815,
+    "final": 828,
+    "missing_baseline_tests": 0,
+    "skipped": 0
+  },
+  "PYTHON_V6": "PASS_LOCAL",
+  "INDEPENDENT_QA": "PASS_LOCAL",
+  "CROSS_AGENT": "PASS_LOCAL",
+  "DATA_QUALITY": "NEEDS_HUMAN_REVIEW",
+  "FILE_INTEGRITY": "PASS",
+  "OFFLINE_E2E": "PASS_LOCAL",
+  "STUDIO_LIVE_E2E": "NOT_VERIFIED",
+  "HUMAN_GOLD": "BLOCKED",
+  "B0_E1_MEASURED": "NOT_MEASURED",
+  "GITHUB_CI": "SUCCESS",
+  "CODE_GATE": "PASS",
+  "FINAL_RELEASE": "BLOCKED",
+  "machine_pdf_inventory": {
+    "total": 60,
+    "pass": 60,
+    "duplicate_sha256": 0
+  },
+  "machine_template_text_vs_draft": {
+    "total": 60,
+    "pass": 60,
+    "official_accuracy": false
+  },
+  "reviewed_xlsx": "MISSING_REQUIRED_EVIDENCE",
+  "human_gold_evidence": "MISSING_REQUIRED_EVIDENCE",
+  "release_authorized": false,
+  "new_studio_runs_started": 0,
+  "remaining_evidence": [
+    "authenticated new B0/E1 single-case Native and Stage artifacts",
+    "separate QA Native/Report and source PDF receipts",
+    "reviewed XLSX, independently approved Human Gold",
+    "Gold-based measured accuracy and B0/E1 comparison"
+  ],
+  "ci_evidence": {
+    "code_head": "b78c8c0e8dff5480c850bce8868de40ed71f49c8",
+    "run_id": 41580379496,
+    "tested_tree": "5e378f4bb3c3f40c67e81a7bbe5d8686cf3ab450",
+    "matches_code_tree": true,
+    "packaging_head_ci": "See final exact-HEAD result in PR #2"
+  }
+}

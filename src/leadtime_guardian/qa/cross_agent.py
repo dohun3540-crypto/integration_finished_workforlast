@@ -29,6 +29,8 @@ SEVERITIES = frozenset({"INFO", "WARNING", "ERROR"})
 ISSUE_SCOPES = frozenset({"document", "python", "provenance", "integration"})
 HEX64 = re.compile(r"^[a-fA-F0-9]{64}$")
 HEX40 = re.compile(r"^[a-fA-F0-9]{40}$")
+GITHUB_REPOSITORY = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+LEGACY_QA_REPOSITORY = "dohun3540-crypto/leadtime-guardian-agent.copy"
 
 
 def audit_cross_agent_handoff(
@@ -37,6 +39,7 @@ def audit_cross_agent_handoff(
     expected_agent_id: str = SANDBOX_AGENT_ID,
     expected_config_id: str | None = None,
     expected_github_sha: str | None = None,
+    expected_github_repository: str = LEGACY_QA_REPOSITORY,
     archived_job_ids: tuple[str, ...] = ("job_gPmEYKzuJdBA6BmKhVnujs", "job_9DmRWeQsSShHgWUugkELtk"),
 ) -> dict[str, Any]:
     """Evaluate provided evidence without inferring authenticity or live QA accuracy.
@@ -129,7 +132,10 @@ def audit_cross_agent_handoff(
         fail("INVALID_GITHUB_COMMIT", "github.head_sha")
     elif expected_github_sha is not None and sha != expected_github_sha:
         fail("GITHUB_COMMIT_MISMATCH", "github.head_sha")
-    if github.get("repository") != "dohun3540-crypto/leadtime-guardian-agent.copy":
+    if (not isinstance(expected_github_repository, str)
+            or GITHUB_REPOSITORY.fullmatch(expected_github_repository) is None):
+        fail("INVALID_EXPECTED_GITHUB_REPOSITORY", "expected_github_repository")
+    if github.get("repository") != expected_github_repository:
         fail("GITHUB_REPOSITORY_MISMATCH", "github.repository")
     if github.get("contract_version") != HANDOFF_VERSION:
         fail("GITHUB_CONTRACT_VERSION_MISMATCH", "github.contract_version")

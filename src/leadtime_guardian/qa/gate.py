@@ -10,7 +10,7 @@ from typing import Any
 
 from .archive import verify_c001_archive
 from .audit import load_json_strict
-from .cross_agent import SANDBOX_AGENT_ID, audit_cross_agent_handoff
+from .cross_agent import LEGACY_QA_REPOSITORY, SANDBOX_AGENT_ID, audit_cross_agent_handoff
 from .replay import verify_c001_replay
 from .studio_contract import audit_native_envelope
 
@@ -31,6 +31,7 @@ def build_integration_gate(
     studio_native: str | Path | None = None, studio_qa_report: str | Path | None = None,
     expected_agent_id: str = SANDBOX_AGENT_ID,
     expected_config_id: str | None = None, expected_github_sha: str | None = None,
+    expected_github_repository: str = LEGACY_QA_REPOSITORY,
 ) -> dict[str, Any]:
     """Execute strictly local archive/replay checks without opening network access.
 
@@ -90,6 +91,7 @@ def build_integration_gate(
                 manifest, native_bytes=native, report_bytes=report,
                 expected_agent_id=expected_agent_id,
                 expected_config_id=expected_config_id,
+                expected_github_repository=expected_github_repository,
                 expected_github_sha=expected_github_sha,
             )
         except (OSError, ValueError, TypeError, UnicodeDecodeError):

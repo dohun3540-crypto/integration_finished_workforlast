@@ -1,0 +1,22 @@
+{
+  "scope": "FINAL_EXECUTABLE_CODE_BEFORE_REPORT_PACKAGING",
+  "status": "SUCCESS",
+  "run_id": 41580379496,
+  "url": "https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41580379496",
+  "head_sha": "b78c8c0e8dff5480c850bce8868de40ed71f49c8",
+  "head_tree": "5e378f4bb3c3f40c67e81a7bbe5d8686cf3ab450",
+  "tested_checkout_sha": "a23d0ab1910c95a51cb7734faa50660b2cb61ab2",
+  "tested_tree": "5e378f4bb3c3f40c67e81a7bbe5d8686cf3ab450",
+  "tree_matches": true,
+  "job_id": 125733564618,
+  "full_pytest": {
+    "passed": 828,
+    "failed": 0,
+    "skipped": 0
+  },
+  "ruff": "PASS",
+  "pdf_inventory": "60_PASS",
+  "semantic_pdf_audit": "60_PASS",
+  "artifact_id": 13205064917,
+  "final_document_packaging_ci": "PENDING_SEPARATE_PR_HEAD_CHECK"
+}
