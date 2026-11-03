@@ -1,0 +1,102 @@
+{
+  "recorded_date_kst": "2026-11-03",
+  "repository": "dohun3540-crypto/integration_finished_workforlast",
+  "branch": "feat/team3-gold-data-quality-20261103",
+  "exact_head_sha": "bbd2c1ea359fa2a3655a9cf099129a1cb0284316",
+  "exact_head_sha_scope": "LAST_VERIFIED_SOURCE_CODE_HEAD_BEFORE_REPORT_ONLY_PACKAGING; THE LATEST PR HEAD IS VERIFIED AND RECORDED SEPARATELY IN THE PR DESCRIPTION",
+  "verified_ci_sha": "bbd2c1ea359fa2a3655a9cf099129a1cb0284316",
+  "original_audited_pr_head": "a1e6e59d78fc2efc174f55d6b49b10c5d86dbe10",
+  "base_branch": "feat/final-quality-regression-audit-20261103",
+  "base_sha": "e948a4a6d3aba6aacd68495bec422b1e845075a0",
+  "original_team3_source_sha": "a925103077173b37d1cefcd6a9576ae644dc2040",
+  "draft_pr": "https://github.com/dohun3540-crypto/integration_finished_workforlast/pull/3",
+  "all_tests": {
+    "status": "PASS",
+    "passed": 861,
+    "failed": 0,
+    "github_actions_run_id": 41604457812
+  },
+  "team3_tests": {
+    "status": "PASS",
+    "passed": 95,
+    "failed": 0,
+    "github_actions_run_id": 41604457818
+  },
+  "team1_tests": {
+    "status": "PASS",
+    "passed": 37,
+    "failed": 0,
+    "github_actions_run_id": 41604457812
+  },
+  "ruff_status": {
+    "repository": "PASS",
+    "qa": "PASS"
+  },
+  "pdf_integrity": {
+    "status": "PASS",
+    "expected": 60,
+    "checked": 60,
+    "failed": 0,
+    "duplicate_sha": 0,
+    "archive_sha256": "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc"
+  },
+  "critical_defects": [],
+  "resolved_defects": [
+    "duplicate or foreign-case Evidence could previously coexist with good evidence and still PASS",
+    "Boolean True page incorrectly equaled PDF page 1",
+    "invalid reviewer/time/approval digest could satisfy approval metadata format",
+    "non-conflict business-block metric reported numerator 1 over denominator 0",
+    "TEAM_APPROVED claimed without ACCEPT decision passed XLSX structural validation"
+  ],
+  "human_gold_status": "EXTERNAL_EVIDENCE_BLOCKED",
+  "human_gold_details": {
+    "C001": "AI_CANDIDATE",
+    "C008": "AI_CANDIDATE",
+    "C013": "AI_CANDIDATE",
+    "C017": "AI_CANDIDATE",
+    "human_reviewed": false,
+    "team_approved": false,
+    "gold_frozen": false
+  },
+  "live_studio_status": "EXTERNAL_EVIDENCE_BLOCKED",
+  "official_accuracy_status": "NOT_MEASURED",
+  "official_accuracy_metrics": null,
+  "archived_C001_python_safety": "PASS_LOCAL",
+  "current_live_business_safety": "NOT_VERIFIED",
+  "team3_code_freeze": "APPROVED",
+  "team3_handoff_ready": "READY_WITH_EXTERNAL_DEPENDENCIES",
+  "team3_submission_data_ready": "BLOCKED",
+  "overall_decision": "CODE_FREEZE_APPROVED_HANDOFF_READY",
+  "release_authorized": false,
+  "merge_authorized": false,
+  "external_blockers": [
+    "actual latest PDF_EVIDENCE_MATRIX.xlsx original bytes and digest, reviewer/corrections/decision/time",
+    "real independent source visual verification and team approval record",
+    "immutable approved Frozen Human Gold plus SHA and approved_field_evidence[]",
+    "authentic current Studio Native combined-case prediction JSON, Job/Config/File IDs and per-file SHA bindings",
+    "official extraction accuracy with evidence/source provenance and verified current business safety"
+  ],
+  "remaining_owner_actions": [
+    {
+      "owner": "김민주 (Team 3) + 실제 검수자",
+      "action": "실제 Excel 원본 대조, 출처/셀 타입/수정/승인 증거 수집, Frozen Gold 생성",
+      "kind": "EXTERNAL_HUMAN_REVIEW_NOT_CODE_DEVELOPMENT"
+    },
+    {
+      "owner": "구도훈 (Team 1) / Studio 담당",
+      "action": "최신 Native 결과 및 단일 케이스 Job Config File ID, SHA 연결과 팀1 통합 검증",
+      "kind": "EXTERNAL_LIVE_EVIDENCE"
+    },
+    {
+      "owner": "윤현준 (Team 2) / 전체 통합 책임자",
+      "action": "Safety V6 및 실제 Live 업무 차단 결과 별도 검증 후 Gate 공동 판단",
+      "kind": "INTEGRATION_EVIDENCE"
+    }
+  ],
+  "recommendation": "STOP_TEAM3_CODE_DEVELOPMENT; HANDOFF_CODE_AND_REPORTS; KEEP_DRAFT_PR; BLOCK_OFFICIAL_DATA_METRICS_AND_SUBMISSION_UNTIL_REAL_APPROVAL_AND_STUDIO_NATIVE",
+  "notes": [
+    "An authenticated human approval or Studio service identity is not established merely by correct JSON metadata.",
+    "All CI results are from actual GitHub Actions runners for the specified verified code SHA, not a new manual local Python execution.",
+    "The final report-only commit changes the PR head; verify CI on that final HEAD before relying on the packaged handoff."
+  ]
+}
