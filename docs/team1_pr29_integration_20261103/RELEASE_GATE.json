@@ -1,0 +1,34 @@
+{
+  "schema": "leadtime-release-gate/v1",
+  "record_kind": "PRE_CI_INTEGRATION_CHECKPOINT",
+  "source_commit": "bcd09794db7b5fe6c09ceffe84d33c5e98043479",
+  "common_base_commit": "80fb5814d6053fc592c627ea70ba30e1a2b6f451",
+  "gates": {
+    "SOURCE": {
+      "status": "PARTIAL",
+      "note": "PR29 archived PDFs 60/60 and PR3 Team3 CI confirmed earlier; exact new HEAD pending CI"
+    },
+    "STUDIO": {
+      "status": "BLOCKED",
+      "note": "No complete QA request, Merge, provider trace, operational upload SHA receipts or runtime config proof"
+    },
+    "PYTHON": {
+      "status": "PARTIAL",
+      "note": "PR29 local V6 replay C001 60/60500 and C013 safe PO999 block; new shared HEAD CI pending"
+    },
+    "QA_GOLD": {
+      "status": "BLOCKED",
+      "note": "IndependentQA exact input missing; Human Gold unapproved, accuracy NOT_MEASURED"
+    },
+    "RELEASE": {
+      "status": "BLOCKED",
+      "note": "No live E2E and no full evidence chain; PR remains Draft"
+    }
+  },
+  "release_authorized": false,
+  "merge_authorized": false,
+  "official_accuracy": "NOT_MEASURED",
+  "new_studio_execution": false,
+  "actual_provider_trace_received": false,
+  "ci_new_head": "PENDING"
+}

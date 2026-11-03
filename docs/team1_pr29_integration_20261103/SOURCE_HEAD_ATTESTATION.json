@@ -1,0 +1,18 @@
+{
+  "source_repository": "dohun3540-crypto/leadtime-guardian-agent.copy",
+  "source_pr": 29,
+  "source_head": "bcd09794db7b5fe6c09ceffe84d33c5e98043479",
+  "source_base_sha": "9225c06b33328b275fcf8c8a6f57b85ccf26ab8e",
+  "source_changed_files": 12,
+  "source_ci_run": 41650045135,
+  "source_ci_conclusion": "success",
+  "target_repository": "dohun3540-crypto/integration_finished_workforlast",
+  "target_pr": 3,
+  "target_pr_head": "80fb5814d6053fc592c627ea70ba30e1a2b6f451",
+  "target_integrated_ci_run": 41604857978,
+  "target_integrated_ci_conclusion": "success",
+  "target_team3_ci_run": 41604857972,
+  "target_team3_ci_conclusion": "success",
+  "new_shared_ci_status": "PENDING",
+  "original_worktree_cleanness": "UNVERIFIED"
+}

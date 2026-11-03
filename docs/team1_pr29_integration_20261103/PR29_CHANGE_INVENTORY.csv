@@ -1,0 +1,13 @@
+filename,category,action
+docs/team1_native_e2e_closure_20261103/NATIVE_EVIDENCE_INDEX.json,original_checkpoint,source_read_only_not_copied
+docs/team1_native_e2e_closure_20261103/NEXT_WORK_PROMPT.md,original_checkpoint,source_read_only_not_copied
+docs/team1_native_e2e_closure_20261103/RELEASE_GATE.precommit.json,original_checkpoint,source_read_only_not_copied
+docs/team1_native_e2e_closure_20261103/REPORT.md,original_checkpoint,source_read_only_not_copied
+docs/team1_native_e2e_closure_20261103/VALIDATION.json,original_checkpoint,source_read_only_not_copied
+scripts/qa_combined_e2e_check.py,team1,selective_merge
+src/leadtime_guardian/qa/cross_agent.py,team1,selective_merge
+src/leadtime_guardian/qa/experiment_compare.py,team1,selective_merge
+src/leadtime_guardian/qa/handoff_builder.py,team1,selective_merge
+src/leadtime_guardian/qa/release_inventory.py,team1,selective_merge
+src/leadtime_guardian/qa/stage_trace.py,team1,selective_merge
+tests/test_qa_native_closure.py,team1,new_regression
