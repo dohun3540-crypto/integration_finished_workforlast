@@ -22,11 +22,11 @@ def typed_equal(a, b):
 
 def index_documents(documents):
     if not isinstance(documents, list):
-        raise ValueError("expected list")
+        raise TypeError("expected list")
     result = {}
     for doc in documents:
         if not isinstance(doc, dict):
-            raise ValueError("expected object")
+            raise TypeError("expected object")
         name = doc.get("document_id")
         if not isinstance(name, str) or not name or name in result:
             raise ValueError("missing or duplicate document_id")
@@ -82,7 +82,7 @@ def bound_native(gold, binding):
     try:
         expected = index_documents(gold["sources"])
         observed = index_documents(binding["file_bindings"])
-    except (KeyError, ValueError):
+    except (KeyError, ValueError, TypeError):
         return False
     if expected.keys() != observed.keys():
         return False
@@ -115,7 +115,7 @@ def evaluate(prediction, gold, native=None):
         gold_docs = index_documents(gold["field_gold_candidate"])
         pred_docs = index_documents(prediction["documents"])
         sources = index_documents(gold["sources"])
-    except (KeyError, ValueError):
+    except (KeyError, ValueError, TypeError):
         result["reason"] = "INVALID_DOCUMENT_SET"
         return result
     if gold_docs.keys() != sources.keys():
