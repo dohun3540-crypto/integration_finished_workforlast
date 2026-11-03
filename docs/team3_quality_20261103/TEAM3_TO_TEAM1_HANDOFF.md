@@ -58,3 +58,7 @@ No source text, signed approval or timestamps are fabricated by this code.
 
 
 Team 1 can pass `case_id="C001"` (Studio/QA convention) for Gold `"SYN-C001"`; the evaluator accepts only this documented prefix alias, not arbitrary filename/Job ID mixing. All document IDs, filenames, file hashes and source citations must still match.
+
+
+## Verified final source code checkpoint
+Implementation `f6fdd1f3d263f86a985e21100d99fbd9986e914e`: integration run 41602469455 **855 PASS**, Team 3 run 41602469577 **89 PASS**, Ruff PASS, 60/60 PDF PASS. Human Gold approval and real latest Studio Native linking are still BLOCKED. Reports are packaged in a later documentation-only commit; use PR CI to verify the packaged HEAD.

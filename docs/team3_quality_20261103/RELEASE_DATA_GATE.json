@@ -16,16 +16,16 @@
   },
   "verified_software_ci": {
     "status": "PASS",
-    "code_head": "ff3319f0e46384fd25b427d44a27958acede275e",
-    "integration_run_id": 41602141542,
-    "full_pytest_passed": 854,
+    "code_head": "f6fdd1f3d263f86a985e21100d99fbd9986e914e",
+    "integration_run_id": 41602469455,
+    "full_pytest_passed": 855,
     "team1_targeted_passed": 37,
-    "team3_run_id": 41602141445,
-    "team3_pytest_passed": 88,
+    "team3_run_id": 41602469577,
+    "team3_pytest_passed": 89,
     "ruff": "PASS",
     "source_pdf": "PASS"
   },
-  "code_after_verified_head": "REPORT_ONLY_COMMIT_PENDING_FINAL_CI_CHECK",
+  "code_after_verified_head": "FINAL_REPORT_PACKAGING_REQUIRES_SEPARATE_CI",
   "human_gold": {
     "status": "BLOCKED",
     "c001": "AI_CANDIDATE",
@@ -49,7 +49,8 @@
       "config_id",
       "workflow_version",
       "file_bindings"
-    ]
+    ],
+    "case_id_policy": "C001 and SYN-C001 are canonical aliases; different numeric cases are rejected"
   },
   "official_accuracy": {
     "status": "NOT_MEASURED",

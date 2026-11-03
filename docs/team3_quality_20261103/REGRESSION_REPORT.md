@@ -1,5 +1,16 @@
 # Team 3 Regression Report — Evidence Boundaries
 
+## Final 2026-11-03 verified executable checkpoint
+
+**Team 3 implementation SHA: `f6fdd1f3d263f86a985e21100d99fbd9986e914e`**
+
+- [Integrated CI run 41602469455](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41602469455): 855 full pytest **PASS**, 37 Team 1 E2E **PASS**, repository Ruff **PASS**, 60/60 PDF SHA/page checks **PASS**, source integrity and archived replay gates successful.
+- [Team 3 CI run 41602469577](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41602469577): 89 dedicated pytest **PASS**, QA Ruff **PASS**, PDF 60/60 machine check **PASS**, C001 unapproved-Gold `NOT_MEASURED` guard **PASS**.
+- Compared to original integrated baseline 828 passed, additions are retained without edits to Team 1 QA, Team 2 Safety V6, original source PDFs or DRAFT Gold.
+- Important remaining evidence: **actual reviewed XLSX bytes unavailable, independent human approval unverified, frozen Gold unavailable, latest Studio Native Job/Config/File data unavailable**. Official accuracy `NOT_MEASURED`, release `BLOCKED`.
+- This report is added as a **documentation-only commit after** the above verified source-code HEAD; the documentation commit's CI must be checked separately.
+
+
 ## 2026-11-03 Additional Grounded Regression — Source-matching fix
 
 Verified exact **new code HEAD `ff3319f0e46384fd25b427d44a27958acede275e`**:
