@@ -1,5 +1,9 @@
 # Original PDF Inventory and Integrity
 
+## Latest validated code head
+Code SHA `207d0b8eb2eb6f1d6ef1921876cf008d7d4dd6af`: [integrated run 41600256028](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41600256028) and [Team 3 run 41600255920](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41600255920) both **PASS**, source PDF **60/60 PASS**. Documentation package follows this code checkpoint.
+
+
 ## Verified machine execution
 - Latest evidence before this documentation package: Integrated Python QA [run 41599191412](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41599191412), Team 3 [run 41599191486](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41599191486), head `9995c0620c62f1299fea633ffe34f4a521c6bf10`.
 - Command actually executed by both workflows: `python -m qa.inventory --root . --out <new-artifact-directory>`.

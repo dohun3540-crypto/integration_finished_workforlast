@@ -1,5 +1,12 @@
 # Team 3 Regression Report — Evidence Boundaries
 
+## Final source-code validation (subsequent to the checkpoint below)
+- Verified **code head** `207d0b8eb2eb6f1d6ef1921876cf008d7d4dd6af` using [Integrated CI run 41600256028](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41600256028): **848 pytest PASS**, Team 1 targeted E2E **37 PASS**, repository Ruff **PASS**, source PDF **60/60 PASS**, archived C001 expected blocked replay, file integrity and semantic fixture audit steps passed.
+- [Team 3 run 41600255920](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41600255920): **82 pytest PASS**, QA Ruff **PASS**, 60/60 source PDF PASS, unapproved C001 official metric NOT_MEASURED negative test PASS.
+- A development attempt on `cb1d45f7…` failed 3 newly added evaluator tests (845 passed) because a literal escaped newline commented out a metrics assignment. Fixed in the subsequent verified code head above; do not conceal or misattribute this failed CI. A previous TRY004 Ruff issue was also corrected.
+- A documentation-only commit containing this section follows the **verified code head**; GitHub CI for that packaging commit must be checked separately.
+
+
 ## Completed GitHub Actions runs
 Code head containing all three machine candidates and case tests:
 `9995c0620c62f1299fea633ffe34f4a521c6bf10`.
