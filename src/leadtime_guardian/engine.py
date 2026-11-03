@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections import defaultdict
 from copy import deepcopy
 from datetime import date
-from decimal import Decimal, InvalidOperation
+from decimal import Context, Decimal, DecimalException, Inexact, InvalidOperation, localcontext
 
 VERSION = "1.1.0"
 KINDS = {"purchase_order", "delivery_notice", "quotation", "other"}
@@ -222,10 +222,14 @@ def quote_draft(orders, revised, quotes):
                 break
         uncovered += need
     used = {line["quote_id"] for line in lines}
-    total = sum((Decimal(line["unit_price"]) * line["quantity"] for line in lines),
-                Decimal(0))
-    total += sum((money(q, "shipping_cost") for q in quotes if q["quote_id"] in used),
-                 Decimal(0))
+    # Fixed 28-significant-digit contract, independent of caller context.
+    # Never emit a rounded financial total as an exact successful result.
+    with localcontext(Context(prec=28)) as context:
+        context.traps[Inexact] = True
+        total = sum((Decimal(line["unit_price"]) * line["quantity"] for line in lines),
+                    Decimal(0))
+        total += sum((money(q, "shipping_cost") for q in quotes if q["quote_id"] in used),
+                     Decimal(0))
     return lines, uncovered, str(total)
 
 
@@ -272,7 +276,10 @@ def analyze_portfolio(payload):
             "additional_shortage_quantity": max(0, new - old),
             "shortage_change": new - old,
         })
-    choices, gap, cost = quote_draft(orders, after, quotes)
+    try:
+        choices, gap, cost = quote_draft(orders, after, quotes)
+    except DecimalException as exc:
+        return blocked_result(payload, [f"UNREPRESENTABLE_COST:{type(exc).__name__}"])
     result.update({
         "status": "OK", "execution_status": "COMPLETED", "needs_review": False,
         "delays": [{

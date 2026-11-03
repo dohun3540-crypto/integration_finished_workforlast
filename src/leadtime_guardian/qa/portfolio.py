@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from datetime import date
-from decimal import Decimal, InvalidOperation
+from decimal import Context, Decimal, DecimalException, Inexact, InvalidOperation, localcontext
 
 from .reference import reference_allocations
 
@@ -218,7 +218,7 @@ def audit_portfolio(case, result):
 
     capacities = defaultdict(int)
     purchased = defaultdict(int)
-    cost = Decimal(0)
+    cost_terms = []
     for i, line in enumerate(result["supplier_options"]):
         path = f"supplier_options[{i}]"
         quote_id, order_id = line.get("quote_id"), line.get("order_id")
@@ -245,7 +245,7 @@ def audit_portfolio(case, result):
         if price is None or _decimal(line.get("unit_price")) != price:
             flag("QUOTE_PRICE_MISMATCH", path)
         else:
-            cost += price * count
+            cost_terms.append((price, count))
         capacities[quote["quote_id"]] += count
         purchased[order["order_id"]] += count
     for qid, count in capacities.items():
@@ -255,7 +255,7 @@ def audit_portfolio(case, result):
         if shipping is None:
             flag("INVALID_SHIPPING", qid)
         else:
-            cost += shipping
+            cost_terms.append((shipping, 1))
     for oid, count in purchased.items():
         if oid in shortages and count > shortages[oid]:
             flag("OVERPURCHASE", oid)
@@ -263,6 +263,14 @@ def audit_portfolio(case, result):
         shortages.values()
     ) - sum(purchased.values()):
         flag("UNCOVERED_MISMATCH", "uncovered_quantity")
-    if _decimal(result.get("estimated_quote_cost_krw")) != cost:
-        flag("COST_MISMATCH", "estimated_quote_cost_krw")
+    # Independently reconstruct every charge; do not repeat a rounded engine
+    # total and mistake agreement on that rounding for correctness.
+    try:
+        with localcontext(Context(prec=28)) as context:
+            context.traps[Inexact] = True
+            cost = sum((amount * count for amount, count in cost_terms), Decimal(0))
+        if _decimal(result.get("estimated_quote_cost_krw")) != cost:
+            flag("COST_MISMATCH", "estimated_quote_cost_krw")
+    except DecimalException:
+        flag("UNVERIFIABLE_COST_ARITHMETIC", "estimated_quote_cost_krw")
     return {"qa_status": "FAIL" if problems else "PASS", "issues": problems}
