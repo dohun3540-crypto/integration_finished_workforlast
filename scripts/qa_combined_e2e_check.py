@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from leadtime_guardian.qa.audit import load_json_strict
 from leadtime_guardian.qa.cross_agent import (
     APPROVED_SANDBOX_AGENTS,
+    LEGACY_QA_REPOSITORY,
     audit_cross_agent_handoff,
 )
 from leadtime_guardian.qa.handoff_builder import build_studio_raw_handoff
@@ -35,6 +36,7 @@ from leadtime_guardian.studio_integration import (
 def audit_combined_bytes(
     operational_native_bytes: bytes, base_case_bytes: bytes, schema_bytes: bytes,
     *, operational_job_id: str, case_id: str, github_sha: str,
+    github_repository: str = LEGACY_QA_REPOSITORY,
     qa_native_bytes: bytes | None = None, qa_report_bytes: bytes | None = None,
     qa_agent_id: str | None = None, qa_config_id: str | None = None,
     qa_config_version: int | None = None,
@@ -61,6 +63,8 @@ def audit_combined_bytes(
         "external_action_taken": False,
         "issues": [],
         "sha256": {},
+        "github": {"repository": github_repository, "head_sha": github_sha,
+                   "authenticated": False},
     }
 
     def record(code: str, stage: str) -> None:
@@ -175,7 +179,8 @@ def audit_combined_bytes(
                 qa_native_bytes, qa_report_bytes, case_id=case_id,
                 agent_id=qa_agent_id, config_id=qa_config_id,
                 config_version=qa_config_version,
-                github_sha=github_sha, execution_kind=execution_kind,
+                github_sha=github_sha, github_repository=github_repository,
+                execution_kind=execution_kind,
             )
             if case_id == "C001":
                 qa_raw = load_json_strict(qa_native_bytes)
@@ -192,6 +197,7 @@ def audit_combined_bytes(
                 expected_agent_id=qa_agent_id,
                 expected_config_id=qa_config_id,
                 expected_github_sha=github_sha,
+                expected_github_repository=github_repository,
             )
             result["studio_document_status"] = verdict["document_qa_status"]
             result["cross_agent_status"] = verdict["qa_status"]
@@ -339,6 +345,7 @@ def main() -> int:
     parser.add_argument("--qa-config-id")
     parser.add_argument("--qa-config-version", type=int)
     parser.add_argument("--github-sha", required=True)
+    parser.add_argument("--github-repository", default=LEGACY_QA_REPOSITORY)
     parser.add_argument("--execution-kind", choices=(
         "ARCHIVED_STUDIO", "ARCHIVED_REPLAY", "NEW_LIVE_STUDIO",
     ), default="ARCHIVED_STUDIO")
@@ -407,6 +414,7 @@ def main() -> int:
                 args.schema.read_bytes(),
                 operational_job_id=args.operational_job_id,
                 case_id=args.case_id, github_sha=args.github_sha,
+                github_repository=args.github_repository,
                 qa_native_bytes=args.qa_native.read_bytes() if args.qa_native else None,
                 qa_report_bytes=args.qa_report.read_bytes() if args.qa_report else None,
                 qa_agent_id=args.qa_agent_id, qa_config_id=args.qa_config_id,

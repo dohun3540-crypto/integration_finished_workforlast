@@ -11,7 +11,9 @@ from typing import Any
 from .audit import load_json_strict
 from .cross_agent import (
     APPROVED_SANDBOX_AGENTS,
+    GITHUB_REPOSITORY,
     HANDOFF_VERSION,
+    LEGACY_QA_REPOSITORY,
     SANDBOX_COPY_AGENT_ID,
     SANDBOX_COPY_CONFIG_ID,
     SANDBOX_COPY_CONFIG_VERSION,
@@ -26,6 +28,7 @@ def build_studio_raw_handoff(
     native_bytes: bytes, report_bytes: bytes, *, case_id: str,
     agent_id: str, config_id: str, config_version: int,
     github_sha: str, execution_kind: str = "ARCHIVED_STUDIO",
+    github_repository: str = LEGACY_QA_REPOSITORY,
 ) -> dict[str, Any]:
     """Fail closed on invalid raw artifacts, identifiers and format."""
     if not isinstance(native_bytes, bytes) or not isinstance(report_bytes, bytes):
@@ -44,6 +47,9 @@ def build_studio_raw_handoff(
         raise ValueError("copied QA Sandbox config/version not approved")
     if not isinstance(github_sha, str) or not HEX40.fullmatch(github_sha):
         raise ValueError("actual 40-character Git SHA required")
+    if (not isinstance(github_repository, str)
+            or GITHUB_REPOSITORY.fullmatch(github_repository) is None):
+        raise ValueError("explicit owner/repository required")
     if execution_kind not in ("ARCHIVED_STUDIO", "ARCHIVED_REPLAY",
                               "NEW_LIVE_STUDIO"):
         raise ValueError("unsupported evidence kind")
@@ -95,7 +101,7 @@ def build_studio_raw_handoff(
             "issues": mapped["issues"],
         },
         "github": {
-            "repository": "dohun3540-crypto/leadtime-guardian-agent.copy",
+            "repository": github_repository,
             "head_sha": github_sha,
             "contract_version": HANDOFF_VERSION,
         },

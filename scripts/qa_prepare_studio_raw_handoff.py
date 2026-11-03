@@ -5,7 +5,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from leadtime_guardian.qa.cross_agent import APPROVED_SANDBOX_AGENTS, audit_cross_agent_handoff
+from leadtime_guardian.qa.cross_agent import (
+    APPROVED_SANDBOX_AGENTS,
+    LEGACY_QA_REPOSITORY,
+    audit_cross_agent_handoff,
+)
 from leadtime_guardian.qa.handoff_builder import build_studio_raw_handoff
 
 
@@ -18,6 +22,7 @@ def main() -> int:
     parser.add_argument("--config-id", required=True)
     parser.add_argument("--config-version", required=True, type=int)
     parser.add_argument("--github-sha", required=True)
+    parser.add_argument("--github-repository", default=LEGACY_QA_REPOSITORY)
     parser.add_argument("--execution-kind", choices=(
         "ARCHIVED_STUDIO", "ARCHIVED_REPLAY", "NEW_LIVE_STUDIO",
     ), default="ARCHIVED_STUDIO")
@@ -30,12 +35,14 @@ def main() -> int:
             native, report, case_id=args.case_id, agent_id=args.agent_id,
             config_id=args.config_id, config_version=args.config_version,
             github_sha=args.github_sha, execution_kind=args.execution_kind,
+            github_repository=args.github_repository,
         )
         checked = audit_cross_agent_handoff(
             manifest, native_bytes=native, report_bytes=report,
             expected_agent_id=args.agent_id,
             expected_config_id=args.config_id,
             expected_github_sha=args.github_sha,
+            expected_github_repository=args.github_repository,
         )
         if checked["qa_status"] == "FAIL":
             raise ValueError("mapped manifest failed Cross-Agent validation")
