@@ -168,7 +168,7 @@ def evaluate(prediction, gold, native=None):
     blocked = not conflict or prediction.get("business_status") == "BLOCKED"
     scores["po_conflict_detection"] = [int(detected), 1]
     scores["po_conflict_business_block"] = [int(blocked), int(conflict)]
-    result["metrics"] = {key: metric(*score) for key, score in scores.items()}
+    # Incidence is a missing-field rate (lower is better), not detection accuracy.\n    scores["missing_field_incidence"] = [len(missing), scores["fields"][1]]\n    result["metrics"] = {key: metric(*score) for key, score in scores.items()}
     result["field_results"] = failed
     result["missing_fields"] = missing
     result["extra_document_ids"] = sorted(pred_docs.keys() - gold_docs.keys())
