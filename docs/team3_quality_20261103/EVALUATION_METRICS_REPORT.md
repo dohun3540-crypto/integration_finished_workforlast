@@ -17,7 +17,9 @@ If not met: `status=BLOCKED, accuracy_status=NOT_MEASURED, metrics={}`. Archived
 | fields | Exact type-and-value matches per normalized leaf field | All Gold normalized leaf field slots, document_type included | Field accuracy |
 | missing_field_incidence | Expected leaf slots missing from prediction | All expected leaf field slots | Missing incidence, lower is better, NOT accuracy |
 | null_preservation | Explicit output null for Gold-null slot | Gold-null slots | Distinguishes null from absent/0 |
-| date_normalization | Exact typed ISO output matches for date-named slots | Date-named slots in Gold | Raw original date retention must be checked separately using source evidence |
+| sentinel_preservation | Exact null/zero/false/empty-string values | Gold sentinel slots | Distinguishes null/0/false/empty/missing by strict type |
+| date_normalization | Exact typed ISO output matches for date-named slots | Date-named slots in Gold | ISO candidate match |
+| date_source_preservation | Evidence raw date exactly matches the approved source date text and SHA/page | Each Gold source date_evidence record | Korean date original preservation, NOT a substitute for visual human review |
 | receipt_identity | Exact `receipt_id` value matches | Gold receipt_id slots (null included if present) | Identity, not quantity correctness |
 | quotation_fields | Exact leaf match under `quote.*` | Gold quotation leaf slots | Quote identifiers, supplier, capacity, cost and currency |
 | evidence_linkage | Leaf output slots with matching doc/SHA/page/path and nonempty original text | All Gold leaf slots | Source binding per output slot; null absence needs separately attested source evidence |

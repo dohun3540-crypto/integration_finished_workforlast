@@ -123,7 +123,8 @@ def evaluate(prediction, gold, native=None):
         return result
     scores = {k: [0, 0] for k in ("classification", "fields", "null_preservation",
                                   "date_normalization", "receipt_identity",
-                                  "quotation_fields", "evidence_linkage")}
+                                  "quotation_fields", "evidence_linkage", "item_receipt_identity",
+                                  "sentinel_preservation", "date_source_preservation")}
     evidence = prediction.get("evidence", [])
     evidence = evidence if isinstance(evidence, list) else []
     failed = []
@@ -149,6 +150,12 @@ def evaluate(prediction, gold, native=None):
                 ("date_normalization", column in DATE_KEYS),
                 ("receipt_identity", column == "receipt_id"),
                 ("quotation_fields", path.startswith("quote.")),
+                ("item_receipt_identity", path.startswith("items[") and
+                 column in {"product_id", "receipt_id"}),
+                ("sentinel_preservation", want is None or
+                 (type(want) is str and want == "") or
+                 (type(want) is int and want == 0) or
+                 (type(want) is bool and want is False)),
             ):
                 if selected:
                     scores[category][1] += 1
@@ -162,6 +169,16 @@ def evaluate(prediction, gold, native=None):
                    and e.get("page") == source.get("source_page")
                    and bool(e.get("source_original_text")) for e in evidence):
                 scores["evidence_linkage"][0] += 1
+    # Preserve original language dates separately from their normalized ISO values.
+    for did, source in sources.items():
+        for entry in source.get("date_evidence", []):
+            scores["date_source_preservation"][1] += 1
+            if any(isinstance(e, dict) and e.get("document_id") == did
+                   and e.get("field_path") == entry.get("field")
+                   and e.get("source_original_text") == entry.get("source_text")
+                   and e.get("source_file_sha256") == source.get("sha256")
+                   and e.get("page") == source.get("source_page") for e in evidence):
+                scores["date_source_preservation"][0] += 1
     po = {d.get("po_id") for d in gold_docs.values() if isinstance(d.get("po_id"), str)}
     conflict = len(po) > 1
     detected = typed_equal(conflict, prediction.get("po_conflict_detected", MISSING))
@@ -177,6 +194,8 @@ def evaluate(prediction, gold, native=None):
     result["status"] = ("PASS" if not failed and not result["extra_document_ids"]
                         and detected and blocked
                         and scores["evidence_linkage"][0] == scores["evidence_linkage"][1]
+                        and scores["date_source_preservation"][0] ==
+                        scores["date_source_preservation"][1]
                         else "FAIL")
     result["reason"] = "VALIDATED" if result["status"] == "PASS" else "MISMATCH"
     return result
