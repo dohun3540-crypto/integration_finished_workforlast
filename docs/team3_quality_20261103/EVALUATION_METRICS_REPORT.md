@@ -22,7 +22,7 @@ If not met: `status=BLOCKED, accuracy_status=NOT_MEASURED, metrics={}`. Archived
 | date_source_preservation | Evidence raw date exactly matches the approved source date text and SHA/page | Each Gold source date_evidence record | Korean date original preservation, NOT a substitute for visual human review |
 | receipt_identity | Exact `receipt_id` value matches | Gold receipt_id slots (null included if present) | Identity, not quantity correctness |
 | quotation_fields | Exact leaf match under `quote.*` | Gold quotation leaf slots | Quote identifiers, supplier, capacity, cost and currency |
-| evidence_linkage | Leaf output slots with matching doc/SHA/page/path and nonempty original text | All Gold leaf slots | Source binding per output slot; null absence needs separately attested source evidence |
+| evidence_linkage | Leaf output slots with matching doc/SHA/page/path and nonempty original text | All Gold leaf slots | Source binding per output slot; null absence requires explicit absence_confirmed=true plus review_record_sha256 instead of invented source text |
 | po_conflict_detection | 1 if predicted boolean equals Gold cross-document PO conflict | 1 per case | Collision classification |
 | po_conflict_business_block | 1 if contradictory PO IDs and business status BLOCKED | 1 only for conflict cases | Safety gate; no conflict => NOT_MEASURED |
 

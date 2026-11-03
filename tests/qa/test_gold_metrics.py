@@ -105,3 +105,23 @@ def test_po_conflict_detection_and_block_independent():
     pred["business_status"] = "BLOCKED"
     assert evaluate(pred, gold, binding)["metrics"]["po_conflict_business_block"][
         "numerator"] == 1
+
+
+def test_absence_evidence_requires_explicit_attestation():
+    gold, binding, pred = sample()
+    document = gold["field_gold_candidate"][0]
+    evidence = []
+    for path, value in flatten(document):
+        record = {"document_id": "PO-DOC", "field_path": path,
+                  "source_file_sha256": "c" * 64, "page": 1}
+        if value is None:
+            record.update(absence_confirmed=True, review_record_sha256="d" * 64)
+        else:
+            record["source_original_text"] = str(value)
+        evidence.append(record)
+    pred["evidence"] = evidence
+    assert evaluate(pred, gold, binding)["status"] == "PASS"
+    for record in evidence:
+        if record.get("absence_confirmed"):
+            record.pop("review_record_sha256")
+    assert evaluate(pred, gold, binding)["status"] == "FAIL"

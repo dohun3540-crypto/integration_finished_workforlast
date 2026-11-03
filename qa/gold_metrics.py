@@ -167,7 +167,9 @@ def evaluate(prediction, gold, native=None):
                    and e.get("field_path") == path
                    and e.get("source_file_sha256") == source.get("sha256")
                    and e.get("page") == source.get("source_page")
-                   and bool(e.get("source_original_text")) for e in evidence):
+                   and (bool(e.get("source_original_text")) or
+                        (want is None and e.get("absence_confirmed") is True
+                         and bool(e.get("review_record_sha256")))) for e in evidence):
                 scores["evidence_linkage"][0] += 1
     # Preserve original language dates separately from their normalized ISO values.
     for did, source in sources.items():
