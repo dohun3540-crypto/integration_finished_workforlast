@@ -1,5 +1,16 @@
 # Team 3 Regression Report — Evidence Boundaries
 
+## 2026-11-03 Additional Grounded Regression — Source-matching fix
+
+Verified exact **new code HEAD `ff3319f0e46384fd25b427d44a27958acede275e`**:
+- [Integrated Python QA run 41602141542](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41602141542): **854 passed, 0 failures**, Team 1 E2E **37 passed**, full-repo Ruff **PASS**, all 60 PDF source-manifest SHA/page/parser checks **PASS**, archived replay and existing integration/file audits **PASS**.
+- [Team 3 run 41602141445](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41602141445): Team 3 **88 passed**, QA Ruff **PASS**, 60/60 PDF **PASS**, unapproved C001 `NOT_MEASURED` negative gate **PASS**.
+- Added six synthetic regression tests for frozen source-evidence completeness/uniqueness, incorrect raw evidence, wrong Studio case binding, null-date denominator, and explicit null XLSX tokens; no actual user review was claimed.
+- Previous 828 baseline tests were left intact, and original team 1 / team 2 implementation paths were unchanged. A green automated CI is not independent source visual review, human approval, live Studio evaluation or release authorization.
+
+**Post-run reporting commit:** This section and the RELEASE_DATA_GATE metadata are documentation-only changes following that exact validated code head; its own GitHub Actions result must be checked separately. Human Gold **BLOCKED** and official extraction accuracy **NOT_MEASURED** remain unchanged.
+
+
 ## Final source-code validation (subsequent to the checkpoint below)
 - Verified **code head** `207d0b8eb2eb6f1d6ef1921876cf008d7d4dd6af` using [Integrated CI run 41600256028](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41600256028): **848 pytest PASS**, Team 1 targeted E2E **37 PASS**, repository Ruff **PASS**, source PDF **60/60 PASS**, archived C001 expected blocked replay, file integrity and semantic fixture audit steps passed.
 - [Team 3 run 41600255920](https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41600255920): **82 pytest PASS**, QA Ruff **PASS**, 60/60 source PDF PASS, unapproved C001 official metric NOT_MEASURED negative test PASS.

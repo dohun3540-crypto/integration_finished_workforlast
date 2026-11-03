@@ -16,16 +16,16 @@
   },
   "verified_software_ci": {
     "status": "PASS",
-    "code_head": "207d0b8eb2eb6f1d6ef1921876cf008d7d4dd6af",
-    "integration_run_id": 41600256028,
-    "full_pytest_passed": 848,
+    "code_head": "ff3319f0e46384fd25b427d44a27958acede275e",
+    "integration_run_id": 41602141542,
+    "full_pytest_passed": 854,
     "team1_targeted_passed": 37,
-    "team3_run_id": 41600255920,
-    "team3_pytest_passed": 82,
+    "team3_run_id": 41602141445,
+    "team3_pytest_passed": 88,
     "ruff": "PASS",
     "source_pdf": "PASS"
   },
-  "code_after_verified_head": "DOCUMENT_ONLY_REPORT_PACKAGING_PENDING_CI",
+  "code_after_verified_head": "REPORT_ONLY_COMMIT_PENDING_FINAL_CI_CHECK",
   "human_gold": {
     "status": "BLOCKED",
     "c001": "AI_CANDIDATE",
@@ -41,7 +41,15 @@
     "status": "NOT_VERIFIED",
     "new_case_job_id": null,
     "new_config_id": null,
-    "verified_file_bindings": false
+    "verified_file_bindings": false,
+    "required_fields": [
+      "case_id",
+      "execution_kind",
+      "job_id",
+      "config_id",
+      "workflow_version",
+      "file_bindings"
+    ]
   },
   "official_accuracy": {
     "status": "NOT_MEASURED",
@@ -60,7 +68,8 @@
     "field-level human visual review against source PDFs",
     "immutable frozen Gold version and signed/verified approval record",
     "current authentic Studio native prediction JSON and Job/Config/File IDs with SHA bindings",
-    "current cross-agent integrated live validation results"
+    "current cross-agent integrated live validation results",
+    "Approved field-level source evidence entries for each output slot, with verified decision and original text/absence"
   ],
   "note": "CI green does not satisfy the human Gold or live Studio release gate.",
   "known_intermediate_failure": {
@@ -69,5 +78,20 @@
     "failed_tests": 3,
     "passed_tests": 845,
     "explanation": "literal escaped newline in metrics assignment, resolved at verified code head"
+  },
+  "gold_field_evidence": {
+    "status": "BLOCKED",
+    "approved_field_evidence_available": false,
+    "required_keys": [
+      "document_id",
+      "field_path",
+      "source_file_sha256",
+      "page",
+      "decision",
+      "review_record_sha256",
+      "source_original_text or absence_confirmed"
+    ],
+    "exact_approved_source_text_check_implemented": true,
+    "reviewer_identity_verified": false
   }
 }

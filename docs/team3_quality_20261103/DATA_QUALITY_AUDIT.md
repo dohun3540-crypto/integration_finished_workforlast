@@ -1,5 +1,9 @@
 # Team 3 — Data Quality Audit (2026-11-03)
 
+## Additional contract verification
+The additional read-only metric checks verified source text against one uniquely keyed approved Gold citation for every field. Missing or duplicate approval evidence and source-text substitutions now BLOCK official scoring. Native case-id mismatch blocks the same way. Optional null dates no longer inflate date-normalization accuracy. XLSX explicit `null` and blank cells are no longer silently treated as identical. Test results: **854 integrated PASS / 88 Team3 PASS, 60/60 PDF PASS and Ruff PASS** at code HEAD `ff3319f0e46384fd25b427d44a27958acede275e` (runs 41602141542 / 41602141445). These are **synthetic safety tests**, not proof that human review was completed.
+
+
 ## Provenance and scope
 - Original read-only: `dohun3540-crypto/leadtime-guardian-agent` @ `a925103077173b37d1cefcd6a9576ae644dc2040`, PR #13.
 - Integrated baseline: `dohun3540-crypto/integration_finished_workforlast` @ `e948a4a6d3aba6aacd68495bec422b1e845075a0`.
