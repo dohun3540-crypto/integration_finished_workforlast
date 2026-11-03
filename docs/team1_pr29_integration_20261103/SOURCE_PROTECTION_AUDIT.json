@@ -1,0 +1,47 @@
+{
+  "schema": "team1-protection-audit/v1",
+  "base_commit": "80fb5814d6053fc592c627ea70ba30e1a2b6f451",
+  "allowed_changes": [
+    "scripts/qa_combined_e2e_check.py",
+    "src/leadtime_guardian/qa/cross_agent.py",
+    "src/leadtime_guardian/qa/experiment_compare.py",
+    "src/leadtime_guardian/qa/handoff_builder.py",
+    "src/leadtime_guardian/qa/release_inventory.py",
+    "src/leadtime_guardian/qa/stage_trace.py",
+    "tests/test_qa_native_closure.py",
+    "scripts/qa_final_file_integrity_check.py"
+  ],
+  "team2_paths_touched": [],
+  "team3_paths_touched": [],
+  "pdf_paths_touched": [],
+  "gold_approvals_added": 0,
+  "studio_configs_touched": [],
+  "force_push": false,
+  "main_modified": false,
+  "pr29_modified": false,
+  "prior_pdf_60_60": "PR29_AND_PR3_CI_PREVIOUS_SUCCESS_NEW_HEAD_NOT_RERUN",
+  "updated_protected_hashes": [
+    {
+      "file": "src/leadtime_guardian/qa/release_inventory.py",
+      "before": "fb8982edb23078cb98a333ac4f9c581ad219ef47",
+      "after": "69bc2b0bc5d8bdb683836ded89b94429e5a745a9",
+      "source_verified": true
+    },
+    {
+      "file": "src/leadtime_guardian/qa/experiment_compare.py",
+      "before": "0c0bbf2c38456019d891625e7486e379e1f96ecf",
+      "after": "379d3c77e93152087a57fc48acb0a837462c13f0",
+      "source_verified": true
+    }
+  ],
+  "final_file_integrity_first_attempt": {
+    "ci_run": 41652592519,
+    "pytest_full": 878,
+    "ruff": "PASS",
+    "pdf_originals": "60/60 PASS",
+    "other_integrity_issues": 0,
+    "old_sha_mismatches": 2,
+    "first_ci_conclusion": "FAILURE",
+    "new_ci": "PENDING"
+  }
+}

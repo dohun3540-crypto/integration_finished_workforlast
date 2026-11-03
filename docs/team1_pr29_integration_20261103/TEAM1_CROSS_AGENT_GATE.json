@@ -1,0 +1,27 @@
+{
+  "source_provenance": "ARCHIVED_STUDIO+LOCAL_REPLAY_FROM_PR29",
+  "C001": {
+    "job": "job_DkzsPqVpfBkXLSDvScbdgC",
+    "calculate_shortage": 60,
+    "cost_krw": 60500,
+    "python": "PASS_LOCAL",
+    "qa": "NOT_VERIFIED",
+    "cross_agent": "BLOCKED",
+    "live_e2e": "BLOCKED"
+  },
+  "C013": {
+    "job": "job_aq9eWmd23vb4G6DySyF5sF",
+    "conflicting_po": "PO999",
+    "python": "SAFELY_BLOCKED_LOCAL",
+    "qa": "NEEDS_REVIEW",
+    "cross_agent": "FAIL_POLICY_EXPECTED",
+    "live_e2e": "BLOCKED"
+  },
+  "agent_id": "agt_oMuHCjkGkVUkyyxjVDJda4",
+  "config_id": "cfg_mokhkXae6d5U7CfgpL7ffw",
+  "config_version": 1,
+  "qa_request_bytes_available": false,
+  "provider_step_trace_complete": false,
+  "config_runtime_attested": false,
+  "release_authorized": false
+}
