@@ -1,0 +1,47 @@
+name: Team 3 Gold Data Quality Checks
+on:
+  pull_request:
+    paths:
+      - 'qa/**'
+      - 'tests/qa/**'
+      - 'docs/team3_quality_20261103/**'
+      - '.github/workflows/member3-data-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  team3-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Dependencies
+        run: python -m pip install -r requirements-validation.txt
+      - name: Dedicated tests and lint
+        run: |
+          mkdir -p team3-logs
+          git rev-parse HEAD > team3-logs/checkout-sha.txt
+          python -m pytest tests/qa -q | tee team3-logs/pytest.txt
+          python -m ruff check qa tests/qa | tee team3-logs/ruff.txt
+      - name: PDF source machine integrity
+        run: python -m qa.inventory --root . --out team3-logs/inventory
+      - name: Unapproved candidate must NOT produce accuracy
+        run: |
+          set +e
+          python -m qa.gold_metrics --gold qa/gold_candidates/SYN-C001/candidate.v1.json --out team3-logs/c001-evaluation.json
+          code=$?
+          set -e
+          test "$code" -eq 2
+          python -c 'import json; r=json.load(open("team3-logs/c001-evaluation.json")); assert r["accuracy_status"]=="NOT_MEASURED" and r["metrics"]=={} and r["status"]=="BLOCKED"'
+      - name: Preserve scoped evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: team3-quality-${{ github.sha }}
+          path: team3-logs/
+          retention-days: 14

@@ -13,8 +13,8 @@ from qa.review_records import KEYS, load_csv, valid_timestamp
 from qa.xlsx_snapshot import snapshot
 
 MUTABLE = {"reviewer", "reviewed_at", "decision", "approval_state"}
-DECISIONS = {"", "ACCEPT", "CORRECT", "AMBIGUOUS", "MISSING", "NOT_IN_SOURCE"}
-STATES = {"", "PENDING", "REVIEWED_BY_MEMBER3", "TEAM_APPROVED"}
+DECISIONS = {None, "", "ACCEPT", "CORRECT", "AMBIGUOUS", "MISSING", "NOT_IN_SOURCE"}
+STATES = {None, "", "PENDING", "REVIEWED_BY_MEMBER3", "TEAM_APPROVED"}
 
 
 def parse_candidate(text, kind):
