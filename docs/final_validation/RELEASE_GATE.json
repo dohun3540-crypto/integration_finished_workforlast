@@ -1,0 +1,62 @@
+{
+  "schema_version": "leadtime-final-validation-gate/v1",
+  "created_at_local": "2026-11-03 KST",
+  "repository": "dohun3540-crypto/integration_finished_workforlast",
+  "branch": "feat/final-team1-e2e-preflight-20261103",
+  "baseline_sha": "67b93291c1f32acaf43e45815d2d1119480b652a",
+  "qa_source_head": "81569b0ddcc384388ee0e2575ba3cc38cb1bf895",
+  "verified_code_sha": "12aae80750cdb84b40e8d8b7a501d2dc34a7d307",
+  "verified_code_tree": "b41a5f34ba8d99349f5cef75b543558694b6a369",
+  "verified_ci_run_id": 41575684831,
+  "verified_ci_url": "https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41575684831",
+  "verified_ci_conclusion": "success",
+  "report_only_commit_ci": "PENDING_AT_REPORT_CREATION",
+  "gates": {
+    "SOURCE_INTEGRATION": "PASS",
+    "FULL_REGRESSION": "PASS",
+    "PYTHON_V6": "PASS",
+    "INDEPENDENT_QA": "PASS",
+    "CROSS_AGENT": "PASS",
+    "FILE_INTEGRITY": "PARTIAL",
+    "DATA_GOLD": "PENDING",
+    "OFFLINE_E2E": "PASS",
+    "STUDIO_LIVE_E2E": "NOT_VERIFIED",
+    "GITHUB_CI": "SUCCESS",
+    "FINAL_RELEASE": "BLOCKED"
+  },
+  "scope": {
+    "FULL_REGRESSION": {
+      "passed": 815,
+      "failed": 0,
+      "skipped": 0,
+      "targeted_included_in_full": 37
+    },
+    "SOURCE_INTEGRATION": {
+      "same_blob_count": 3,
+      "original_source_modified": false,
+      "main_modified": false
+    },
+    "PYTHON_V6": "Archived C001 local engine and synthetic regression; no new Live V6",
+    "INDEPENDENT_QA": "Local contract/regression, not new authenticated provider QA job",
+    "CROSS_AGENT": "Local contract/regression only; authenticated raw QA report not available",
+    "FILE_INTEGRITY": "Repo tracked file audit PASS and 60 PDFs mechanically PASS; review XLSX/visual content missing",
+    "DATA_GOLD": "C001 candidate AI_CANDIDATE; reviewed_by=null; team_approved=false",
+    "OFFLINE_E2E": "Archive C001 qa.integration CLI PASS_LOCAL; expected overall BLOCKED exit 2",
+    "STUDIO_LIVE_E2E": "No authenticated fresh combined Studio B0/E1 Job evidence",
+    "FINAL_RELEASE": "Human Gold and real Studio Live B0/E1 absent"
+  },
+  "evidence": {
+    "baseline_ci": "https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41574688500",
+    "first_integration_ci": "https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41575183121",
+    "final_code_validation_ci": "https://github.com/dohun3540-crypto/integration_finished_workforlast/actions/runs/41575684831",
+    "logs": "GitHub Actions artifact integrated-validation-4c279c0dbe85b88bf9f019c65dc443c65465efb2",
+    "original_pdf_archive_sha256": "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc",
+    "pdf_pass": 60,
+    "pdf_fail": 0,
+    "pdf_blocked": 0,
+    "reviewed_xlsx_files_tracked": 0
+  },
+  "release_or_merge_authorized": false,
+  "external_paid_studio_runs_started": 0,
+  "human_gold_approved": false
+}
