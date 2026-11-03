@@ -79,12 +79,19 @@ def compare_snapshot(data, csv_bytes):
             elif name == "normalized_candidate":
                 try:
                     correct = parse_candidate(text, reference["value_type"])
-                    matches = type(observed) is type(correct) and observed == correct
+                    if reference["value_type"] == "null":
+                        # Explicit literal only. Blank Excel cells are not verified nulls.
+                        matches = type(observed) is str and observed == "null"
+                    else:
+                        matches = type(observed) is type(correct) and observed == correct
                 except ValueError:
                     matches = False
             elif text == "" and observed is None:
-                # Missing source-text cells are not proof of visual source review.
+                # A missing source-text cell is not proof that a field was absent.
                 matches = True
+                if name == "source_text" and reference["value_type"] == "null":
+                    issues.append({"row": number, "field": name,
+                                   "code": "ABSENCE_EVIDENCE_REQUIRES_HUMAN_REVIEW"})
             else:
                 matches = type(observed) is str and observed == text
             if not matches:

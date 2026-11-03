@@ -41,3 +41,33 @@ python -m qa.gold_metrics \
  --out /tmp/team3-official-evaluation.json
 ```
 Input paths are examples, not claims that those files exist. A file labelled Human Gold must be independently verified before this command. **Actual measured extraction accuracy: NOT_MEASURED** as of this audit.
+
+
+
+## Team 3 follow-up safeguard (2026-11-03)
+
+The read-only evaluator now requires a separate `approved_field_evidence[]`
+collection in the frozen Gold, containing **exactly one approved entry per
+`document_id + field_path`**. Each entry must contain
+`document_id`, `field_path`, `source_file_sha256`, original `page`,
+`decision="ACCEPT"`, and a 64-character `review_record_sha256`. Non-null
+fields require the original nonempty `source_original_text`; null fields require
+`absence_confirmed=true` and must not fabricate an original-text string.
+Missing, extra, duplicate or inconsistent citations BLOCK the entire official
+evaluation and return `NOT_MEASURED`. All citations require independent human
+validation; providing these strings alone is not proof of authorization.
+
+The Native binding now also requires `case_id` matching frozen Gold. If a
+Native prediction itself contains `case_id`, that must match as well.
+`evidence_linkage` is credited only if the Studio output's original text
+**exactly matches the approved source citation**, in addition to document,
+SHA and page. `date_normalization` includes only non-null expected
+date fields; optional nulls are evaluated under null/sentinel preservation,
+not counted as correctly parsed dates. The XLSX reader distinguishes an
+explicit literal `"null"` in a `null`-typed candidate cell from an empty
+Excel cell, and marks a missing null-source-text cell as requiring human
+absence verification.
+
+These safeguards do not change the actual production state:
+Human Gold BLOCKED, official accuracy NOT_MEASURED. Older synthetic evaluation
+fixture results are not Studio performance.

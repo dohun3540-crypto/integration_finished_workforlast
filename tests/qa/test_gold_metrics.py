@@ -4,6 +4,19 @@ from copy import deepcopy
 from qa.gold_metrics import MISSING, evaluate, flatten, lookup, typed_equal
 
 
+def add_test_evidence(gold, doc, source):
+    """SYNTHETIC fixtures; never represent an actual Human Gold approval."""
+    for path, value in flatten(doc):
+        row = {"document_id": doc["document_id"], "field_path": path,
+               "source_file_sha256": source["sha256"], "page": source["source_page"],
+               "decision": "ACCEPT", "review_record_sha256": "d" * 64}
+        if value is None:
+            row["absence_confirmed"] = True
+        else:
+            row["source_original_text"] = str(value)
+        gold["approved_field_evidence"].append(row)
+
+
 def sample():
     gold = {
         "case_id": "SYN-TEST", "label_status": "HUMAN_GOLD_FROZEN",
@@ -19,7 +32,10 @@ def sample():
              "supplier_id": None, "original_delivery": "2026-11-03",
              "items": [{"product_id": "A", "receipt_id": "R1", "quantity": 0}],
              "quote": {"unit_price": "1000.00", "shipping_cost": "500"}}]}
-    binding = {"execution_kind": "STUDIO_NATIVE", "job_id": "synthetic-job",
+    gold["approved_field_evidence"] = []
+    add_test_evidence(gold, gold["field_gold_candidate"][0], gold["sources"][0])
+    binding = {"execution_kind": "STUDIO_NATIVE", "case_id": "SYN-TEST",
+               "job_id": "synthetic-job",
                "config_id": "synthetic-config", "workflow_version": "synthetic",
                "file_bindings": [{"document_id": "PO-DOC", "filename": "po.pdf",
                                   "sha256": "c" * 64, "file_id": "synthetic-file"}]}
@@ -94,6 +110,7 @@ def test_po_conflict_detection_and_block_independent():
     pred["documents"].append(deepcopy(notice))
     gold["sources"].append({"document_id": "NOTICE-DOC", "filename": "notice.pdf",
                              "sha256": "d" * 64, "source_page": 1})
+    add_test_evidence(gold, notice, gold["sources"][-1])
     binding["file_bindings"].append({"document_id": "NOTICE-DOC",
                                      "filename": "notice.pdf", "sha256": "d" * 64,
                                      "file_id": "synthetic-notice"})
@@ -109,19 +126,60 @@ def test_po_conflict_detection_and_block_independent():
 
 def test_absence_evidence_requires_explicit_attestation():
     gold, binding, pred = sample()
-    document = gold["field_gold_candidate"][0]
-    evidence = []
-    for path, value in flatten(document):
-        record = {"document_id": "PO-DOC", "field_path": path,
-                  "source_file_sha256": "c" * 64, "page": 1}
-        if value is None:
-            record.update(absence_confirmed=True, review_record_sha256="d" * 64)
-        else:
-            record["source_original_text"] = str(value)
-        evidence.append(record)
+    evidence = deepcopy(gold["approved_field_evidence"])
     pred["evidence"] = evidence
     assert evaluate(pred, gold, binding)["status"] == "PASS"
     for record in evidence:
         if record.get("absence_confirmed"):
             record.pop("review_record_sha256")
     assert evaluate(pred, gold, binding)["status"] == "FAIL"
+
+
+
+def test_unreviewed_gold_citations_cannot_create_official_metrics():
+    gold, binding, pred = sample()
+    gold["approved_field_evidence"].pop()
+    report = evaluate(pred, gold, binding)
+    assert report["status"] == "BLOCKED"
+    assert report["accuracy_status"] == "NOT_MEASURED"
+    assert report["metrics"] == {}
+
+
+def test_duplicate_or_invalid_approved_evidence_blocks_evaluation():
+    gold, binding, pred = sample()
+    gold["approved_field_evidence"].append(deepcopy(gold["approved_field_evidence"][0]))
+    assert evaluate(pred, gold, binding)["accuracy_status"] == "NOT_MEASURED"
+    gold["approved_field_evidence"].pop()
+    gold["approved_field_evidence"][0]["review_record_sha256"] = "NOT_A_SHA"
+    assert evaluate(pred, gold, binding)["status"] == "BLOCKED"
+
+
+def test_wrong_original_evidence_text_does_not_count_as_source_linkage():
+    gold, binding, pred = sample()
+    pred["evidence"] = deepcopy(gold["approved_field_evidence"])
+    assert evaluate(pred, gold, binding)["status"] == "PASS"
+    pred["evidence"][0]["source_original_text"] = "UNRELATED TEXT"
+    result = evaluate(pred, gold, binding)
+    assert result["status"] == "FAIL"
+    assert result["metrics"]["evidence_linkage"]["numerator"] < (
+        result["metrics"]["evidence_linkage"]["denominator"])
+
+
+def test_native_case_binding_mismatch_cannot_score():
+    gold, binding, pred = sample()
+    binding["case_id"] = "SYN-C999"
+    assert evaluate(pred, gold, binding)["reason"] == (
+        "NATIVE_JOB_CONFIG_FILE_BINDINGS_REQUIRED")
+    binding["case_id"] = "SYN-TEST"
+    pred["case_id"] = "SYN-C999"
+    assert evaluate(pred, gold, binding)["reason"] == "NATIVE_PREDICTION_CASE_MISMATCH"
+
+
+def test_optional_null_dates_do_not_inflate_date_accuracy_denominator():
+    gold, binding, pred = sample()
+    gold["field_gold_candidate"][0]["revised_delivery"] = None
+    pred["documents"][0]["revised_delivery"] = None
+    add_test_evidence(gold, {"document_id": "PO-DOC", "revised_delivery": None},
+                      gold["sources"][0])
+    report = evaluate(pred, gold, binding)
+    assert report["metrics"]["date_normalization"]["denominator"] == 1

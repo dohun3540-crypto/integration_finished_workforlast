@@ -90,3 +90,33 @@ def test_formula_rejected(book):
     data = io.BytesIO()
     book.save(data)
     assert inspect_xlsx_review(data.getvalue(), csv_bytes)["status"] == "BLOCKED"
+
+
+
+def test_explicit_null_token_not_excel_blank(book):
+    import csv
+    csv_bytes, _ = sample(book)
+    parsed = list(csv.DictReader(io.StringIO(csv_bytes.decode())))
+    parsed[0]["normalized_candidate"] = "null"
+    parsed[0]["value_type"] = "null"
+    parsed[0]["source_text"] = ""
+    text = io.StringIO()
+    writer = csv.DictWriter(text, fieldnames=list(parsed[0]), lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(parsed)
+    book.active["E2"] = "null"
+    book.active["F2"] = "null"
+    book.active["G2"] = None
+    payload = io.BytesIO()
+    book.save(payload)
+    report = inspect_xlsx_review(payload.getvalue(), text.getvalue().encode())
+    assert report["status"] == "BLOCKED"
+    assert "ABSENCE_EVIDENCE_REQUIRES_HUMAN_REVIEW" in {
+        i["code"] for i in report["issues"]}
+    # Removing the explicit null token must also be detected.
+    book.active["E2"] = None
+    payload2 = io.BytesIO()
+    book.save(payload2)
+    bad = inspect_xlsx_review(payload2.getvalue(), text.getvalue().encode())
+    assert "BASELINE_TYPE_OR_VALUE_MISMATCH" in {
+        i["code"] for i in bad["issues"]}

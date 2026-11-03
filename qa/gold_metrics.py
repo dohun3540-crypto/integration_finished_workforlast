@@ -73,8 +73,56 @@ def is_approved(gold):
             and all(review.get(k) for k in ("reviewer", "reviewed_at", "approval_record_sha256")))
 
 
+def approved_evidence(gold):
+    """Validate every approved normalized field against its source citation.
+
+    Referenced review hashes are integrity pointers, not identity authentication.
+    """
+    try:
+        documents = index_documents(gold["field_gold_candidate"])
+        sources = index_documents(gold["sources"])
+        records = gold["approved_field_evidence"]
+    except (KeyError, ValueError, TypeError):
+        return None
+    if not isinstance(records, list) or documents.keys() != sources.keys():
+        return None
+    expected = {(did, path) for did, doc in documents.items() for path, _ in flatten(doc)}
+    if not expected:
+        return None
+    validated = {}
+    for row in records:
+        if not isinstance(row, dict):
+            return None
+        did, path = row.get("document_id"), row.get("field_path")
+        try:
+            key = did, path
+            if key not in expected or key in validated:
+                return None
+        except TypeError:
+            return None
+        source = sources[did]
+        value = lookup(documents[did], path)
+        if (row.get("decision") != "ACCEPT"
+                or re.fullmatch(r"[0-9a-f]{64}",
+                                str(row.get("review_record_sha256", ""))) is None
+                or row.get("source_file_sha256") != source.get("sha256")
+                or type(row.get("page")) is not int
+                or row["page"] != source.get("source_page") or row["page"] < 1):
+            return None
+        if value is None:
+            if (row.get("absence_confirmed") is not True
+                    or row.get("source_original_text") not in (None, "")):
+                return None
+        elif (not isinstance(row.get("source_original_text"), str)
+              or not row["source_original_text"].strip()):
+            return None
+        validated[key] = row
+    return validated if validated.keys() == expected else None
+
+
 def bound_native(gold, binding):
-    if not isinstance(binding, dict) or binding.get("execution_kind") != "STUDIO_NATIVE":
+    if (not isinstance(binding, dict) or binding.get("execution_kind") != "STUDIO_NATIVE"
+            or binding.get("case_id") != gold.get("case_id")):
         return False
     if not all(isinstance(binding.get(k), str) and binding[k]
                for k in ("job_id", "config_id", "workflow_version")):
@@ -110,6 +158,13 @@ def evaluate(prediction, gold, native=None):
         return result
     if not isinstance(prediction, dict) or not isinstance(prediction.get("documents"), list):
         result["reason"] = "NATIVE_PREDICTION_REQUIRED"
+        return result
+    if prediction.get("case_id", gold.get("case_id")) != gold.get("case_id"):
+        result["reason"] = "NATIVE_PREDICTION_CASE_MISMATCH"
+        return result
+    approved_citations = approved_evidence(gold)
+    if approved_citations is None:
+        result["reason"] = "APPROVED_FIELD_EVIDENCE_MISSING_OR_INVALID"
         return result
     try:
         gold_docs = index_documents(gold["field_gold_candidate"])
@@ -147,7 +202,7 @@ def evaluate(prediction, gold, native=None):
             column = path.rsplit(".", 1)[-1]
             for category, selected in (
                 ("null_preservation", want is None),
-                ("date_normalization", column in DATE_KEYS),
+                ("date_normalization", column in DATE_KEYS and want is not None),
                 ("receipt_identity", column == "receipt_id"),
                 ("quotation_fields", path.startswith("quote.")),
                 ("item_receipt_identity", path.startswith("items[") and
@@ -161,15 +216,20 @@ def evaluate(prediction, gold, native=None):
                     scores[category][1] += 1
                     scores[category][0] += int(ok)
             source = sources[did]
-            # Each normalized output slot is counted once. Evidence must cite origin.
+            approved_citation = approved_citations[did, path]
+            # Each output slot is counted once; raw text must match approved source.
             scores["evidence_linkage"][1] += 1
             if any(isinstance(e, dict) and e.get("document_id") == did
                    and e.get("field_path") == path
                    and e.get("source_file_sha256") == source.get("sha256")
                    and e.get("page") == source.get("source_page")
-                   and (bool(e.get("source_original_text")) or
-                        (want is None and e.get("absence_confirmed") is True
-                         and bool(e.get("review_record_sha256")))) for e in evidence):
+                   and e.get("source_original_text") == approved_citation.get(
+                       "source_original_text")
+                   and (want is not None or
+                        (e.get("absence_confirmed") is True
+                         and e.get("review_record_sha256") ==
+                         approved_citation.get("review_record_sha256")))
+                   for e in evidence):
                 scores["evidence_linkage"][0] += 1
     # Preserve original language dates separately from their normalized ISO values.
     for did, source in sources.items():
@@ -178,6 +238,8 @@ def evaluate(prediction, gold, native=None):
             if any(isinstance(e, dict) and e.get("document_id") == did
                    and e.get("field_path") == entry.get("field")
                    and e.get("source_original_text") == entry.get("source_text")
+                   and approved_citations.get((did, entry.get("field")), {}).get(
+                       "source_original_text") == entry.get("source_text")
                    and e.get("source_file_sha256") == source.get("sha256")
                    and e.get("page") == source.get("source_page") for e in evidence):
                 scores["date_source_preservation"][0] += 1

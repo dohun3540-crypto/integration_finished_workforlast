@@ -42,3 +42,16 @@ Machine archived evidence and original SHA are available; field-level human appr
 6. Keep Release Gate **BLOCKED** until human evidence and authentic Studio results are verified.
 
 All paths with `review/approved/` or `review/native/` in examples are required future inputs, not existing project files.
+
+
+
+## New required Gold/source fields in Team 3 evaluator
+
+To prevent incorrect Evidence credit and cross-case mixing, provide
+`approved_field_evidence[]` **after actual human review**. Every normalized
+field leaf requires one uniquely keyed reviewed source citation (including
+`document_type` and null fields), matching its source document SHA and page.
+Non-null entries require exact `source_original_text`; null entries require
+`absence_confirmed=true` plus `review_record_sha256`.
+The native-source-binding JSON also requires a matching `case_id`.
+No source text, signed approval or timestamps are fabricated by this code.
