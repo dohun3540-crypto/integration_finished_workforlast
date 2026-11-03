@@ -1,0 +1,65 @@
+{
+  "recorded_date_kst": "2026-11-03",
+  "repository": "dohun3540-crypto/integration_finished_workforlast",
+  "base_branch": "feat/final-quality-regression-audit-20261103",
+  "base_head": "e948a4a6d3aba6aacd68495bec422b1e845075a0",
+  "work_branch": "feat/team3-gold-data-quality-20261103",
+  "draft_pr_url": "https://github.com/dohun3540-crypto/integration_finished_workforlast/pull/3",
+  "overall_release_gate": "BLOCKED",
+  "data_source_integrity": {
+    "status": "PASS",
+    "documents": 60,
+    "checked": 60,
+    "fail": 0,
+    "duplicate_sha": 0,
+    "archive_sha256": "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc"
+  },
+  "verified_software_ci": {
+    "status": "PASS",
+    "code_head": "9995c0620c62f1299fea633ffe34f4a521c6bf10",
+    "integration_run_id": 41599191412,
+    "full_pytest_passed": 847,
+    "team3_run_id": 41599191486,
+    "team3_pytest_passed": 81,
+    "ruff": "PASS",
+    "source_pdf": "PASS"
+  },
+  "code_after_verified_head": "PENDING_RECHECK",
+  "human_gold": {
+    "status": "BLOCKED",
+    "c001": "AI_CANDIDATE",
+    "reviewed_xlsx": "MISSING_REQUIRED_EVIDENCE",
+    "human_reviewed": false,
+    "team_approved": false,
+    "gold_frozen": false,
+    "c008": "AI_CANDIDATE",
+    "c013": "AI_CANDIDATE",
+    "c017": "AI_CANDIDATE"
+  },
+  "studio_native": {
+    "status": "NOT_VERIFIED",
+    "new_case_job_id": null,
+    "new_config_id": null,
+    "verified_file_bindings": false
+  },
+  "official_accuracy": {
+    "status": "NOT_MEASURED",
+    "metrics": null,
+    "source": "approved_gold_and_native_run_absent"
+  },
+  "independent_business_safety": {
+    "archived_C001": "PASS_LOCAL",
+    "live": "NOT_VERIFIED"
+  },
+  "release_authorized": false,
+  "merge_authorized": false,
+  "missing_evidence": [
+    "review/latest/PDF_EVIDENCE_MATRIX.xlsx exact original bytes and SHA",
+    "real reviewer authorization, reviewed_at, decision and corrections",
+    "field-level human visual review against source PDFs",
+    "immutable frozen Gold version and signed/verified approval record",
+    "current authentic Studio native prediction JSON and Job/Config/File IDs with SHA bindings",
+    "current cross-agent integrated live validation results"
+  ],
+  "note": "CI green does not satisfy the human Gold or live Studio release gate."
+}
