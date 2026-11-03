@@ -1,0 +1,113 @@
+[
+  {
+    "name": "ruff",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "."
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "PASS",
+    "duration_seconds": 0.026
+  },
+  {
+    "name": "semantic-pdf",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "scripts/qa_semantic_pdf_audit.py"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "PASS",
+    "duration_seconds": 0.388
+  },
+  {
+    "name": "final-file-audit",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "scripts/qa_final_file_integrity_check.py"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "PASS",
+    "duration_seconds": 0.352
+  },
+  {
+    "name": "archive",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "scripts/qa_archive_check.py",
+      "--root",
+      "."
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "PASS",
+    "duration_seconds": 0.042
+  },
+  {
+    "name": "gate",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "scripts/qa_gate_check.py",
+      "--root",
+      "."
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "PASS",
+    "duration_seconds": 0.1
+  },
+  {
+    "name": "integration-help",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "qa.integration",
+      "--help"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "PASS",
+    "duration_seconds": 0.041
+  },
+  {
+    "name": "preflight-help",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "scripts/team1_e2e_preflight.py",
+      "--help"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "PASS",
+    "duration_seconds": 0.037
+  },
+  {
+    "name": "offline-c001",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "qa.integration",
+      "--native",
+      "data/results/studio_runs/C001_20261030_v4/instruct_original.json",
+      "--trusted-base",
+      "data/cases/SYN-C001/trusted_base_case.json",
+      "--candidate",
+      "qa/gold_candidates/SYN-C001/candidate.v1.json",
+      "--case-id",
+      "C001",
+      "--job-id",
+      "job_gPmEYKzuJdBA6BmKhVnujs",
+      "--github-sha",
+      "026c949bc82fd747d03ffbc60cd72d04c50ac9c1"
+    ],
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "status": "PASS",
+    "duration_seconds": 0.36
+  }
+]

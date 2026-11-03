@@ -1,0 +1,67 @@
+{
+  "candidate": {
+    "status": "AI_CANDIDATE"
+  },
+  "case_manifests": 20,
+  "file_counts": {
+    "csv": 4,
+    "json": 115,
+    "pdf_direct": 3,
+    "xlsx": 0
+  },
+  "human_visual_pdf_review": "NEEDS_HUMAN_REVIEW",
+  "issues": [],
+  "pdf_inventory": {
+    "archive_pdf_count": 57,
+    "archive_sha256": "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc",
+    "counts": {
+      "BLOCKED": 0,
+      "FAIL": 0,
+      "PASS": 60
+    },
+    "duplicate_hashes": {},
+    "total": 60
+  },
+  "protected_blobs": {
+    "qa/inventory.py": {
+      "actual": "6bdb6f6d710066e491451bdc21c6233a5965a19d",
+      "expected": "6bdb6f6d710066e491451bdc21c6233a5965a19d",
+      "match": true
+    },
+    "src/leadtime_guardian/qa/audit.py": {
+      "actual": "8de0aaaf7b1911d361bd85c9b970d978a126daac",
+      "expected": "8de0aaaf7b1911d361bd85c9b970d978a126daac",
+      "match": true
+    },
+    "src/leadtime_guardian/qa/experiment_compare.py": {
+      "actual": "0c0bbf2c38456019d891625e7486e379e1f96ecf",
+      "expected": "0c0bbf2c38456019d891625e7486e379e1f96ecf",
+      "match": true
+    },
+    "src/leadtime_guardian/qa/input_delivery.py": {
+      "actual": "f838759de7f188b1330a3c93a466f8cfab344e2a",
+      "expected": "f838759de7f188b1330a3c93a466f8cfab344e2a",
+      "match": true
+    },
+    "src/leadtime_guardian/qa/release_inventory.py": {
+      "actual": "fb8982edb23078cb98a333ac4f9c581ad219ef47",
+      "expected": "fb8982edb23078cb98a333ac4f9c581ad219ef47",
+      "match": true
+    },
+    "src/leadtime_guardian/qa/studio_contract.py": {
+      "actual": "08b23233ce12575c1c18f654e3ae296b8efa3e7c",
+      "expected": "08b23233ce12575c1c18f654e3ae296b8efa3e7c",
+      "match": true
+    },
+    "src/leadtime_guardian/strict_json.py": {
+      "actual": "afa56a5f201af250eeb28a20580bd0188fe5cb51",
+      "expected": "afa56a5f201af250eeb28a20580bd0188fe5cb51",
+      "match": true
+    }
+  },
+  "reviewed_xlsx": "NOT_PROVIDED",
+  "scope": "TRACKED_BYTES_AND_MACHINE_PARSE_ONLY",
+  "status": "PASS",
+  "studio_live_authentication": "NOT_VERIFIED",
+  "tracked_files": 350
+}

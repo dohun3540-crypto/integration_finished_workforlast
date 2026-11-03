@@ -1,0 +1,76 @@
+{
+  "status": "BLOCKED",
+  "scope": "READ_ONLY_LOCAL_REPLAY",
+  "studio_native_e2e": "NOT_VERIFIED",
+  "human_gold": "BLOCKED",
+  "accuracy_status": "NOT_MEASURED",
+  "release_or_merge_authorized": false,
+  "external_action_taken": false,
+  "sha256": {
+    "native": "88387f8d6aee1421c9f628304c6b91811396b32da297d41b40e3d53c3d98dfea",
+    "base": "601f52d293e0e118cd49723660fa6217473186d1000a7d565eadb21c28c6e7cb",
+    "schema": "cfdac60441e46e853644b1204dc7b6d65937cfe28bab89d882461086d2e087c4",
+    "candidate": "c96468674701b1336aa981260ce3c1afba8df70a90652a87ab2796ae609e1103"
+  },
+  "issues": [
+    "HUMAN_REVIEW_RECORDS_NOT_PROVIDED",
+    "REVIEWED_XLSX_NOT_PROVIDED"
+  ],
+  "inventory": {
+    "counts": {
+      "PASS": 60,
+      "FAIL": 0,
+      "BLOCKED": 0
+    },
+    "archive_sha256": "a3f4ed1cefee4ebea3a4b94f9408f8a039bf042bd651a3a9222a5162c22149dc",
+    "duplicate_hashes": {}
+  },
+  "combined": {
+    "status": "BLOCKED",
+    "single_case_grouping_status": "NATIVE_THREE_DOCUMENT_CONTRACT_PASS",
+    "provenance_link_status": "NOT_VERIFIED",
+    "experiment_comparison_allowed": false,
+    "python_business_status": "COMPLETED",
+    "python_safety_status": "PASS_LOCAL",
+    "studio_document_status": "NOT_VERIFIED",
+    "cross_agent_status": "BLOCKED",
+    "same_original_pdf_bytes_verified": false,
+    "actual_studio_e2e_status": "NOT_VERIFIED",
+    "release_or_merge_authorized": false,
+    "external_action_taken": false,
+    "issues": [
+      {
+        "issue_code": "QA_STUDIO_RAW_ARTIFACTS_NOT_PROVIDED",
+        "stage": "studio_qa"
+      }
+    ],
+    "sha256": {
+      "operational_native": "88387f8d6aee1421c9f628304c6b91811396b32da297d41b40e3d53c3d98dfea"
+    },
+    "github": {
+      "repository": "dohun3540-crypto/integration_finished_workforlast",
+      "head_sha": "b78c8c0e8dff5480c850bce8868de40ed71f49c8",
+      "authenticated": false
+    },
+    "python_summary": {
+      "case_id": "SYN-C001",
+      "execution_status": "COMPLETED",
+      "review_flags": [],
+      "baseline_shortage_quantity": 0,
+      "changed_shortage_quantity": 60,
+      "estimated_quote_cost_krw": "60500.00",
+      "evidence_verified_against_pdf": false
+    }
+  },
+  "candidate": {
+    "status": "LOCAL_CANDIDATE_MATCH",
+    "candidate_label_status": "AI_CANDIDATE",
+    "source_binding_status": "PASS_LOCAL",
+    "source_binding_failures": [],
+    "differences": [],
+    "scope": "Candidate fields only; evidence/warning accuracy is not measured",
+    "gold_promoted": false,
+    "official_metrics_eligible": false,
+    "accuracy_status": "NOT_MEASURED"
+  }
+}
