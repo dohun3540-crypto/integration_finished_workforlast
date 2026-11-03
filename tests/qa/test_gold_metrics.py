@@ -183,3 +183,12 @@ def test_optional_null_dates_do_not_inflate_date_accuracy_denominator():
                       gold["sources"][0])
     report = evaluate(pred, gold, binding)
     assert report["metrics"]["date_normalization"]["denominator"] == 1
+
+
+def test_known_case_prefix_alias_does_not_mix_jobs():
+    gold, binding, prediction = sample()
+    binding["case_id"] = "TEST"  # SYN-TEST and TEST refer to same test case.
+    prediction["case_id"] = "TEST"
+    assert evaluate(prediction, gold, binding)["accuracy_status"] == "MEASURED"
+    binding["case_id"] = "SYN-C999"
+    assert evaluate(prediction, gold, binding)["accuracy_status"] == "NOT_MEASURED"

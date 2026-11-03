@@ -120,9 +120,16 @@ def approved_evidence(gold):
     return validated if validated.keys() == expected else None
 
 
+def same_case_id(expected, observed):
+    """Only the documented SYN- prefix differs between Gold and Team 1 IDs."""
+    if not isinstance(expected, str) or not isinstance(observed, str):
+        return False
+    return expected.removeprefix("SYN-") == observed.removeprefix("SYN-")
+
+
 def bound_native(gold, binding):
     if (not isinstance(binding, dict) or binding.get("execution_kind") != "STUDIO_NATIVE"
-            or binding.get("case_id") != gold.get("case_id")):
+            or not same_case_id(gold.get("case_id"), binding.get("case_id"))):
         return False
     if not all(isinstance(binding.get(k), str) and binding[k]
                for k in ("job_id", "config_id", "workflow_version")):
@@ -159,7 +166,8 @@ def evaluate(prediction, gold, native=None):
     if not isinstance(prediction, dict) or not isinstance(prediction.get("documents"), list):
         result["reason"] = "NATIVE_PREDICTION_REQUIRED"
         return result
-    if prediction.get("case_id", gold.get("case_id")) != gold.get("case_id"):
+    if not same_case_id(gold.get("case_id"),
+                        prediction.get("case_id", gold.get("case_id"))):
         result["reason"] = "NATIVE_PREDICTION_CASE_MISMATCH"
         return result
     approved_citations = approved_evidence(gold)

@@ -55,3 +55,6 @@ Non-null entries require exact `source_original_text`; null entries require
 `absence_confirmed=true` plus `review_record_sha256`.
 The native-source-binding JSON also requires a matching `case_id`.
 No source text, signed approval or timestamps are fabricated by this code.
+
+
+Team 1 can pass `case_id="C001"` (Studio/QA convention) for Gold `"SYN-C001"`; the evaluator accepts only this documented prefix alias, not arbitrary filename/Job ID mixing. All document IDs, filenames, file hashes and source citations must still match.

@@ -71,3 +71,6 @@ absence verification.
 These safeguards do not change the actual production state:
 Human Gold BLOCKED, official accuracy NOT_MEASURED. Older synthetic evaluation
 fixture results are not Studio performance.
+
+
+**Case ID compatibility:** Team 1 uses short `C001` while Gold uses `SYN-C001`. The evaluator canonicalizes **only** a leading `SYN-` prefix, so the same case binds without relaxing cross-case safety. `C001` and `C013` remain different and are rejected if mixed.

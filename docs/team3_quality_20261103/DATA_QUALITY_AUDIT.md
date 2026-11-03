@@ -48,3 +48,6 @@ No wholesale copy, cherry-pick, original PDF edit, DRAFT edit, Team 1 QA edit, o
 - `qa/gold_metrics.py`: source-bound Studio native prediction versus explicitly frozen, human/team-approved Gold contract; official metrics never created for an AI candidate.
 - `qa/gold_candidates/SYN-C008|SYN-C013|SYN-C017/candidate.machine.v1.json`: separate unapproved machine-evidence candidates.
 - New review/evaluation/case-specific tests and adapted Team 3 CI.
+
+
+Integration-contract compatibility fix: exact matching of `C001` to `SYN-C001` is supported through narrowly scoped leading-prefix normalization. Distinct case numbers are never interchangeable; the independent QA and Studio adapter code were not modified.
