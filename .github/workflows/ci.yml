@@ -31,14 +31,29 @@ jobs:
           python -m pip freeze > validation-logs/dependencies.txt
       - name: Repository Ruff
         run: python -m ruff check . | tee validation-logs/ruff.txt
+      - name: Team1 targeted E2E regression and CLI smoke
+        run: |
+          python -m pytest -q tests/test_qa_parallel_e2e_bundle.py | tee validation-logs/team1-e2e-regression.txt
+          python scripts/team1_e2e_preflight.py --help > validation-logs/team1-e2e-cli-help.txt
+          python -m qa.integration --help > validation-logs/qa-integration-cli-help.txt
       - name: Entire regression suite including team 3
         run: python -m pytest -q --junitxml=validation-logs/pytest.xml | tee validation-logs/pytest.txt
       - name: Immutable archived C001 replay gate
         run: |
           python scripts/qa_archive_check.py --root . > validation-logs/archive.json
           python scripts/qa_gate_check.py --root . > validation-logs/gate.json
+      - name: Archived C001 integrated offline replay (BLOCKED release expected)
+        run: |
+          set +e
+          python -m qa.integration --native data/results/studio_runs/C001_20261030_v4/instruct_original.json --trusted-base data/cases/SYN-C001/trusted_base_case.json --candidate qa/gold_candidates/SYN-C001/candidate.v1.json --case-id C001 --job-id job_gPmEYKzuJdBA6BmKhVnujs --github-sha ece3a7dcc254b5c7a14c72792750170346419eb8 > validation-logs/offline-c001.json
+          replay_exit=$?
+          set -e
+          test "$replay_exit" -eq 2
+          python -c 'import json; r=json.load(open("validation-logs/offline-c001.json")); assert r["status"]=="BLOCKED" and r["combined"]["python_safety_status"]=="PASS_LOCAL" and r["release_or_merge_authorized"] is False'
       - name: PDF inventory without modifying source bytes
         run: python -m qa.inventory --root . --out validation-logs/inventory
+      - name: Full tracked JSON CSV Gold and protected-file audit
+        run: python scripts/qa_final_file_integrity_check.py > validation-logs/final-file-audit.json
       - name: Retain verification evidence
         if: always()
         uses: actions/upload-artifact@v4
